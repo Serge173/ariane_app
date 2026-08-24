@@ -1,3 +1,5 @@
+import { getAppUrl } from "@/lib/env";
+
 interface PaymentInitParams {
   orderId: string;
   orderNumber: string;
@@ -19,7 +21,7 @@ export async function initPayment(params: PaymentInitParams): Promise<PaymentRes
 
   const apiKey = process.env.CINETPAY_API_KEY;
   const siteId = process.env.CINETPAY_SITE_ID;
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3001";
+  const appUrl = getAppUrl();
   const confirmationPath = returnPath || `/reservation/confirmation?order=${orderNumber}`;
 
   if (!apiKey || !siteId) {

@@ -58,37 +58,15 @@ Ouvrir [http://localhost:3000](http://localhost:3000)
 
 ## Déploiement Vercel + Neon
 
-### 1. Créer la base Neon
+Guide complet : **[DEPLOY_VERCEL.md](./DEPLOY_VERCEL.md)**
 
-1. Créer un compte sur [neon.tech](https://neon.tech)
-2. Créer un projet PostgreSQL
-3. Copier la connection string `DATABASE_URL`
+Résumé :
 
-### 2. Déployer sur Vercel
-
-```bash
-npm i -g vercel
-vercel
-```
-
-Variables d'environnement à configurer dans Vercel :
-
-| Variable | Description |
-|----------|-------------|
-| `DATABASE_URL` | Connection string Neon PostgreSQL |
-| `NEXTAUTH_URL` | URL de production (ex: https://votre-domaine.vercel.app) |
-| `NEXTAUTH_SECRET` | Secret aléatoire (`openssl rand -base64 32`) |
-| `CINETPAY_API_KEY` | Clé API CinetPay |
-| `CINETPAY_SITE_ID` | Site ID CinetPay |
-| `NEXT_PUBLIC_APP_URL` | URL publique de l'app |
-| `NEXT_PUBLIC_WHATSAPP_NUMBER` | +2250749526194 |
-
-### 3. Migrer la base en production
-
-```bash
-npm run db:push
-npm run db:seed
-```
+1. Créer une base **Neon** → copier `DATABASE_URL`
+2. Importer `Serge173/ariane_app` sur [vercel.com/new](https://vercel.com/new)
+3. Configurer les variables d'environnement (voir `DEPLOY_VERCEL.md`)
+4. Lancer `npm run db:push` et `npm run db:seed` en local avec l'URL Neon
+5. Deploy → tester `/admin/connexion`
 
 ## Structure du projet
 
