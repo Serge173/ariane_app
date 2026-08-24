@@ -1,0 +1,500 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  CLIENT
+  ADMIN
+  SUPER_ADMIN
+  MANAGER_SHOP
+  MANAGER_ORDERS
+  ACCOUNTING
+}
+
+enum OrderStatus {
+  PENDING_PAYMENT
+  PAID
+  APPOINTMENT_CONFIRMED
+  QUESTIONNAIRE_PENDING
+  COACHING_SCHEDULED
+  COACHING_COMPLETED
+  FOLLOW_UP
+  COMPLETED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  SUCCESS
+  FAILED
+  REFUNDED
+  PARTIAL_REFUND
+}
+
+enum PaymentMethod {
+  MOBILE_MONEY_ORANGE
+  MOBILE_MONEY_MTN
+  MOBILE_MONEY_MOOV
+  MOBILE_MONEY_WAVE
+  CARD
+  BANK_TRANSFER
+  CASH_ON_DELIVERY
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+  RESCHEDULED
+}
+
+enum ServiceMode {
+  IN_PERSON
+  DIGITAL
+  HYBRID
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum NotificationType {
+  EMAIL
+  SMS
+  WHATSAPP
+  IN_APP
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified DateTime?
+  phone         String?
+  phoneVerified Boolean   @default(false)
+  passwordHash  String?
+  firstName     String
+  lastName      String
+  role          UserRole  @default(CLIENT)
+  avatar        String?
+  company       String?
+  billingAddress String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts      Account[]
+  sessions      Session[]
+  orders        Order[]
+  appointments  Appointment[]
+  reviews       Review[]
+  questionnaires QuestionnaireResponse[]
+  notifications Notification[]
+  documents     ClientDocument[]
+
+  @@index([email])
+  @@index([role])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Category {
+  id          String      @id @default(cuid())
+  name        String
+  slug        String      @unique
+  description String?
+  scope       ProductType @default(LUXE)
+  parentId    String?
+  parent      Category?   @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children    Category[]  @relation("CategoryHierarchy")
+  products    Product[]
+  sortOrder   Int         @default(0)
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([isActive])
+  @@index([scope])
+}
+
+model Brand {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  slug        String    @unique
+  description String?
+  logo        String?
+  sortOrder   Int       @default(0)
+  isActive    Boolean   @default(true)
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([isActive])
+}
+
+enum ProductType {
+  SERVICE
+  LUXE
+}
+
+model Product {
+  id              String      @id @default(cuid())
+  name            String
+  slug            String      @unique
+  brand           String?
+  brandId         String?
+  brandRef        Brand?      @relation(fields: [brandId], references: [id], onDelete: SetNull)
+  shortDescription String?
+  description     String      @db.Text
+  price           Int
+  currency        String      @default("XOF")
+  productType     ProductType @default(SERVICE)
+  categoryId      String
+  category        Category    @relation(fields: [categoryId], references: [id])
+  images          String[]
+  features        String[]
+  keywords        String[]    @default([])
+  duration        String?
+  mode            ServiceMode @default(IN_PERSON)
+  sku             String?     @unique
+  isActive        Boolean     @default(true)
+  isFeatured      Boolean     @default(false)
+  sortOrder       Int         @default(0)
+  variants        ProductVariant[]
+  orderItems      OrderItem[]
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@index([categoryId])
+  @@index([brandId])
+  @@index([slug])
+  @@index([productType, isActive])
+}
+
+model ProductVariant {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name      String
+  price     Int
+  mode      ServiceMode?
+  isActive  Boolean @default(true)
+}
+
+model PromoCode {
+  id            String    @id @default(cuid())
+  code          String    @unique
+  discountType  String    @default("percentage")
+  discountValue Int
+  minAmount     Int?
+  maxUses       Int?
+  usedCount     Int       @default(0)
+  validFrom     DateTime  @default(now())
+  validUntil    DateTime?
+  isActive      Boolean   @default(true)
+  orders        Order[]
+  createdAt     DateTime  @default(now())
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  orderNumber     String      @unique
+  userId          String?
+  user            User?       @relation(fields: [userId], references: [id])
+  guestEmail      String?
+  guestPhone      String?
+  guestFirstName  String?
+  guestLastName   String?
+  status          OrderStatus @default(PENDING_PAYMENT)
+  subtotal        Int
+  discount        Int         @default(0)
+  total           Int
+  currency        String      @default("XOF")
+  promoCodeId     String?
+  promoCode       PromoCode?  @relation(fields: [promoCodeId], references: [id])
+  notes           String?
+  billingInfo     Json?
+  items           OrderItem[]
+  payments        Payment[]
+  appointment     Appointment?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([orderNumber])
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int     @default(1)
+  unitPrice Int
+  total     Int
+  variantId String?
+  mode      ServiceMode?
+}
+
+model Payment {
+  id              String        @id @default(cuid())
+  orderId         String
+  order           Order         @relation(fields: [orderId], references: [id])
+  amount          Int
+  currency        String        @default("XOF")
+  method          PaymentMethod
+  status          PaymentStatus @default(PENDING)
+  providerRef     String?
+  providerData    Json?
+  receiptUrl      String?
+  refundedAmount  Int           @default(0)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([orderId])
+  @@index([status])
+}
+
+enum PaymentMethodContext {
+  BOUTIQUE
+  ACCOMPAGNEMENT
+  BOTH
+}
+
+enum PaymentMethodProvider {
+  CINETPAY
+  CASH_ON_DELIVERY
+  MANUAL
+  BANK_TRANSFER
+}
+
+model PaymentMethodConfig {
+  id           String                @id @default(cuid())
+  code         String                @unique
+  name         String
+  description  String?
+  instructions String?               @db.Text
+  icon         String                @default("CreditCard")
+  context      PaymentMethodContext  @default(BOTH)
+  provider     PaymentMethodProvider @default(CINETPAY)
+  isActive     Boolean               @default(true)
+  sortOrder    Int                   @default(0)
+  minAmount    Int?
+  maxAmount    Int?
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+
+  @@index([isActive, sortOrder])
+  @@index([context])
+}
+
+model Availability {
+  id        String   @id @default(cuid())
+  dayOfWeek Int
+  startTime String
+  endTime   String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model BlockedSlot {
+  id        String   @id @default(cuid())
+  date      DateTime @db.Date
+  startTime String?
+  endTime   String?
+  reason    String?
+  allDay    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Appointment {
+  id          String            @id @default(cuid())
+  orderId     String            @unique
+  order       Order             @relation(fields: [orderId], references: [id])
+  userId      String?
+  user        User?             @relation(fields: [userId], references: [id])
+  date        DateTime          @db.Date
+  startTime   String
+  endTime     String
+  mode        ServiceMode       @default(IN_PERSON)
+  location    String?
+  meetingUrl  String?
+  status      AppointmentStatus @default(SCHEDULED)
+  notes       String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@index([date])
+  @@index([userId])
+}
+
+model Questionnaire {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String?
+  type        String   @default("orientation")
+  questions   Json
+  isActive    Boolean  @default(true)
+  responses   QuestionnaireResponse[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model QuestionnaireResponse {
+  id              String        @id @default(cuid())
+  questionnaireId String
+  questionnaire   Questionnaire @relation(fields: [questionnaireId], references: [id])
+  userId          String?
+  user            User?         @relation(fields: [userId], references: [id])
+  guestEmail      String?
+  answers         Json
+  recommendation  String?
+  score           Json?
+  createdAt       DateTime      @default(now())
+
+  @@index([userId])
+  @@index([questionnaireId])
+}
+
+model Review {
+  id        String       @id @default(cuid())
+  userId    String
+  user      User         @relation(fields: [userId], references: [id])
+  rating    Int
+  title     String?
+  content   String       @db.Text
+  status    ReviewStatus @default(PENDING)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  @@index([status])
+}
+
+model BlogPost {
+  id          String    @id @default(cuid())
+  title       String
+  slug        String    @unique
+  excerpt     String?
+  content     String    @db.Text
+  coverImage  String?
+  author      String    @default("Ariane DAGO")
+  tags        String[]
+  isPublished Boolean   @default(false)
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([slug])
+  @@index([isPublished])
+}
+
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  firstName String?
+  segments  String[] @default([])
+  isActive  Boolean  @default(true)
+  consentAt DateTime @default(now())
+  createdAt DateTime @default(now())
+}
+
+model ContactRequest {
+  id        String   @id @default(cuid())
+  type      String   @default("general")
+  firstName String
+  lastName  String
+  email     String
+  phone     String?
+  company   String?
+  message   String   @db.Text
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model ClientDocument {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  title     String
+  type      String
+  fileUrl   String
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id])
+  type      NotificationType
+  title     String
+  message   String
+  isRead    Boolean          @default(false)
+  metadata  Json?
+  createdAt DateTime         @default(now())
+
+  @@index([userId])
+}
+
+model SiteContent {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     Json
+  updatedAt DateTime @updatedAt
+}
+
+model AnalyticsEvent {
+  id        String   @id @default(cuid())
+  event     String
+  sessionId String?
+  userId    String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  @@index([event])
+  @@index([createdAt])
+}
