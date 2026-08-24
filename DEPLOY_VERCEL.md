@@ -58,9 +58,9 @@ Dans **Project → Settings → Environment Variables**, ajoutez :
 
 **Premier déploiement** (domaine Vercel) :
 ```
-https://ariane-app.vercel.app
+https://ariane-app-git-main-skeayeni-4540s-projects.vercel.app
 ```
-(Remplacez par le nom exact affiché après le 1er deploy)
+(Remplacez par le domaine **Production** affiché dans Vercel → Project → Domains)
 
 **Avec domaine personnalisé** :
 ```
