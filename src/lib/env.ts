@@ -1,7 +1,3 @@
-import { bootstrapEnv } from "./bootstrap-env";
-
-bootstrapEnv();
-
 /** URL publique de l'application (local, Vercel preview ou production). */
 export function getAppUrl(): string {
   if (process.env.NEXT_PUBLIC_APP_URL) {
