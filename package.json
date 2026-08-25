@@ -9,7 +9,7 @@
     "dev": "next dev",
     "dev:network": "next dev -H 0.0.0.0 -p 3001",
     "build": "prisma generate && next build",
-    "vercel-build": "prisma generate && prisma db push --url=\"${DATABASE_URL_UNPOOLED:-$DATABASE_URL}\" && prisma db seed && next build",
+    "vercel-build": "bash scripts/vercel-build.sh",
     "start": "next start",
     "lint": "next lint",
     "db:generate": "prisma generate",
