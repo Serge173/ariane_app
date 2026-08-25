@@ -11,7 +11,11 @@ if [ -z "$DB_URL" ]; then
 fi
 
 echo "==> Prisma db push"
-npx prisma db push --url="$DB_URL"
+PUSH_URL="${DATABASE_URL_UNPOOLED:-${DATABASE_URL:-}}"
+ORIGINAL_DATABASE_URL="${DATABASE_URL:-}"
+export DATABASE_URL="$PUSH_URL"
+npx prisma db push
+export DATABASE_URL="$ORIGINAL_DATABASE_URL"
 
 echo "==> Prisma db seed"
 npx prisma db seed
