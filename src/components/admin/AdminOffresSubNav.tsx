@@ -2,7 +2,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 const tabs = [
-  { id: "hub", label: "Vue d'ensemble", href: "/admin/offres" },
+  { id: "hub", label: "Tableau", href: "/admin/offres" },
   { id: "coaching", label: "Accompagnements coaching", href: "/admin/offres/accompagnements" },
   { id: "luxe", label: "Articles de luxe", href: "/admin/offres/luxe" },
 ] as const;

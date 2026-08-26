@@ -67,7 +67,6 @@ export const adminNav: AdminNavItem[] = [
     href: "/admin/paiements",
     icon: CreditCard,
     children: [
-      { name: "Vue d'ensemble", href: "/admin/paiements" },
       { name: "Modes de paiement", href: "/admin/paiements/modes" },
       { name: "Transactions", href: "/admin/paiements/transactions" },
     ],
@@ -79,7 +78,6 @@ export const adminNav: AdminNavItem[] = [
     href: "/admin/blog",
     icon: FileText,
     children: [
-      { name: "Vue d'ensemble", href: "/admin/blog" },
       { name: "Articles", href: "/admin/blog/articles" },
     ],
   },

@@ -104,9 +104,11 @@ function NavItem({
                   : "text-brand-400 hover:text-white hover:bg-brand-900"
               )}
             >
-              Vue d&apos;ensemble
+              Tableau
             </Link>
-            {item.children!.map((child) => {
+            {item.children!
+              .filter((child) => child.href !== item.href)
+              .map((child) => {
               const childActive = pathname === child.href || pathname.startsWith(child.href + "/");
               return (
                 <Link
