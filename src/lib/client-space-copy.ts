@@ -5,7 +5,7 @@ export const CLIENT_SPACE_COPY = {
   headerEyebrow: "Espace client",
   headerTitle: "Votre parcours image et vos commandes",
   welcomeSubtitle:
-    "Suivez votre coaching, consultez l'historique de vos commandes boutique et retrouvez vos documents — tout au même endroit.",
+    "Suivez votre coaching, consultez l'historique de vos commandes boutique et retrouvez vos documents.",
   introBanner:
     "Cet espace centralise votre parcours de coaching et le suivi de vos achats : statuts de commande, modes de paiement, livraisons, rendez-vous et livrables.",
   connexionLogin:
