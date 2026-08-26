@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
 import { randomUUID } from "crypto";
 import { requireAdmin, jsonError } from "@/lib/admin-api";
+import { extensionFromMime, storeUploadedImage } from "@/lib/store-uploaded-image";
 
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml"];
 const MAX_SIZE = 2 * 1024 * 1024;
@@ -23,18 +22,21 @@ export async function POST(req: NextRequest) {
 
     if (file.size > MAX_SIZE) return jsonError("Fichier trop volumineux (max 2 Mo)");
 
-    const ext = file.type === "image/svg+xml" ? "svg" : file.type.split("/")[1].replace("jpeg", "jpg");
+    const ext = extensionFromMime(file.type);
     const fileName = `${randomUUID()}.${ext}`;
-    const uploadsDir = path.join(process.cwd(), "public", "uploads", "payments");
-
-    await mkdir(uploadsDir, { recursive: true });
-
     const buffer = Buffer.from(await file.arrayBuffer());
-    await writeFile(path.join(uploadsDir, fileName), buffer);
 
-    return NextResponse.json({ url: `/uploads/payments/${fileName}`, success: true });
+    const url = await storeUploadedImage({
+      folder: "payments",
+      fileName,
+      buffer,
+      contentType: file.type,
+    });
+
+    return NextResponse.json({ url, success: true });
   } catch (err) {
     console.error("[POST /api/admin/upload/payment-logo]", err);
-    return jsonError("Erreur lors de l'upload", 500);
+    const message = err instanceof Error ? err.message : "Erreur lors de l'upload";
+    return jsonError(message, 500);
   }
 }

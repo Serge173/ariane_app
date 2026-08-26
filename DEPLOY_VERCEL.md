@@ -113,7 +113,7 @@ npx vercel --prod
 
 | Fonctionnalité | Comportement sur Vercel |
 |----------------|-------------------------|
-| **Upload images blog / avatar** | Le disque est éphémère → préférez les **URLs d'image** dans l'admin blog, ou migrez vers [Vercel Blob](https://vercel.com/docs/storage/vercel-blob) |
+| **Upload images blog / avatar / logos paiement** | Connectez **Vercel Blob** (Storage → Blob) ; le token `BLOB_READ_WRITE_TOKEN` est injecté automatiquement. En local, les fichiers vont dans `public/uploads/` |
 | **Base de données** | Obligatoire (Neon / Vercel Postgres / Supabase) — pas de SQLite |
 | **Seed** | À lancer **une fois** en local avec l'URL Neon, pas à chaque build |
 

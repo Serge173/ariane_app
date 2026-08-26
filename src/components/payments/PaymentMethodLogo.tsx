@@ -43,6 +43,9 @@ export function PaymentMethodLogo({
   const dim = SIZES[size];
   const logoUrl = method.logoUrl || getProviderTemplate(method.code)?.logoUrl;
   const Icon = PAYMENT_ICON_MAP[method.icon || ""] || CreditCard;
+  const useNativeImg =
+    logoUrl &&
+    (logoUrl.startsWith("/uploads/") || logoUrl.endsWith(".svg") || logoUrl.startsWith("data:"));
 
   const wrapperClass = cn(
     "relative flex-shrink-0 rounded-lg overflow-hidden bg-brand-50 border border-brand-100",
@@ -52,14 +55,26 @@ export function PaymentMethodLogo({
 
   const content =
     logoUrl && !errored ? (
-      <Image
-        src={logoUrl}
-        alt={method.name}
-        width={dim}
-        height={dim}
-        className="object-cover w-full h-full"
-        onError={() => setErrored(true)}
-      />
+      useNativeImg ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={logoUrl}
+          alt={method.name}
+          width={dim}
+          height={dim}
+          className="object-cover w-full h-full"
+          onError={() => setErrored(true)}
+        />
+      ) : (
+        <Image
+          src={logoUrl}
+          alt={method.name}
+          width={dim}
+          height={dim}
+          className="object-cover w-full h-full"
+          onError={() => setErrored(true)}
+        />
+      )
     ) : (
       <div className="w-full h-full flex items-center justify-center bg-brand-100" style={{ width: dim, height: dim }}>
         <Icon className="w-1/2 h-1/2 text-brand-600" />
