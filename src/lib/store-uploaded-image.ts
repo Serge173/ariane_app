@@ -10,8 +10,8 @@ export interface StoreUploadedImageOptions {
 }
 
 /**
- * Production : Vercel Blob (BLOB_READ_WRITE_TOKEN).
- * Local : public/uploads/{folder}/
+ * Production : Vercel Blob (OIDC auto ou BLOB_READ_WRITE_TOKEN).
+ * Local : public/uploads/{folder}/ ou Blob si token présent (vercel env pull).
  */
 export async function storeUploadedImage({
   folder,
@@ -19,20 +19,25 @@ export async function storeUploadedImage({
   buffer,
   contentType,
 }: StoreUploadedImageOptions): Promise<string> {
+  const isVercel = !!process.env.VERCEL;
   const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
+  const hasBlobStore =
+    isVercel ||
+    !!blobToken ||
+    !!(process.env.BLOB_STORE_ID && process.env.VERCEL_OIDC_TOKEN);
 
-  if (blobToken) {
+  if (hasBlobStore) {
     const blob = await put(`uploads/${folder}/${fileName}`, buffer, {
       access: "public",
       contentType,
-      token: blobToken,
+      ...(blobToken ? { token: blobToken } : {}),
     });
     return blob.url;
   }
 
-  if (process.env.VERCEL) {
+  if (isVercel) {
     throw new Error(
-      "BLOB_READ_WRITE_TOKEN manquant. Connectez un store Vercel Blob au projet (Storage → Blob)."
+      "Store Vercel Blob non connecté. Allez dans Storage → Create Database → Blob."
     );
   }
 
