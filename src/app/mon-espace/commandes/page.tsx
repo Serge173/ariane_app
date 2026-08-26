@@ -3,14 +3,20 @@ import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { formatPrice, formatDate, ORDER_STATUS_LABELS, PAYMENT_METHOD_LABELS } from "@/lib/utils";
+import { OrderPaymentBadge } from "@/components/orders/OrderPaymentBadge";
 
 export default async function ClientCommandesPage() {
   const session = await getServerSession(authOptions);
-  const orders = await prisma.order.findMany({
-    where: { userId: session!.user!.id },
-    include: { items: { include: { product: true } }, appointment: true, payments: true },
-    orderBy: { createdAt: "desc" },
-  });
+  const [orders, paymentConfigs] = await Promise.all([
+    prisma.order.findMany({
+      where: { userId: session!.user!.id },
+      include: { items: { include: { product: true } }, appointment: true, payments: true },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.paymentMethodConfig.findMany(),
+  ]);
+
+  const configByCode = Object.fromEntries(paymentConfigs.map((c) => [c.code, c]));
 
   return (
     <div>
@@ -37,6 +43,8 @@ export default async function ClientCommandesPage() {
               order.items.some((i) => i.product?.productType === "LUXE");
 
             const isCod = order.payments.some((p) => p.method === "CASH_ON_DELIVERY");
+            const payment = order.payments[0];
+            const config = payment ? configByCode[payment.method] : null;
 
             return (
             <div key={order.id} className="bg-white border border-brand-100 p-6">
@@ -50,10 +58,21 @@ export default async function ClientCommandesPage() {
                   </div>
                   <p className="text-xs text-brand-400 mt-1">Réf. {order.orderNumber}</p>
                   <p className="text-xs text-brand-400">Commandé le {formatDate(order.createdAt)}</p>
-                  {order.payments[0] && (
-                    <p className="text-xs text-brand-500 mt-1">
-                      Paiement : {PAYMENT_METHOD_LABELS[order.payments[0].method] || order.payments[0].method}
-                    </p>
+                  {payment && (
+                    config ? (
+                      <OrderPaymentBadge
+                        methodCode={payment.method}
+                        methodName={config.name}
+                        logoUrl={config.logoUrl}
+                        description={config.description}
+                        instructions={config.instructions}
+                        provider={config.provider}
+                      />
+                    ) : (
+                      <p className="text-xs text-brand-500 mt-1">
+                        Paiement : {PAYMENT_METHOD_LABELS[payment.method] || payment.method}
+                      </p>
+                    )
                   )}
                 </div>
                 <div className="text-left sm:text-right">

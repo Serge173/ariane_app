@@ -47,6 +47,14 @@ export async function PATCH(req: NextRequest, ctx: Ctx) {
     return jsonError("Le paiement à la livraison n'est disponible que pour la boutique");
   }
 
+  const nextChannel =
+    body.apiChannel !== undefined ? body.apiChannel?.trim() || null : existing.apiChannel;
+  const resolvedChannel = provider === "CINETPAY" ? nextChannel : null;
+
+  if (provider === "CINETPAY" && !resolvedChannel) {
+    return jsonError("Le canal CinetPay est requis pour l'API CinetPay");
+  }
+
   const method = await prisma.paymentMethodConfig.update({
     where: { id },
     data: {
@@ -55,8 +63,12 @@ export async function PATCH(req: NextRequest, ctx: Ctx) {
       ...(body.description !== undefined && { description: body.description?.trim() || null }),
       ...(body.instructions !== undefined && { instructions: body.instructions?.trim() || null }),
       ...(body.icon !== undefined && { icon: body.icon }),
+      ...(body.logoUrl !== undefined && { logoUrl: body.logoUrl?.trim() || null }),
       ...(body.context !== undefined && { context: body.context }),
       ...(body.provider !== undefined && { provider: body.provider }),
+      ...(body.apiChannel !== undefined || body.provider !== undefined
+        ? { apiChannel: resolvedChannel }
+        : {}),
       ...(body.isActive !== undefined && { isActive: Boolean(body.isActive) }),
       ...(body.sortOrder !== undefined && { sortOrder: Number(body.sortOrder) || 0 }),
       ...(body.minAmount !== undefined && {

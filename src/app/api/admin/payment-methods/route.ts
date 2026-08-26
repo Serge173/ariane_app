@@ -29,6 +29,8 @@ export async function POST(req: NextRequest) {
     description,
     instructions,
     icon = "CreditCard",
+    logoUrl,
+    apiChannel,
     context = "BOTH",
     provider = "CINETPAY",
     isActive = true,
@@ -52,6 +54,14 @@ export async function POST(req: NextRequest) {
     return jsonError("Le paiement à la livraison n'est disponible que pour la boutique");
   }
 
+  const channel = apiChannel?.trim() || null;
+  if (provider === "CINETPAY" && !channel) {
+    return jsonError("Le canal CinetPay est requis pour l'API CinetPay");
+  }
+  if (provider !== "CINETPAY" && channel) {
+    return jsonError("Le canal CinetPay ne s'applique qu'au fournisseur CinetPay");
+  }
+
   const method = await prisma.paymentMethodConfig.create({
     data: {
       code,
@@ -59,6 +69,8 @@ export async function POST(req: NextRequest) {
       description: description?.trim() || null,
       instructions: instructions?.trim() || null,
       icon,
+      logoUrl: logoUrl?.trim() || null,
+      apiChannel: channel,
       context,
       provider,
       isActive: Boolean(isActive),

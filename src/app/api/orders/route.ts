@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
 import { generateOrderNumber } from "@/lib/utils";
 import { initPayment } from "@/lib/payments/cinetpay";
+import { getCinetPayChannel } from "@/lib/payment-providers";
 import {
   isOnlinePaymentProvider,
   isValidPaymentMethodCode,
@@ -232,6 +233,7 @@ export async function POST(req: NextRequest) {
         firstName,
         lastName,
         returnPath,
+        channels: getCinetPayChannel(paymentConfig.apiChannel),
       });
       paymentUrl = paymentResult.paymentUrl;
     }

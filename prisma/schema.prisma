@@ -319,6 +319,8 @@ model PaymentMethodConfig {
   description  String?
   instructions String?               @db.Text
   icon         String                @default("CreditCard")
+  logoUrl      String?
+  apiChannel   String?
   context      PaymentMethodContext  @default(BOTH)
   provider     PaymentMethodProvider @default(CINETPAY)
   isActive     Boolean               @default(true)

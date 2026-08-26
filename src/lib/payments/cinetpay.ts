@@ -9,6 +9,7 @@ interface PaymentInitParams {
   firstName: string;
   lastName: string;
   returnPath?: string;
+  channels?: string;
 }
 
 interface PaymentResult {
@@ -17,7 +18,7 @@ interface PaymentResult {
 }
 
 export async function initPayment(params: PaymentInitParams): Promise<PaymentResult> {
-  const { orderNumber, amount, email, phone, firstName, lastName, returnPath } = params;
+  const { orderNumber, amount, email, phone, firstName, lastName, returnPath, channels = "ALL" } = params;
 
   const apiKey = process.env.CINETPAY_API_KEY;
   const siteId = process.env.CINETPAY_SITE_ID;
@@ -41,7 +42,7 @@ export async function initPayment(params: PaymentInitParams): Promise<PaymentRes
         description: `Conseil en Image - ${orderNumber}`,
         notify_url: process.env.CINETPAY_NOTIFY_URL,
         return_url: `${appUrl}${confirmationPath}`,
-        channels: "ALL",
+        channels,
         customer_name: firstName,
         customer_surname: lastName,
         customer_email: email,

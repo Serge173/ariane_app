@@ -30,6 +30,8 @@ export interface PaymentMethodOption {
   description: string | null;
   instructions: string | null;
   icon: string;
+  logoUrl: string | null;
+  apiChannel: string | null;
   context: PaymentMethodContext;
   provider: PaymentMethodProvider;
   isActive: boolean;
@@ -59,6 +61,24 @@ export const PAYMENT_PROVIDER_LABELS: Record<PaymentMethodProvider, string> = {
   CINETPAY: "Paiement en ligne (CinetPay)",
   CASH_ON_DELIVERY: "Paiement à la livraison",
   MANUAL: "Paiement manuel / sur place",
+  BANK_TRANSFER: "Virement bancaire",
+};
+
+/** Canaux CinetPay v2 — utilisés à la création / édition admin */
+export const CINETPAY_CHANNEL_OPTIONS = [
+  { value: "MOBILE_MONEY", label: "Mobile Money (Orange, MTN, Wave…)" },
+  { value: "CREDIT_CARD", label: "Carte bancaire (Visa, Mastercard)" },
+  { value: "WALLET", label: "Wallet" },
+  { value: "ALL", label: "Tous les canaux" },
+] as const;
+
+export const PAYMENT_CODE_LABELS: Record<PaymentMethod, string> = {
+  CASH_ON_DELIVERY: "Paiement à la livraison",
+  MOBILE_MONEY_ORANGE: "Orange Money",
+  MOBILE_MONEY_MTN: "MTN MoMo",
+  MOBILE_MONEY_MOOV: "Moov Money",
+  MOBILE_MONEY_WAVE: "Wave",
+  CARD: "Carte bancaire",
   BANK_TRANSFER: "Virement bancaire",
 };
 
