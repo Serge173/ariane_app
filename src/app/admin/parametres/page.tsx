@@ -1,52 +1,92 @@
+import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { authOptions, isAdmin } from "@/lib/auth";
+import prisma from "@/lib/prisma";
+import { canManageTeam, TEAM_ROLES } from "@/lib/user-roles";
+import {
+  getPlatformSettings,
+  getDatabaseLabel,
+  isCinetPayConfigured,
+  maskSecret,
+} from "@/lib/platform-settings";
+import { AdminSettingsPanel } from "@/components/admin/settings/AdminSettingsPanel";
 
 export default async function AdminParametresPage() {
   const session = await getServerSession(authOptions);
+  if (!session?.user?.id || !isAdmin(session.user.role)) {
+    redirect("/admin/connexion");
+  }
+
+  const currentUser = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: {
+      id: true,
+      email: true,
+      firstName: true,
+      lastName: true,
+      phone: true,
+      role: true,
+      avatar: true,
+      createdAt: true,
+    },
+  });
+
+  if (!currentUser) redirect("/admin/connexion");
+
+  const manageTeam = canManageTeam(session.user.role);
+  const teamMembers = manageTeam
+    ? await prisma.user.findMany({
+        where: { role: { in: TEAM_ROLES } },
+        select: {
+          id: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+          phone: true,
+          role: true,
+          avatar: true,
+          createdAt: true,
+        },
+        orderBy: [{ role: "asc" }, { lastName: "asc" }],
+      })
+    : [];
+
+  const platform = await getPlatformSettings();
+
+  const serializedUser = {
+    ...currentUser,
+    createdAt: currentUser.createdAt.toISOString(),
+  };
+
+  const serializedTeam = teamMembers.map((m) => ({
+    ...m,
+    createdAt: m.createdAt.toISOString(),
+  }));
 
   return (
     <div>
       <div className="mb-8">
         <h1 className="heading-section mb-2">Paramètres</h1>
-        <p className="text-brand-600">Configuration de la plateforme et du compte administrateur</p>
+        <p className="text-brand-600">
+          Gérez votre compte, l&apos;équipe et la configuration de la plateforme
+        </p>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-8">
-        <section className="bg-white border border-brand-100 p-6">
-          <h2 className="font-display text-lg mb-6">Compte administrateur</h2>
-          <dl className="space-y-4">
-            <div>
-              <dt className="text-[10px] uppercase tracking-widest text-brand-400 mb-1">Nom</dt>
-              <dd className="text-sm">{session?.user?.name}</dd>
-            </div>
-            <div>
-              <dt className="text-[10px] uppercase tracking-widest text-brand-400 mb-1">Email</dt>
-              <dd className="text-sm">{session?.user?.email}</dd>
-            </div>
-            <div>
-              <dt className="text-[10px] uppercase tracking-widest text-brand-400 mb-1">Rôle</dt>
-              <dd className="text-sm capitalize">{session?.user?.role?.replace(/_/g, " ").toLowerCase()}</dd>
-            </div>
-          </dl>
-        </section>
-
-        <section className="bg-white border border-brand-100 p-6">
-          <h2 className="font-display text-lg mb-6">Plateforme</h2>
-          <dl className="space-y-4">
-            {[
-              { label: "URL publique", value: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3001" },
-              { label: "Base de données", value: "PostgreSQL (local)" },
-              { label: "Paiement", value: process.env.CINETPAY_API_KEY ? "CinetPay configuré" : "CinetPay — à configurer" },
-              { label: "WhatsApp", value: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "+2250749526194" },
-            ].map((item) => (
-              <div key={item.label}>
-                <dt className="text-[10px] uppercase tracking-widest text-brand-400 mb-1">{item.label}</dt>
-                <dd className="text-sm text-brand-700">{item.value}</dd>
-              </div>
-            ))}
-          </dl>
-        </section>
-      </div>
+      <AdminSettingsPanel
+        currentUser={serializedUser}
+        teamMembers={serializedTeam}
+        canManageTeam={manageTeam}
+        platformSettings={{
+          appUrl: platform.appUrl,
+          whatsappNumber: platform.whatsappNumber,
+          cinetpaySiteId: platform.cinetpaySiteId,
+          cinetpayNotifyUrl: platform.cinetpayNotifyUrl,
+          contactEmail: platform.contactEmail,
+          cinetpayApiKey: platform.cinetpayApiKey ? maskSecret(platform.cinetpayApiKey) : "",
+          cinetpayConfigured: isCinetPayConfigured(platform),
+          database: getDatabaseLabel(),
+        }}
+      />
     </div>
   );
 }

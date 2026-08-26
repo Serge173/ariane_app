@@ -7,6 +7,7 @@ import {
   getCategoryDescendantIds,
 } from "@/lib/categories";
 import { Plus, Pencil, Trash2, Loader2, FolderTree, ShoppingBag } from "lucide-react";
+import { useFeedbackModal } from "@/hooks/useFeedbackModal";
 
 type CatalogScope = "LUXE" | "SERVICE";
 
@@ -45,6 +46,7 @@ export function CategoryManager({ initial }: { initial: Category[] }) {
   });
   const [loading, setLoading] = useState(false);
   const [showNew, setShowNew] = useState(false);
+  const { showSuccess, showError, showConfirm, FeedbackModal } = useFeedbackModal();
 
   const scopedCategories = useMemo(
     () => categories.filter((c) => c.scope === activeScope),
@@ -100,11 +102,15 @@ export function CategoryManager({ initial }: { initial: Category[] }) {
 
     setLoading(false);
     if (res.ok) {
+      showSuccess(
+        editing ? "La catégorie a été mise à jour." : "La catégorie a été créée.",
+        "Catégorie enregistrée"
+      );
       reset();
       refresh();
     } else {
       const d = await res.json();
-      alert(d.error || "Erreur");
+      showError(d.error || "Erreur");
     }
   };
 
@@ -137,21 +143,29 @@ export function CategoryManager({ initial }: { initial: Category[] }) {
     });
   };
 
-  const remove = async (c: Category) => {
+  const remove = (c: Category) => {
     const childCount = categories.filter((x) => x.parentId === c.id).length;
     const msg =
       childCount > 0
         ? `« ${c.name} » a ${childCount} sous-catégorie(s). Supprimer quand même ?`
         : `Supprimer « ${c.name} » ? (${c._count.products} produit(s))`;
-    if (!confirm(msg)) return;
-    const res = await fetch(`/api/admin/categories/${c.id}`, { method: "DELETE" });
-    const data = await res.json();
-    if (data.message) alert(data.message);
-    refresh();
+
+    showConfirm(msg, async () => {
+      const res = await fetch(`/api/admin/categories/${c.id}`, { method: "DELETE" });
+      const data = await res.json();
+      if (res.ok) {
+        showSuccess(data.message || "La catégorie a été supprimée.", "Supprimée");
+        refresh();
+      } else {
+        showError(data.error || "Erreur");
+      }
+    }, "Supprimer la catégorie");
   };
 
   return (
-    <div>
+    <>
+      {FeedbackModal}
+      <div>
       <div className="flex flex-wrap justify-between items-start gap-4 mb-6">
         <div>
           <h1 className="heading-section mb-1">Catégories</h1>
@@ -343,6 +357,7 @@ export function CategoryManager({ initial }: { initial: Category[] }) {
         )}
       </div>
     </div>
+    </>
   );
 }
 

@@ -9,6 +9,7 @@ import {
   categoryOptionLabel,
 } from "@/lib/categories";
 import { Loader2 } from "lucide-react";
+import { useFeedbackModal } from "@/hooks/useFeedbackModal";
 
 export interface CategoryOption {
   id: string;
@@ -77,8 +78,8 @@ export function ProductForm({ initial, categories, brands, mode }: ProductFormPr
   const router = useRouter();
   const [form, setForm] = useState<ProductFormData>({ ...empty, ...initial });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const [autoSlug, setAutoSlug] = useState(mode === "create");
+  const { showSuccess, showError, FeedbackModal } = useFeedbackModal();
 
   const set = (key: keyof ProductFormData, value: string | boolean) => {
     setForm((f) => {
@@ -91,7 +92,6 @@ export function ProductForm({ initial, categories, brands, mode }: ProductFormPr
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
 
     const url =
       mode === "create" ? "/api/admin/products" : `/api/admin/products/${initial?.id}`;
@@ -107,12 +107,18 @@ export function ProductForm({ initial, categories, brands, mode }: ProductFormPr
     setLoading(false);
 
     if (!res.ok) {
-      setError(data.error || "Erreur lors de l'enregistrement");
+      showError(data.error || "Erreur lors de l'enregistrement");
       return;
     }
 
-    router.push("/admin/catalogue/produits");
-    router.refresh();
+    showSuccess(
+      mode === "create" ? "Le produit a été créé." : "Le produit a été mis à jour.",
+      "Produit enregistré",
+      () => {
+        router.push("/admin/catalogue/produits");
+        router.refresh();
+      }
+    );
   };
 
   const filteredCategories = useMemo(
@@ -128,11 +134,9 @@ export function ProductForm({ initial, categories, brands, mode }: ProductFormPr
   }, [categoryList]);
 
   return (
-    <form onSubmit={submit} className="max-w-3xl space-y-8">
-      {error && (
-        <p className="p-4 bg-red-50 text-red-700 text-sm border border-red-100">{error}</p>
-      )}
-
+    <>
+      {FeedbackModal}
+      <form onSubmit={submit} className="max-w-3xl space-y-8">
       <section className="bg-white border border-brand-100 p-6 space-y-4">
         <h2 className="font-display text-lg">Informations générales</h2>
 
@@ -376,5 +380,6 @@ export function ProductForm({ initial, categories, brands, mode }: ProductFormPr
         </button>
       </div>
     </form>
+    </>
   );
 }

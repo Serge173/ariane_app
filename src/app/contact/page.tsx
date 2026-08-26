@@ -4,6 +4,7 @@ import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Send } from "lucide-react";
+import { useFeedbackModal } from "@/hooks/useFeedbackModal";
 
 function ContactForm() {
   const searchParams = useSearchParams();
@@ -11,6 +12,7 @@ function ContactForm() {
 
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
+  const { showSuccess, showError, FeedbackModal } = useFeedbackModal();
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -40,9 +42,13 @@ function ContactForm() {
         body: JSON.stringify(form),
       });
       if (!res.ok) throw new Error();
-      setSent(true);
+      showSuccess(
+        "Nous vous répondrons sous 48h ouvrées.",
+        "Message envoyé",
+        () => setSent(true)
+      );
     } catch {
-      alert("Une erreur est survenue");
+      showError("Votre message n'a pas pu être envoyé. Réessayez ou contactez-nous par téléphone.");
     } finally {
       setLoading(false);
     }
@@ -60,6 +66,7 @@ function ContactForm() {
 
   return (
     <>
+      {FeedbackModal}
       <div className="mb-12">
         <Link href="/" className="btn-ghost inline-flex items-center gap-2 mb-6">
           <ArrowLeft className="w-4 h-4" /> Accueil

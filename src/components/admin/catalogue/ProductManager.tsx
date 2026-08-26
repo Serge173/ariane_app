@@ -9,6 +9,7 @@ import { luxeImage, coachingImage } from "@/lib/images";
 import {
   Plus, Search, Pencil, Trash2, Eye, EyeOff, Loader2, Filter,
 } from "lucide-react";
+import { useFeedbackModal } from "@/hooks/useFeedbackModal";
 import {
   buildCategoryTree,
   categoryOptionLabel,
@@ -58,6 +59,7 @@ export function ProductManager({
   const [categoryId, setCategoryId] = useState(searchParams.get("categoryId") ?? "");
   const [brandId, setBrandId] = useState(searchParams.get("brandId") ?? "");
   const [active, setActive] = useState(searchParams.get("active") ?? "all");
+  const { showSuccess, showError, showConfirm, FeedbackModal } = useFeedbackModal();
 
   const fetchProducts = useCallback(async () => {
     setLoading(true);
@@ -110,16 +112,25 @@ export function ProductManager({
     fetchProducts();
   };
 
-  const remove = async (id: string, name: string) => {
-    if (!confirm(`Supprimer ou archiver « ${name} » ?`)) return;
-    await fetch(`/api/admin/products/${id}`, { method: "DELETE" });
-    fetchProducts();
+  const remove = (id: string, name: string) => {
+    showConfirm(`Supprimer ou archiver « ${name} » ?`, async () => {
+      const res = await fetch(`/api/admin/products/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        showSuccess("Le produit a été supprimé ou archivé.", "Supprimé");
+        fetchProducts();
+      } else {
+        const d = await res.json().catch(() => ({}));
+        showError(d.error || "Erreur");
+      }
+    }, "Supprimer le produit");
   };
 
   const categoryOptions = flattenCategoryTree(buildCategoryTree(initialCategories));
 
   return (
-    <div>
+    <>
+      {FeedbackModal}
+      <div>
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="heading-section mb-1">Gestion des produits</h1>
@@ -280,5 +291,6 @@ export function ProductManager({
         </div>
       )}
     </div>
+    </>
   );
 }

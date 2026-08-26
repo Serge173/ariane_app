@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
+import { randomUUID } from "crypto";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
+import { extensionFromMime, storeUploadedImage } from "@/lib/store-uploaded-image";
 
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 const MAX_SIZE = 5 * 1024 * 1024;
@@ -33,26 +33,29 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Fichier trop volumineux (max 5 Mo)" }, { status: 400 });
     }
 
-    const ext = file.type.split("/")[1].replace("jpeg", "jpg");
-    const fileName = `${session.user.id}.${ext}`;
-    const uploadsDir = path.join(process.cwd(), "public", "uploads", "avatars");
-
-    await mkdir(uploadsDir, { recursive: true });
-
+    const ext = extensionFromMime(file.type);
+    const fileName = `${session.user.id}-${randomUUID()}.${ext}`;
     const buffer = Buffer.from(await file.arrayBuffer());
-    await writeFile(path.join(uploadsDir, fileName), buffer);
 
-    const avatarUrl = `/uploads/avatars/${fileName}?t=${Date.now()}`;
+    const avatarUrl = await storeUploadedImage({
+      folder: "avatars",
+      fileName,
+      buffer,
+      contentType: file.type,
+    });
+
+    const storedUrl = avatarUrl.split("?")[0];
 
     await prisma.user.update({
       where: { id: session.user.id },
-      data: { avatar: avatarUrl.split("?")[0] },
+      data: { avatar: storedUrl },
     });
 
-    return NextResponse.json({ avatar: avatarUrl, success: true });
+    return NextResponse.json({ avatar: `${storedUrl}?t=${Date.now()}`, success: true });
   } catch (error) {
     console.error("Avatar upload error:", error);
-    return NextResponse.json({ error: "Erreur lors de l'upload" }, { status: 500 });
+    const message = error instanceof Error ? error.message : "Erreur lors de l'upload";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 

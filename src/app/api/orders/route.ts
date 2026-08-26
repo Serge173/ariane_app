@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
 import { generateOrderNumber } from "@/lib/utils";
 import { initPayment } from "@/lib/payments/cinetpay";
+import { isCinetPayConfigured, getPlatformSettings } from "@/lib/platform-settings";
 import { getCinetPayChannel } from "@/lib/payment-providers";
 import {
   isOnlinePaymentProvider,
@@ -218,7 +219,8 @@ export async function POST(req: NextRequest) {
 
     let paymentUrl: string | null = null;
 
-    if (useOnlinePayment && process.env.CINETPAY_API_KEY && process.env.CINETPAY_SITE_ID) {
+    const platformSettings = await getPlatformSettings();
+    if (useOnlinePayment && isCinetPayConfigured(platformSettings)) {
       const returnPath =
         orderKind === "LUXE"
           ? `/checkout/confirmation?order=${orderNumber}`

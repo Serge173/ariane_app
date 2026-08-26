@@ -1,9 +1,24 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { MessageCircle } from "lucide-react";
 
+const FALLBACK_PHONE = "+2250749526194";
+
 export function WhatsAppButton() {
-  const phone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "+2250749526194";
+  const [phone, setPhone] = useState(
+    process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || FALLBACK_PHONE
+  );
+
+  useEffect(() => {
+    fetch("/api/settings/public")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data?.whatsappNumber) setPhone(data.whatsappNumber);
+      })
+      .catch(() => {});
+  }, []);
+
   const message = encodeURIComponent(
     "Bonjour, je souhaite en savoir plus sur vos accompagnements en conseil en image."
   );

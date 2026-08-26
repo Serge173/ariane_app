@@ -14,6 +14,7 @@ import { PaymentMethodLogo, type PaymentMethodDisplay } from "@/components/payme
 import { PaymentMethodCard } from "@/components/payments/PaymentMethodCard";
 import { PaymentMethodDetailModal } from "@/components/payments/PaymentMethodDetailModal";
 import { Plus, Trash2, Loader2, Eye, EyeOff, Upload } from "lucide-react";
+import { useFeedbackModal } from "@/hooks/useFeedbackModal";
 import type { PaymentMethodProvider, PaymentMethodContext } from "@prisma/client";
 
 interface PaymentMethodRow {
@@ -75,6 +76,7 @@ export function PaymentMethodManager({ initial }: { initial: PaymentMethodRow[] 
   const [showForm, setShowForm] = useState(false);
   const [detailMethod, setDetailMethod] = useState<PaymentMethodDisplay | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
+  const { showSuccess, showError, showConfirm, FeedbackModal } = useFeedbackModal();
 
   const usedCodes = new Set(methods.map((m) => m.code));
   const availableTemplates = PAYMENT_PROVIDER_TEMPLATES.filter(
@@ -156,7 +158,7 @@ export function PaymentMethodManager({ initial }: { initial: PaymentMethodRow[] 
       setField("logoUrl", url);
     } else {
       const d = await res.json();
-      alert(d.error || "Erreur upload");
+      showError(d.error || "Erreur upload", "Upload échoué");
     }
   };
 
@@ -167,7 +169,10 @@ export function PaymentMethodManager({ initial }: { initial: PaymentMethodRow[] 
 
   const save = async () => {
     if (!canSave) {
-      alert("Complétez le nom, le code technique et le canal API si CinetPay est sélectionné.");
+      showError(
+        "Complétez le nom, le code technique et le canal API si CinetPay est sélectionné.",
+        "Champs requis"
+      );
       return;
     }
 
@@ -180,11 +185,15 @@ export function PaymentMethodManager({ initial }: { initial: PaymentMethodRow[] 
     });
     setLoading(false);
     if (res.ok) {
+      showSuccess(
+        editing ? "Le mode de paiement a été mis à jour." : "Le mode de paiement a été créé.",
+        "Mode enregistré"
+      );
       reset();
       refresh();
     } else {
       const d = await res.json();
-      alert(d.error || "Erreur");
+      showError(d.error || "Erreur");
     }
   };
 
@@ -232,18 +241,23 @@ export function PaymentMethodManager({ initial }: { initial: PaymentMethodRow[] 
     refresh();
   };
 
-  const remove = async (m: PaymentMethodRow) => {
-    if (!confirm(`Supprimer le mode « ${m.name} » ?`)) return;
-    const res = await fetch(`/api/admin/payment-methods/${m.id}`, { method: "DELETE" });
-    if (res.ok) refresh();
-    else {
-      const d = await res.json();
-      alert(d.error || "Erreur");
-    }
+  const remove = (m: PaymentMethodRow) => {
+    showConfirm(`Supprimer le mode « ${m.name} » ?`, async () => {
+      const res = await fetch(`/api/admin/payment-methods/${m.id}`, { method: "DELETE" });
+      if (res.ok) {
+        showSuccess("Le mode de paiement a été supprimé.", "Supprimé");
+        refresh();
+      } else {
+        const d = await res.json();
+        showError(d.error || "Erreur");
+      }
+    }, "Supprimer le mode");
   };
 
   return (
-    <div>
+    <>
+      {FeedbackModal}
+      <div>
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="heading-section mb-1">Modes de paiement</h1>
@@ -550,5 +564,6 @@ export function PaymentMethodManager({ initial }: { initial: PaymentMethodRow[] 
         onOpenChange={(open) => !open && setDetailMethod(null)}
       />
     </div>
+    </>
   );
 }

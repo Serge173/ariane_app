@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { slugify } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
+import { useFeedbackModal } from "@/hooks/useFeedbackModal";
 import { BlogCoverImageField } from "@/components/admin/blog/BlogCoverImageField";
 
 export interface BlogFormData {
@@ -38,8 +39,8 @@ export function BlogForm({ initial, mode }: BlogFormProps) {
   const router = useRouter();
   const [form, setForm] = useState<BlogFormData>({ ...empty, ...initial });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const [autoSlug, setAutoSlug] = useState(mode === "create");
+  const { showSuccess, showError, FeedbackModal } = useFeedbackModal();
 
   const set = (key: keyof BlogFormData, value: string | boolean) => {
     setForm((f) => {
@@ -52,7 +53,6 @@ export function BlogForm({ initial, mode }: BlogFormProps) {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
 
     const url = mode === "create" ? "/api/admin/blog" : `/api/admin/blog/${initial?.id}`;
     const method = mode === "create" ? "POST" : "PATCH";
@@ -69,23 +69,27 @@ export function BlogForm({ initial, mode }: BlogFormProps) {
     if (!res.ok) {
       try {
         const data = text ? JSON.parse(text) : {};
-        setError(data.error || "Erreur lors de l'enregistrement");
+        showError(data.error || "Erreur lors de l'enregistrement");
       } catch {
-        setError("Erreur lors de l'enregistrement");
+        showError("Erreur lors de l'enregistrement");
       }
       return;
     }
 
-    router.push("/admin/blog/articles");
-    router.refresh();
+    showSuccess(
+      mode === "create" ? "L'article a été créé." : "L'article a été mis à jour.",
+      "Article enregistré",
+      () => {
+        router.push("/admin/blog/articles");
+        router.refresh();
+      }
+    );
   };
 
   return (
-    <form onSubmit={submit} className="max-w-3xl space-y-8">
-      {error && (
-        <p className="p-4 bg-red-50 text-red-700 text-sm border border-red-100">{error}</p>
-      )}
-
+    <>
+      {FeedbackModal}
+      <form onSubmit={submit} className="max-w-3xl space-y-8">
       <section className="bg-white border border-brand-100 p-6 space-y-4">
         <h2 className="font-display text-lg">Article</h2>
 
@@ -194,5 +198,6 @@ export function BlogForm({ initial, mode }: BlogFormProps) {
         </button>
       </div>
     </form>
+    </>
   );
 }

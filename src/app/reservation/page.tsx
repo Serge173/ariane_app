@@ -12,6 +12,7 @@ import {
   getPaymentButtonLabel,
 } from "@/components/checkout/PaymentMethodSelector";
 import { Calendar, Clock } from "lucide-react";
+import { useFeedbackModal } from "@/hooks/useFeedbackModal";
 
 const TIME_SLOTS = [
   "09:00", "10:00", "11:00", "12:00",
@@ -49,6 +50,7 @@ function ReservationForm() {
 
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethodOption[]>([]);
   const [methodsLoading, setMethodsLoading] = useState(true);
+  const { showError, FeedbackModal } = useFeedbackModal();
 
   const productSlug = searchParams.get("product");
   const cartKind = getCartKind(items);
@@ -133,7 +135,10 @@ function ReservationForm() {
         router.push(`/reservation/confirmation?order=${data.orderNumber}`);
       }
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Une erreur est survenue");
+      showError(
+        err instanceof Error ? err.message : "Une erreur est survenue",
+        "Réservation impossible"
+      );
     } finally {
       setLoading(false);
     }
@@ -152,7 +157,9 @@ function ReservationForm() {
   }
 
   return (
-    <div className="min-h-screen pt-24 pb-20">
+    <>
+      {FeedbackModal}
+      <div className="min-h-screen pt-24 pb-20">
       <div className="container-premium max-w-3xl">
         <p className="text-overline mb-2">Accompagnement</p>
         <h1 className="heading-section mb-4">Réserver votre accompagnement</h1>
@@ -292,6 +299,7 @@ function ReservationForm() {
         )}
       </div>
     </div>
+    </>
   );
 }
 

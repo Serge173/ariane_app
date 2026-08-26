@@ -13,6 +13,7 @@ import {
   isCodPayment,
 } from "@/components/checkout/PaymentMethodSelector";
 import { MapPin, Truck } from "lucide-react";
+import { useFeedbackModal } from "@/hooks/useFeedbackModal";
 
 function CheckoutForm() {
   const router = useRouter();
@@ -34,6 +35,7 @@ function CheckoutForm() {
 
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethodOption[]>([]);
   const [methodsLoading, setMethodsLoading] = useState(true);
+  const { showError, FeedbackModal } = useFeedbackModal();
   const cartTotal = total();
 
   const cartKind = getCartKind(items);
@@ -111,7 +113,10 @@ function CheckoutForm() {
         router.push(`/checkout/confirmation?order=${data.orderNumber}${codParam}`);
       }
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Une erreur est survenue");
+      showError(
+        err instanceof Error ? err.message : "Une erreur est survenue",
+        "Commande impossible"
+      );
     } finally {
       setLoading(false);
     }
@@ -122,7 +127,9 @@ function CheckoutForm() {
   }
 
   return (
-    <div className="min-h-screen pt-24 pb-20">
+    <>
+      {FeedbackModal}
+      <div className="min-h-screen pt-24 pb-20">
       <div className="container-premium max-w-3xl">
         <h1 className="heading-section mb-4">Finaliser ma commande</h1>
         <p className="text-brand-600 mb-12">
@@ -239,6 +246,7 @@ function CheckoutForm() {
         )}
       </div>
     </div>
+    </>
   );
 }
 

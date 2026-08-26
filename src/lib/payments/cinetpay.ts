@@ -1,4 +1,4 @@
-import { getAppUrl } from "@/lib/env";
+import { getPlatformSettings } from "@/lib/platform-settings";
 
 interface PaymentInitParams {
   orderId: string;
@@ -20,9 +20,10 @@ interface PaymentResult {
 export async function initPayment(params: PaymentInitParams): Promise<PaymentResult> {
   const { orderNumber, amount, email, phone, firstName, lastName, returnPath, channels = "ALL" } = params;
 
-  const apiKey = process.env.CINETPAY_API_KEY;
-  const siteId = process.env.CINETPAY_SITE_ID;
-  const appUrl = getAppUrl();
+  const settings = await getPlatformSettings();
+  const apiKey = settings.cinetpayApiKey;
+  const siteId = settings.cinetpaySiteId;
+  const appUrl = settings.appUrl;
   const confirmationPath = returnPath || `/reservation/confirmation?order=${orderNumber}`;
 
   if (!apiKey || !siteId) {
@@ -40,7 +41,7 @@ export async function initPayment(params: PaymentInitParams): Promise<PaymentRes
         amount,
         currency: "XOF",
         description: `Conseil en Image - ${orderNumber}`,
-        notify_url: process.env.CINETPAY_NOTIFY_URL,
+        notify_url: settings.cinetpayNotifyUrl,
         return_url: `${appUrl}${confirmationPath}`,
         channels,
         customer_name: firstName,
@@ -73,8 +74,9 @@ export async function initPayment(params: PaymentInitParams): Promise<PaymentRes
 }
 
 export async function verifyPayment(transactionId: string): Promise<boolean> {
-  const apiKey = process.env.CINETPAY_API_KEY;
-  const siteId = process.env.CINETPAY_SITE_ID;
+  const settings = await getPlatformSettings();
+  const apiKey = settings.cinetpayApiKey;
+  const siteId = settings.cinetpaySiteId;
 
   if (!apiKey || !siteId) return false;
 

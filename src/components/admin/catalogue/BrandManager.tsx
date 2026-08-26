@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { slugify } from "@/lib/utils";
 import { Plus, Pencil, Trash2, Loader2 } from "lucide-react";
+import { useFeedbackModal } from "@/hooks/useFeedbackModal";
 
 interface Brand {
   id: string;
@@ -28,6 +29,7 @@ export function BrandManager({ initial }: { initial: Brand[] }) {
   });
   const [loading, setLoading] = useState(false);
   const [showNew, setShowNew] = useState(false);
+  const { showSuccess, showError, showConfirm, FeedbackModal } = useFeedbackModal();
 
   const reset = () => {
     setForm({ name: "", slug: "", description: "", logo: "", sortOrder: "0", isActive: true });
@@ -53,11 +55,15 @@ export function BrandManager({ initial }: { initial: Brand[] }) {
 
     setLoading(false);
     if (res.ok) {
+      showSuccess(
+        editing ? "La marque a été mise à jour." : "La marque a été créée.",
+        "Marque enregistrée"
+      );
       reset();
       refresh();
     } else {
       const d = await res.json();
-      alert(d.error || "Erreur");
+      showError(d.error || "Erreur");
     }
   };
 
@@ -74,14 +80,27 @@ export function BrandManager({ initial }: { initial: Brand[] }) {
     });
   };
 
-  const remove = async (b: Brand) => {
-    if (!confirm(`Gérer la marque « ${b.name} » ? (${b._count.products} produits)`)) return;
-    await fetch(`/api/admin/brands/${b.id}`, { method: "DELETE" });
-    refresh();
+  const remove = (b: Brand) => {
+    showConfirm(
+      `Supprimer la marque « ${b.name} » ? (${b._count.products} produit(s))`,
+      async () => {
+        const res = await fetch(`/api/admin/brands/${b.id}`, { method: "DELETE" });
+        if (res.ok) {
+          showSuccess("La marque a été supprimée.", "Supprimée");
+          refresh();
+        } else {
+          const d = await res.json();
+          showError(d.error || "Erreur");
+        }
+      },
+      "Supprimer la marque"
+    );
   };
 
   return (
-    <div>
+    <>
+      {FeedbackModal}
+      <div>
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="heading-section mb-1">Marques</h1>
@@ -190,5 +209,6 @@ export function BrandManager({ initial }: { initial: Brand[] }) {
         <p className="text-center text-brand-400 py-12">Aucune marque — créez la première.</p>
       )}
     </div>
+    </>
   );
 }

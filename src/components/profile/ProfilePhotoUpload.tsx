@@ -2,37 +2,51 @@
 
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { Camera, Loader2 } from "lucide-react";
 import { ProfileAvatar } from "@/components/ui/ProfileAvatar";
+import { useFeedbackModal } from "@/hooks/useFeedbackModal";
 
 interface ProfilePhotoUploadProps {
   avatar?: string | null;
   firstName: string;
   lastName: string;
+  uploadUrl?: string;
+  fieldName?: string;
+  syncSession?: boolean;
+  onUploaded?: (avatarUrl: string) => void;
 }
 
-export function ProfilePhotoUpload({ avatar, firstName, lastName }: ProfilePhotoUploadProps) {
+export function ProfilePhotoUpload({
+  avatar,
+  firstName,
+  lastName,
+  uploadUrl = "/api/profile/avatar",
+  fieldName = "avatar",
+  syncSession = false,
+  onUploaded,
+}: ProfilePhotoUploadProps) {
   const router = useRouter();
+  const { update } = useSession();
+  const { showSuccess, showError, FeedbackModal } = useFeedbackModal();
   const inputRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | null>(avatar || null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      setError("Veuillez sélectionner une image (JPG, PNG, WebP).");
+      showError("Veuillez sélectionner une image (JPG, PNG, WebP).", "Format invalide");
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      setError("L'image ne doit pas dépasser 5 Mo.");
+      showError("L'image ne doit pas dépasser 5 Mo.", "Fichier trop volumineux");
       return;
     }
 
-    setError("");
     setLoading(true);
 
     const localPreview = URL.createObjectURL(file);
@@ -40,9 +54,9 @@ export function ProfilePhotoUpload({ avatar, firstName, lastName }: ProfilePhoto
 
     try {
       const formData = new FormData();
-      formData.append("avatar", file);
+      formData.append(fieldName, file);
 
-      const res = await fetch("/api/profile/avatar", {
+      const res = await fetch(uploadUrl, {
         method: "POST",
         body: formData,
       });
@@ -51,10 +65,17 @@ export function ProfilePhotoUpload({ avatar, firstName, lastName }: ProfilePhoto
       if (!res.ok) throw new Error(data.error || "Erreur lors de l'upload");
 
       setPreview(data.avatar);
+      onUploaded?.(data.avatar);
+
+      if (syncSession) {
+        await update({ image: data.avatar.split("?")[0] });
+      }
+
+      showSuccess("Votre photo de profil a été mise à jour.", "Photo enregistrée");
       router.refresh();
     } catch (err) {
       setPreview(avatar || null);
-      setError(err instanceof Error ? err.message : "Erreur lors de l'upload");
+      showError(err instanceof Error ? err.message : "Erreur lors de l'upload");
     } finally {
       setLoading(false);
       if (inputRef.current) inputRef.current.value = "";
@@ -62,14 +83,11 @@ export function ProfilePhotoUpload({ avatar, firstName, lastName }: ProfilePhoto
   };
 
   return (
-    <div className="flex flex-col sm:flex-row items-center gap-6">
+    <>
+      {FeedbackModal}
+      <div className="flex flex-col sm:flex-row items-center gap-6">
       <div className="relative group">
-        <ProfileAvatar
-          src={preview}
-          firstName={firstName}
-          lastName={lastName}
-          size="xl"
-        />
+        <ProfileAvatar src={preview} firstName={firstName} lastName={lastName} size="xl" />
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
@@ -105,8 +123,8 @@ export function ProfilePhotoUpload({ avatar, firstName, lastName }: ProfilePhoto
         >
           {loading ? "Envoi en cours..." : "Changer la photo"}
         </button>
-        {error && <p className="text-xs text-red-600 mt-2">{error}</p>}
       </div>
     </div>
+    </>
   );
 }

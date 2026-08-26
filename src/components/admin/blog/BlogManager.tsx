@@ -6,6 +6,7 @@ import { formatDate } from "@/lib/utils";
 import { IMAGES } from "@/lib/images";
 import { ProductImage } from "@/components/ui/ProductImage";
 import { Plus, Search, Pencil, Trash2, Loader2, ExternalLink, Power } from "lucide-react";
+import { useFeedbackModal } from "@/hooks/useFeedbackModal";
 
 interface BlogRow {
   id: string;
@@ -109,6 +110,7 @@ export function BlogManager() {
   const [togglingId, setTogglingId] = useState<string | null>(null);
   const [q, setQ] = useState("");
   const [status, setStatus] = useState("all");
+  const { showSuccess, showError, showConfirm, FeedbackModal } = useFeedbackModal();
 
   const fetchPosts = useCallback(async () => {
     setLoading(true);
@@ -143,10 +145,17 @@ export function BlogManager() {
     fetchPosts();
   };
 
-  const remove = async (id: string, title: string) => {
-    if (!confirm(`Supprimer « ${title} » ?`)) return;
-    await fetch(`/api/admin/blog/${id}`, { method: "DELETE" });
-    fetchPosts();
+  const remove = (id: string, title: string) => {
+    showConfirm(`Supprimer « ${title} » ?`, async () => {
+      const res = await fetch(`/api/admin/blog/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        showSuccess("L'article a été supprimé.", "Supprimé");
+        fetchPosts();
+      } else {
+        const d = await res.json().catch(() => ({}));
+        showError(d.error || "Erreur");
+      }
+    }, "Supprimer l'article");
   };
 
   const midpoint = Math.ceil(posts.length / 2);
@@ -154,7 +163,9 @@ export function BlogManager() {
   const rightColumn = posts.slice(midpoint);
 
   return (
-    <div className="w-full">
+    <>
+      {FeedbackModal}
+      <div className="w-full">
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="heading-section mb-1">Articles du blog</h1>
@@ -222,5 +233,6 @@ export function BlogManager() {
         </div>
       )}
     </div>
+    </>
   );
 }
