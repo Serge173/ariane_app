@@ -11,8 +11,9 @@ import {
 } from "@/lib/payment-methods";
 import { PAYMENT_PROVIDER_TEMPLATES, type PaymentProviderTemplate } from "@/lib/payment-providers";
 import { PaymentMethodLogo, type PaymentMethodDisplay } from "@/components/payments/PaymentMethodLogo";
+import { PaymentMethodCard } from "@/components/payments/PaymentMethodCard";
 import { PaymentMethodDetailModal } from "@/components/payments/PaymentMethodDetailModal";
-import { Plus, Pencil, Trash2, Loader2, Eye, EyeOff, Upload } from "lucide-react";
+import { Plus, Trash2, Loader2, Eye, EyeOff, Upload } from "lucide-react";
 import type { PaymentMethodProvider, PaymentMethodContext } from "@prisma/client";
 
 interface PaymentMethodRow {
@@ -187,6 +188,19 @@ export function PaymentMethodManager({ initial }: { initial: PaymentMethodRow[] 
     }
   };
 
+  const openCreateForm = () => {
+    reset();
+    setShowForm(true);
+    startCustom();
+    scrollToForm();
+  };
+
+  const scrollToForm = () => {
+    requestAnimationFrame(() => {
+      document.getElementById("payment-method-form")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  };
+
   const startEdit = (m: PaymentMethodRow) => {
     setEditing(m.id);
     setShowForm(true);
@@ -206,6 +220,7 @@ export function PaymentMethodManager({ initial }: { initial: PaymentMethodRow[] 
       minAmount: m.minAmount != null ? String(m.minAmount) : "",
       maxAmount: m.maxAmount != null ? String(m.maxAmount) : "",
     });
+    scrollToForm();
   };
 
   const toggleActive = async (m: PaymentMethodRow) => {
@@ -227,19 +242,13 @@ export function PaymentMethodManager({ initial }: { initial: PaymentMethodRow[] 
     }
   };
 
-  const openCreateForm = () => {
-    reset();
-    setShowForm(true);
-    startCustom();
-  };
-
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="heading-section mb-1">Modes de paiement</h1>
           <p className="text-brand-600 text-sm">
-            Créez ou modifiez un mode : logo, API, canal CinetPay, consignes et limites de montant.
+            Cliquez sur un cadre pour voir et modifier ses informations. Logo, API, canal CinetPay et consignes.
           </p>
         </div>
         <button
@@ -252,8 +261,38 @@ export function PaymentMethodManager({ initial }: { initial: PaymentMethodRow[] 
         </button>
       </div>
 
+      {methods.length === 0 ? (
+        <p className="text-center text-brand-400 py-12 bg-white border border-brand-100 mb-8">
+          Aucun mode de paiement — ajoutez-en un pour commencer.
+        </p>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
+          {methods.map((m) => (
+            <PaymentMethodCard
+              key={m.id}
+              method={m}
+              selected={editing === m.id}
+              onSelect={() => startEdit(m)}
+              footer={
+                <>
+                  <span className={`text-[10px] uppercase tracking-wider px-2 py-1 ${m.isActive ? "bg-green-100 text-green-800" : "bg-brand-100 text-brand-500"}`}>
+                    {m.isActive ? "Actif" : "Inactif"}
+                  </span>
+                  <button type="button" onClick={() => toggleActive(m)} className="p-1.5 hover:bg-brand-50 rounded" title={m.isActive ? "Désactiver" : "Activer"}>
+                    {m.isActive ? <EyeOff className="w-4 h-4 text-brand-600" /> : <Eye className="w-4 h-4 text-brand-600" />}
+                  </button>
+                  <button type="button" onClick={() => remove(m)} className="p-1.5 hover:bg-red-50 rounded" title="Supprimer">
+                    <Trash2 className="w-4 h-4 text-red-500" />
+                  </button>
+                </>
+              }
+            />
+          ))}
+        </div>
+      )}
+
       {showForm && (
-        <div className="bg-white border border-brand-100 p-6 mb-8 space-y-8">
+        <div id="payment-method-form" className="bg-white border border-brand-100 p-6 mb-8 space-y-8 scroll-mt-24">
           <h2 className="font-display text-lg">
             {editing ? "Modifier le mode de paiement" : "Nouveau mode de paiement"}
           </h2>
@@ -504,55 +543,6 @@ export function PaymentMethodManager({ initial }: { initial: PaymentMethodRow[] 
           </div>
         </div>
       )}
-
-      <div className="space-y-3">
-        {methods.map((m) => (
-          <article key={m.id} className="bg-white border border-brand-100 p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-            <div className="flex items-start gap-4 flex-1 min-w-0">
-              <PaymentMethodLogo
-                method={m}
-                size="md"
-                clickable
-                onClick={() => setDetailMethod(m)}
-              />
-              <div className="flex-1 min-w-0">
-                <div className="flex flex-wrap items-center gap-2 mb-1">
-                  <h3 className="font-medium">{m.name}</h3>
-                  <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 bg-brand-100 text-brand-600">{m.code}</span>
-                </div>
-                {m.description && <p className="text-sm text-brand-500 line-clamp-1">{m.description}</p>}
-                <div className="flex flex-wrap gap-2 mt-2">
-                  <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 bg-brand-50 border border-brand-100">{PAYMENT_CONTEXT_LABELS[m.context]}</span>
-                  <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 bg-brand-50 border border-brand-100">{PAYMENT_PROVIDER_LABELS[m.provider]}</span>
-                  {m.apiChannel && (
-                    <span className="text-[10px] font-mono text-brand-400">{m.apiChannel}</span>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <span className={`text-[10px] uppercase tracking-wider px-2 py-1 ${m.isActive ? "bg-green-100 text-green-800" : "bg-brand-100"}`}>
-                {m.isActive ? "Actif" : "Inactif"}
-              </span>
-              <button type="button" onClick={() => toggleActive(m)} className="p-1.5 hover:bg-brand-50 rounded" title={m.isActive ? "Désactiver" : "Activer"}>
-                {m.isActive ? <EyeOff className="w-4 h-4 text-brand-600" /> : <Eye className="w-4 h-4 text-brand-600" />}
-              </button>
-              <button type="button" onClick={() => startEdit(m)} className="p-1.5 hover:bg-brand-50 rounded" title="Modifier">
-                <Pencil className="w-4 h-4 text-brand-600" />
-              </button>
-              <button type="button" onClick={() => remove(m)} className="p-1.5 hover:bg-red-50 rounded" title="Supprimer">
-                <Trash2 className="w-4 h-4 text-red-500" />
-              </button>
-            </div>
-          </article>
-        ))}
-        {methods.length === 0 && (
-          <p className="text-center text-brand-400 py-12 bg-white border border-brand-100">
-            Aucun mode de paiement — ajoutez-en un pour commencer.
-          </p>
-        )}
-      </div>
 
       <PaymentMethodDetailModal
         method={detailMethod}

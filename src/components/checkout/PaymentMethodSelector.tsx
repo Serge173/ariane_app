@@ -1,13 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
-import { PAYMENT_ICON_MAP, type PaymentMethodOption } from "@/lib/payment-methods";
-import { PaymentMethodLogo, type PaymentMethodDisplay } from "@/components/payments/PaymentMethodLogo";
-import { PaymentMethodDetailModal } from "@/components/payments/PaymentMethodDetailModal";
-import { CreditCard } from "lucide-react";
-
-const FALLBACK_ICON = CreditCard;
+import { type PaymentMethodOption } from "@/lib/payment-methods";
+import { PaymentMethodCard } from "@/components/payments/PaymentMethodCard";
+import { PaymentMethodDetailContent } from "@/components/payments/PaymentMethodDetailContent";
 
 interface PaymentMethodSelectorProps {
   methods: PaymentMethodOption[];
@@ -22,7 +19,11 @@ export function PaymentMethodSelector({
   onChange,
   loading,
 }: PaymentMethodSelectorProps) {
-  const [detailMethod, setDetailMethod] = useState<PaymentMethodDisplay | null>(null);
+  const [focusedCode, setFocusedCode] = useState<string | null>(value || null);
+
+  useEffect(() => {
+    if (value) setFocusedCode(value);
+  }, [value]);
 
   if (loading) {
     return (
@@ -40,55 +41,43 @@ export function PaymentMethodSelector({
     );
   }
 
-  return (
-    <>
-      <div className="space-y-3">
-        {methods.map((method) => {
-          const Icon = PAYMENT_ICON_MAP[method.icon] || FALLBACK_ICON;
-          const selected = value === method.code;
+  const focusedMethod = methods.find((m) => m.code === (focusedCode ?? value)) ?? methods[0];
 
-          return (
-            <div
-              key={method.code}
-              className={`flex items-start gap-3 p-4 border transition-all ${
-                selected ? "border-brand-950 bg-brand-50" : "border-brand-200 hover:border-brand-400"
-              }`}
-            >
-              <PaymentMethodLogo
-                method={method}
-                size="md"
-                clickable
-                onClick={() => setDetailMethod(method)}
-              />
-              <button
-                type="button"
-                onClick={() => onChange(method.code)}
-                className="flex-1 text-left min-w-0"
-              >
-                <span className="text-sm font-medium">{method.name}</span>
-                {method.description && (
-                  <span className="block text-xs text-brand-500 mt-0.5">{method.description}</span>
-                )}
-                {selected && method.instructions && (
-                  <span className="block text-xs text-brand-600 mt-2 whitespace-pre-line">
-                    {method.instructions}
-                  </span>
-                )}
-              </button>
-              {!method.logoUrl && (
-                <Icon className="w-4 h-4 flex-shrink-0 text-brand-300 mt-1" aria-hidden />
-              )}
-            </div>
-          );
-        })}
+  const handleSelect = (code: string) => {
+    onChange(code);
+    setFocusedCode(code);
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+        {methods.map((method) => (
+          <PaymentMethodCard
+            key={method.code}
+            method={method}
+            selected={value === method.code}
+            onSelect={() => handleSelect(method.code)}
+          />
+        ))}
       </div>
 
-      <PaymentMethodDetailModal
-        method={detailMethod}
-        open={!!detailMethod}
-        onOpenChange={(open) => !open && setDetailMethod(null)}
-      />
-    </>
+      {focusedMethod && (
+        <div
+          id="payment-method-detail"
+          className="p-6 bg-brand-50 border border-brand-200 scroll-mt-24"
+        >
+          <p className="text-[10px] uppercase tracking-ultra text-brand-400 mb-4">
+            Informations du mode sélectionné
+          </p>
+          <PaymentMethodDetailContent method={focusedMethod} />
+          {focusedMethod.instructions && value === focusedMethod.code && (
+            <p className="mt-4 text-xs text-brand-600 bg-white border border-brand-100 p-3">
+              Ce mode est sélectionné pour votre commande.
+            </p>
+          )}
+        </div>
+      )}
+    </div>
   );
 }
 
