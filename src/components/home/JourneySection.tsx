@@ -4,7 +4,7 @@ const steps = [
   { number: "03", title: "Réserver", description: "Choisissez votre créneau et finalisez votre réservation" },
   { number: "04", title: "Payer", description: "Réglez en toute sécurité via Mobile Money ou carte bancaire" },
   { number: "05", title: "Coaching", description: "Vivez votre séance et recevez vos livrables personnalisés" },
-  { number: "06", title: "Suivre", description: "Accédez à votre espace image pour poursuivre votre parcours" },
+  { number: "06", title: "Suivre", description: "Accédez à votre espace client pour votre coaching, vos commandes boutique et vos documents" },
 ];
 
 export function JourneySection() {

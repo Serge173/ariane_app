@@ -46,12 +46,14 @@ function ConfirmationContent() {
               <li>1. Préparation soignée de votre commande</li>
               <li>2. Livraison à Abidjan sous 2 à 5 jours ouvrés</li>
               <li>3. Règlement en espèces ou Mobile Money à la réception</li>
+              <li>4. Suivez l&apos;avancement dans votre espace client</li>
             </ol>
           ) : (
             <ol className="space-y-3 text-sm text-brand-600">
               <li>1. Vous recevrez un email de confirmation</li>
               <li>2. Préparation soignée de votre commande</li>
               <li>3. Livraison à Abidjan sous 2 à 5 jours ouvrés</li>
+              <li>4. Consultez le statut et le paiement dans votre espace client</li>
             </ol>
           )}
         </div>

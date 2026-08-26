@@ -18,11 +18,11 @@ import {
 
 export const clientNav = [
   { name: "Tableau de bord", href: "/mon-espace", icon: LayoutDashboard },
-  { name: "Mon profil", href: "/mon-espace/profil", icon: UserCircle },
   { name: "Mes commandes", href: "/mon-espace/commandes", icon: ShoppingBag },
   { name: "Mes rendez-vous", href: "/mon-espace/rendez-vous", icon: Calendar },
   { name: "Questionnaires", href: "/mon-espace/questionnaire", icon: ClipboardList },
   { name: "Mes documents", href: "/mon-espace/documents", icon: FolderOpen },
+  { name: "Mon profil", href: "/mon-espace/profil", icon: UserCircle },
 ];
 
 export interface AdminNavChild {

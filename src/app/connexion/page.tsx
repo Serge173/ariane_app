@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { isAdmin } from "@/lib/auth";
 import { getDashboardPath } from "@/lib/navigation";
+import { CLIENT_SPACE_COPY } from "@/lib/client-space-copy";
 
 export default function ConnexionPage() {
   const router = useRouter();
@@ -72,9 +73,7 @@ export default function ConnexionPage() {
             {isRegister ? "Créer mon compte" : "Connexion client"}
           </h1>
           <p className="text-sm text-brand-600">
-            {isRegister
-              ? "Suivez votre parcours de coaching en image"
-              : "Accédez à votre espace personnel"}
+            {isRegister ? CLIENT_SPACE_COPY.connexionRegister : CLIENT_SPACE_COPY.connexionLogin}
           </p>
         </div>
 

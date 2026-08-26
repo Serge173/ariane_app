@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { formatPrice, formatDate, ORDER_STATUS_LABELS } from "@/lib/utils";
 import { Calendar, ShoppingBag, FileText, ArrowRight, ClipboardList } from "lucide-react";
+import { CLIENT_SPACE_COPY } from "@/lib/client-space-copy";
 
 export default async function ClientDashboard() {
   const session = await getServerSession(authOptions);
@@ -23,6 +24,8 @@ export default async function ClientDashboard() {
 
   const activeOrder = orders.find((o) => !["COMPLETED", "CANCELLED", "REFUNDED"].includes(o.status));
   const activeIsCoaching = activeOrder?.appointment != null;
+  const activeIsBoutique =
+    activeOrder?.items.some((i) => i.product?.productType === "LUXE") ?? false;
   const nextAppointment = orders.find((o) => o.appointment)?.appointment;
   const firstName = user?.firstName || session?.user?.name?.split(" ")[0] || "";
 
@@ -30,8 +33,12 @@ export default async function ClientDashboard() {
     <div>
       <div className="mb-8">
         <h1 className="heading-section mb-2">Bonjour, {firstName}</h1>
-        <p className="text-brand-600">Bienvenue dans votre espace image — suivez votre parcours de coaching</p>
+        <p className="text-brand-600">{CLIENT_SPACE_COPY.welcomeSubtitle}</p>
       </div>
+
+      <p className="mb-8 p-4 bg-brand-50 border border-brand-100 text-sm text-brand-600 leading-relaxed">
+        {CLIENT_SPACE_COPY.introBanner}
+      </p>
 
       {/* Quick stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
@@ -51,7 +58,9 @@ export default async function ClientDashboard() {
 
       {activeOrder && (
         <section className="mb-8 p-6 bg-brand-950 text-white">
-          <p className="text-[10px] uppercase tracking-ultra text-brand-400 mb-2">Parcours en cours</p>
+          <p className="text-[10px] uppercase tracking-ultra text-brand-400 mb-2">
+            {activeIsBoutique && !activeIsCoaching ? "Commande en cours" : "Parcours en cours"}
+          </p>
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <h2 className="font-display text-xl mb-1">{activeOrder.items[0]?.product?.name || "Accompagnement"}</h2>
@@ -65,6 +74,11 @@ export default async function ClientDashboard() {
             {(activeOrder.status === "PAID" || activeOrder.status === "QUESTIONNAIRE_PENDING") && activeIsCoaching && (
               <Link href="/mon-espace/questionnaire" className="btn-primary bg-white text-brand-950 hover:bg-brand-100 inline-flex items-center gap-2 text-xs">
                 Compléter le questionnaire <ArrowRight className="w-4 h-4" />
+              </Link>
+            )}
+            {activeIsBoutique && !activeIsCoaching && (
+              <Link href="/mon-espace/commandes" className="btn-primary bg-white text-brand-950 hover:bg-brand-100 inline-flex items-center gap-2 text-xs">
+                Suivre ma commande <ArrowRight className="w-4 h-4" />
               </Link>
             )}
           </div>
@@ -89,7 +103,8 @@ export default async function ClientDashboard() {
           {orders.length === 0 ? (
             <div className="text-center py-8">
               <p className="text-brand-400 text-sm mb-4">Aucune commande pour le moment</p>
-              <Link href="/offres" className="btn-secondary text-xs">Découvrir nos offres</Link>
+              <Link href="/boutique" className="btn-primary text-xs">Découvrir la boutique</Link>
+              <Link href="/offres" className="btn-secondary text-xs mt-3 inline-block">Voir les accompagnements</Link>
             </div>
           ) : (
             <div className="space-y-3">
@@ -113,6 +128,7 @@ export default async function ClientDashboard() {
           <h2 className="font-display text-lg mb-6">Actions rapides</h2>
           <div className="space-y-3">
             {[
+              { label: "Suivre mes commandes", href: "/mon-espace/commandes" },
               { label: "Réserver une prestation", href: "/offres" },
               { label: "Acheter en boutique", href: "/boutique" },
               { label: "Trouver mon accompagnement", href: "/orientation" },

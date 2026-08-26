@@ -31,7 +31,7 @@ function ConfirmationContent() {
           <ol className="space-y-3 text-sm text-brand-600">
             <li>1. Vous recevrez un email de confirmation</li>
             <li>2. Complétez le questionnaire pré-coaching</li>
-            <li>3. Accédez à votre espace image pour le suivi</li>
+            <li>3. Retrouvez votre accompagnement et vos commandes dans votre espace client</li>
           </ol>
         </div>
 

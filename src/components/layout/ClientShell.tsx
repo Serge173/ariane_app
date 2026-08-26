@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { clientNav } from "@/lib/navigation";
+import { CLIENT_SPACE_COPY } from "@/lib/client-space-copy";
 import { ProfileAvatar } from "@/components/ui/ProfileAvatar";
 
 export function ClientShell({ children }: { children: React.ReactNode }) {
@@ -38,10 +39,10 @@ export function ClientShell({ children }: { children: React.ReactNode }) {
           <div className="p-6 border-b border-brand-100">
             <Link href="/mon-espace" onClick={() => setSidebarOpen(false)}>
               <span className="font-display text-xl font-light tracking-wide text-brand-950">
-                Mon Espace Image
+                {CLIENT_SPACE_COPY.brandTitle}
               </span>
               <span className="block text-[10px] uppercase tracking-ultra text-brand-400 mt-0.5">
-                Espace client
+                {CLIENT_SPACE_COPY.brandSubtitle}
               </span>
             </Link>
           </div>
@@ -91,6 +92,12 @@ export function ClientShell({ children }: { children: React.ReactNode }) {
 
           <div className="p-4 border-t border-brand-100 space-y-2">
             <Link
+              href="/boutique"
+              className="flex items-center gap-2 px-4 py-2.5 border border-brand-200 text-brand-700 text-xs uppercase tracking-widest hover:border-brand-400 transition-colors"
+            >
+              Boutique
+            </Link>
+            <Link
               href="/offres"
               className="flex items-center gap-2 px-4 py-2.5 bg-brand-950 text-white text-xs uppercase tracking-widest hover:bg-brand-800 transition-colors"
             >
@@ -119,8 +126,8 @@ export function ClientShell({ children }: { children: React.ReactNode }) {
                 <Menu className="w-5 h-5" />
               </button>
               <div>
-                <p className="text-xs uppercase tracking-widest text-brand-400">Espace client</p>
-                <p className="text-sm font-medium text-brand-950">Suivi de votre parcours image</p>
+                <p className="text-xs uppercase tracking-widest text-brand-400">{CLIENT_SPACE_COPY.headerEyebrow}</p>
+                <p className="text-sm font-medium text-brand-950">{CLIENT_SPACE_COPY.headerTitle}</p>
               </div>
             </div>
 

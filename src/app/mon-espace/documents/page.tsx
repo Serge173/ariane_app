@@ -14,7 +14,7 @@ export default async function ClientDocumentsPage() {
     <div>
       <div className="mb-8">
         <h1 className="heading-section mb-2">Mes documents</h1>
-        <p className="text-brand-600">Vos livrables de coaching : palettes colorimétriques, books de style, guides...</p>
+        <p className="text-brand-600">Livrables de coaching et documents liés à votre parcours image</p>
       </div>
 
       {documents.length === 0 ? (

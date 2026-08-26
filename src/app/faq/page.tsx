@@ -21,7 +21,7 @@ const faqs = [
   },
   {
     q: "Que contient mon espace client ?",
-    a: "Vos rendez-vous, questionnaires, documents de coaching (palette colorimétrique, book de style), et l'historique de vos accompagnements.",
+    a: "Votre parcours de coaching (rendez-vous, questionnaires, documents, livrables) et le suivi de vos commandes boutique : statuts, paiements, livraisons et historique complet.",
   },
   {
     q: "Proposez-vous des prestations pour entreprises ?",
