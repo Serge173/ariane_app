@@ -14,7 +14,7 @@ import { CatalogSearch } from "@/components/shop/BoutiqueSearch";
 import { mapDbOfferProducts, OffersCatalog } from "@/components/shop/OffersCatalog";
 
 export const metadata: Metadata = {
-  title: "Nos Offres",
+  title: "Nos prestations",
   description: "Découvrez nos formules de conseil en image : Standard, Gold, Platinum et Sur-mesure.",
 };
 

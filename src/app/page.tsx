@@ -2,15 +2,12 @@ import Link from "next/link";
 import { HeroSection } from "@/components/home/HeroSection";
 import { OffersGrid } from "@/components/home/OffersGrid";
 import { BoutiquePreviewSection } from "@/components/home/BoutiquePreviewSection";
-import { JourneySection } from "@/components/home/JourneySection";
-import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 import { CTASection } from "@/components/home/CTASection";
 
 export default function HomePage() {
   return (
     <>
       <HeroSection />
-      <JourneySection />
 
       <section className="py-24 lg:py-32 bg-white">
         <div className="container-premium">
@@ -33,33 +30,6 @@ export default function HomePage() {
 
       <BoutiquePreviewSection />
 
-      <section className="py-24 lg:py-32 bg-white">
-        <div className="container-premium">
-          <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
-            {[
-              {
-                title: "Expertise premium",
-                description: "Un accompagnement personnalisé par une consultante certifiée, alliant savoir-faire et sensibilité esthétique.",
-              },
-              {
-                title: "Parcours fluide",
-                description: "De la découverte à la réservation, tout est centralisé pour une expérience sans friction.",
-              },
-              {
-                title: "Suivi continu",
-                description: "Accédez à votre espace personnel pour suivre votre coaching, vos documents et vos prochaines étapes.",
-              },
-            ].map((item) => (
-              <div key={item.title} className="text-center p-8">
-                <h3 className="font-display text-xl mb-4">{item.title}</h3>
-                <p className="text-sm text-brand-600 leading-relaxed">{item.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <TestimonialsSection />
       <CTASection />
     </>
   );

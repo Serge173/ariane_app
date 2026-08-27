@@ -104,7 +104,7 @@ export default async function ClientDashboard() {
             <div className="text-center py-8">
               <p className="text-brand-400 text-sm mb-4">Aucune commande pour le moment</p>
               <Link href="/boutique" className="btn-primary text-xs">Découvrir la boutique</Link>
-              <Link href="/offres" className="btn-secondary text-xs mt-3 inline-block">Voir les accompagnements</Link>
+              <Link href="/offres" className="btn-secondary text-xs mt-3 inline-block">Voir nos prestations</Link>
             </div>
           ) : (
             <div className="space-y-3">

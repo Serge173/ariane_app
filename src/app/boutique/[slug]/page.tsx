@@ -202,12 +202,12 @@ export default async function BoutiqueProductPage({ params }: Props) {
             )}
             <p className="text-xs uppercase tracking-widest text-brand-400 mb-2">{product.categoryName}</p>
             <h1 className="heading-section mb-4">{product.name}</h1>
-            <p className="text-brand-600 leading-relaxed mb-6">{product.shortDescription}</p>
+            <p className="product-description-lg mb-6">{product.shortDescription}</p>
             <p className="text-2xl font-light mb-8">{formatPrice(product.price)}</p>
 
             <ul className="space-y-3 mb-10">
               {product.features.map((feature) => (
-                <li key={feature} className="flex items-start gap-3 text-sm">
+                <li key={feature} className="flex items-start gap-3 product-description">
                   <Check className="w-4 h-4 text-accent mt-0.5 flex-shrink-0" />
                   {feature}
                 </li>
@@ -244,8 +244,8 @@ export default async function BoutiqueProductPage({ params }: Props) {
         </div>
 
         <div className="mt-20 max-w-3xl">
-          <h2 className="font-display text-2xl mb-6">Description</h2>
-          <div className="text-brand-600 leading-relaxed whitespace-pre-line">{product.description}</div>
+          <h2 className="font-sans text-2xl font-semibold tracking-tight mb-6">Description</h2>
+          <div className="product-description-lg whitespace-pre-line">{product.description}</div>
         </div>
       </div>
     </div>

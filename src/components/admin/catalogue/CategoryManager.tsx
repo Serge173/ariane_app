@@ -213,7 +213,7 @@ export function CategoryManager({ initial }: { initial: Category[] }) {
         Affichage : <strong>{SCOPE_LABELS[activeScope]}</strong>
         {activeScope === "LUXE"
           ? " → visible sur /boutique"
-          : " → visible sur /offres"}
+          : " → visible sur nos prestations"}
       </p>
 
       {showNew && (
@@ -260,7 +260,7 @@ export function CategoryManager({ initial }: { initial: Category[] }) {
                   }
                 >
                   <option value="LUXE">Boutique luxe (/boutique)</option>
-                  <option value="SERVICE">Accompagnements (/offres)</option>
+                  <option value="SERVICE">Accompagnements (nos prestations)</option>
                 </select>
               </div>
             )}
@@ -398,7 +398,7 @@ function CategoryCard({
           <h3 className="text-sm font-medium truncate leading-tight">{category.name}</h3>
           <span className="text-[10px] text-brand-400 truncate">/{category.slug}</span>
           <span className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 bg-brand-100 text-brand-600">
-            {category.scope === "LUXE" ? "Boutique" : "Offres"}
+            {category.scope === "LUXE" ? "Boutique" : "Prestations"}
           </span>
           <span className="text-[10px] text-brand-500 flex-shrink-0">
             {category._count.products} prod.

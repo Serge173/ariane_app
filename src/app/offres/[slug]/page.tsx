@@ -110,7 +110,7 @@ export default async function OfferDetailPage({ params }: Props) {
           <div className="flex flex-col justify-center">
             <p className="text-overline mb-4">Accompagnement</p>
             <h1 className="heading-section mb-4">{product.name}</h1>
-            <p className="text-brand-600 leading-relaxed mb-6">{product.shortDescription}</p>
+            <p className="product-description-lg mb-6">{product.shortDescription}</p>
 
             <p className="text-2xl font-light mb-8">
               {isSurMesure ? "À partir de " : ""}
@@ -125,7 +125,7 @@ export default async function OfferDetailPage({ params }: Props) {
 
             <ul className="space-y-3 mb-10">
               {product.features.map((feature) => (
-                <li key={feature} className="flex items-start gap-3 text-sm">
+                <li key={feature} className="flex items-start gap-3 product-description">
                   <Check className="w-4 h-4 text-accent mt-0.5 flex-shrink-0" />
                   {feature}
                 </li>
@@ -162,8 +162,8 @@ export default async function OfferDetailPage({ params }: Props) {
         </div>
 
         <div className="mt-20 max-w-3xl">
-          <h2 className="font-display text-2xl mb-6">Description</h2>
-          <div className="text-brand-600 leading-relaxed whitespace-pre-line">
+          <h2 className="font-sans text-2xl font-semibold tracking-tight mb-6">Description</h2>
+          <div className="product-description-lg whitespace-pre-line">
             {product.description}
           </div>
         </div>

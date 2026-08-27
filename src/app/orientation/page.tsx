@@ -181,7 +181,7 @@ export default function OrientationPage() {
                 </Link>
               )}
               <Link href="/offres" className="btn-secondary">
-                Voir toutes les offres
+                Voir toutes nos prestations
               </Link>
             </div>
           </motion.div>

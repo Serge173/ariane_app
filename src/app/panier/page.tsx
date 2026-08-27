@@ -25,7 +25,7 @@ export default function PanierPage() {
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link href="/offres" className="btn-secondary inline-flex items-center gap-2">
-              Voir les accompagnements
+              Voir nos prestations
             </Link>
           </div>
         </div>
@@ -68,7 +68,7 @@ export default function PanierPage() {
                 <p className="text-[10px] uppercase tracking-widest text-brand-400 mb-1">
                   {item.productType === "LUXE" ? "Boutique" : "Accompagnement"}
                 </p>
-                <h3 className="font-display text-lg mb-1">{item.name}</h3>
+                <h3 className="product-title text-lg mb-1">{item.name}</h3>
                 <p className="text-sm text-brand-500 mb-4">{formatPrice(item.price)}</p>
                 <div className="flex items-center gap-4">
                   <div className="flex items-center border border-brand-200">

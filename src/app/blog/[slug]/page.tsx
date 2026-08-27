@@ -125,7 +125,7 @@ export default async function BlogPostPage({ params }: Props) {
             Envie d&apos;aller plus loin ? Découvrez nos accompagnements personnalisés.
           </p>
           <Link href="/offres" className="btn-primary inline-flex items-center gap-2 text-xs">
-            Voir nos offres
+            Voir nos prestations
             <ArrowRight className="w-4 h-4" />
           </Link>
         </footer>

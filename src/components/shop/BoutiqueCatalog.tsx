@@ -25,9 +25,15 @@ interface BoutiqueCatalogProps {
   products: BoutiqueProduct[];
   categories: { slug: string; name: string }[];
   hideCategoryFilter?: boolean;
+  variant?: "default" | "lancel";
 }
 
-export function BoutiqueCatalog({ products, categories, hideCategoryFilter }: BoutiqueCatalogProps) {
+export function BoutiqueCatalog({
+  products,
+  categories,
+  hideCategoryFilter,
+  variant = "lancel",
+}: BoutiqueCatalogProps) {
   const [activeCategory, setActiveCategory] = useState<string>("all");
 
   const filtered =
@@ -65,9 +71,15 @@ export function BoutiqueCatalog({ products, categories, hideCategoryFilter }: Bo
         </div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
+      <div
+        className={
+          variant === "lancel"
+            ? "grid grid-cols-2 lg:grid-cols-4 gap-x-3 gap-y-10 lg:gap-x-4 lg:gap-y-12"
+            : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8"
+        }
+      >
         {filtered.map((product) => (
-          <BoutiqueProductCard key={product.id} product={product} />
+          <BoutiqueProductCard key={product.id} product={product} variant={variant} />
         ))}
       </div>
 
@@ -78,7 +90,13 @@ export function BoutiqueCatalog({ products, categories, hideCategoryFilter }: Bo
   );
 }
 
-function BoutiqueProductCard({ product }: { product: BoutiqueProduct }) {
+function BoutiqueProductCard({
+  product,
+  variant = "lancel",
+}: {
+  product: BoutiqueProduct;
+  variant?: "default" | "lancel";
+}) {
   const addItem = useCartStore((s) => s.addItem);
   const [added, setAdded] = useState(false);
   const [error, setError] = useState("");
@@ -105,6 +123,32 @@ function BoutiqueProductCard({ product }: { product: BoutiqueProduct }) {
   };
 
   const href = `/boutique/${product.slug}`;
+
+  if (variant === "lancel") {
+    return (
+      <Link href={href} className="group block">
+        <div className="relative aspect-[3/4] bg-brand-100 overflow-hidden mb-3">
+          <ProductImage
+            src={product.images[0]}
+            fallback={luxeImage(product.slug)}
+            alt={product.name}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+            sizes="(max-width: 1024px) 50vw, 25vw"
+          />
+        </div>
+        {product.brand && (
+          <p className="font-sans text-[10px] uppercase tracking-widest text-brand-400 mb-1 truncate">
+            {product.brand}
+          </p>
+        )}
+        <h3 className="font-sans text-sm text-brand-950 mb-1 line-clamp-2 group-hover:underline underline-offset-2">
+          {product.name}
+        </h3>
+        <p className="font-sans text-sm text-brand-700">{formatPrice(product.price)}</p>
+      </Link>
+    );
+  }
 
   return (
     <article className="group card-premium overflow-hidden flex flex-col">
@@ -134,11 +178,11 @@ function BoutiqueProductCard({ product }: { product: BoutiqueProduct }) {
           <p className="text-[10px] uppercase tracking-ultra text-brand-400 mb-1">{product.brand}</p>
         )}
         <Link href={href}>
-          <h3 className="font-display text-xl mb-2 group-hover:text-accent transition-colors">
+          <h3 className="product-title mb-2 group-hover:text-accent transition-colors">
             {product.name}
           </h3>
         </Link>
-        <p className="text-sm text-brand-500 mb-4 line-clamp-2 flex-1">
+        <p className="product-description mb-4 line-clamp-2 flex-1">
           {product.shortDescription}
         </p>
         <p className="text-sm font-medium mb-4">{formatPrice(product.price)}</p>

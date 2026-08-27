@@ -10,6 +10,7 @@ import {
 import { cn } from "@/lib/utils";
 import { adminNav, isExpandableAdminSection, isCatalogueSection, isBlogSection, isPaymentsSection, isOffresSection, type AdminNavItem } from "@/lib/navigation";
 import { ProfileAvatar } from "@/components/ui/ProfileAvatar";
+import { formatRole } from "@/lib/user-roles";
 
 function NavItem({
   item,
@@ -185,7 +186,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             </Link>
           </div>
 
-          <nav className="flex-1 overflow-y-auto p-4 space-y-1">
+          <nav className="flex-1 overflow-y-auto p-4 space-y-1 font-sans">
             {adminNav.map((item) => (
               <NavItem
                 key={item.name}
@@ -210,30 +211,32 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
       <div className="lg:pl-72">
         <header className="sticky top-0 z-30 bg-white border-b border-brand-100 shadow-sm">
-          <div className="flex items-center justify-between h-16 px-4 lg:px-8">
-            <div className="flex items-center gap-4">
+          <div className="flex items-center justify-between h-14 px-4 lg:px-8">
+            <div className="flex items-center gap-3 min-w-0">
               <button
                 onClick={() => setSidebarOpen(true)}
-                className="lg:hidden p-2 text-brand-600 hover:text-brand-950"
+                className="lg:hidden p-1.5 text-brand-600 hover:text-brand-950 shrink-0"
                 aria-label="Menu"
               >
                 <Menu className="w-5 h-5" />
               </button>
-              <div className="hidden sm:block">
-                <p className="text-xs uppercase tracking-widest text-brand-400">Back-office</p>
-                <p className="text-sm font-medium text-brand-950">Espace administrateur</p>
-              </div>
+              <p className="hidden sm:block text-xs uppercase tracking-wide text-brand-400 font-medium truncate">
+                Administration
+              </p>
             </div>
 
-            <div className="flex items-center gap-3">
-              <button className="p-2 text-brand-400 hover:text-brand-700 relative" aria-label="Notifications">
-                <Bell className="w-5 h-5" strokeWidth={1.5} />
+            <div className="flex items-center gap-2 shrink-0">
+              <button className="p-1.5 text-brand-400 hover:text-brand-700 relative" aria-label="Notifications">
+                <Bell className="w-[18px] h-[18px]" strokeWidth={1.5} />
               </button>
 
               <div className="relative">
                 <button
+                  type="button"
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
-                  className="flex items-center gap-3 pl-3 border-l border-brand-100"
+                  className="flex items-center gap-1.5 pl-2 border-l border-brand-100 rounded-full"
+                  aria-label="Menu compte"
+                  aria-expanded={userMenuOpen}
                 >
                   <ProfileAvatar
                     src={session?.user?.image}
@@ -241,35 +244,48 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
                     lastName={nameParts.slice(1).join(" ")}
                     size="sm"
                   />
-                  <div className="hidden sm:block text-left">
-                    <p className="text-sm font-medium text-brand-950 leading-tight">
-                      {session?.user?.name}
-                    </p>
-                    <p className="text-[10px] uppercase tracking-wider text-brand-400">
-                      Administrateur
-                    </p>
-                  </div>
-                  <ChevronDown className="w-4 h-4 text-brand-400 hidden sm:block" />
+                  <ChevronDown
+                    className={cn(
+                      "w-3.5 h-3.5 text-brand-400 transition-transform",
+                      userMenuOpen && "rotate-180"
+                    )}
+                  />
                 </button>
 
                 {userMenuOpen && (
                   <>
                     <div className="fixed inset-0 z-10" onClick={() => setUserMenuOpen(false)} />
-                    <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-brand-100 shadow-lg z-20 py-1">
-                      <Link
-                        href="/admin/parametres"
-                        className="block px-4 py-2 text-sm text-brand-700 hover:bg-brand-50"
-                        onClick={() => setUserMenuOpen(false)}
-                      >
-                        Paramètres
-                      </Link>
-                      <button
-                        onClick={() => signOut({ callbackUrl: "/" })}
-                        className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        Déconnexion
-                      </button>
+                    <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-brand-100 shadow-lg z-20 overflow-hidden">
+                      <div className="px-4 py-3 border-b border-brand-100 bg-brand-50/50">
+                        <p className="text-sm font-medium text-brand-950 leading-tight truncate">
+                          {session?.user?.name}
+                        </p>
+                        {session?.user?.email && (
+                          <p className="text-xs text-brand-500 truncate mt-0.5">{session.user.email}</p>
+                        )}
+                        {session?.user?.role && (
+                          <p className="text-[10px] uppercase tracking-wide text-brand-400 mt-1.5">
+                            {formatRole(session.user.role)}
+                          </p>
+                        )}
+                      </div>
+                      <div className="py-1">
+                        <Link
+                          href="/admin/parametres"
+                          className="block px-4 py-2 text-sm text-brand-700 hover:bg-brand-50"
+                          onClick={() => setUserMenuOpen(false)}
+                        >
+                          Mon compte
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={() => signOut({ callbackUrl: "/" })}
+                          className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          Déconnexion
+                        </button>
+                      </div>
                     </div>
                   </>
                 )}

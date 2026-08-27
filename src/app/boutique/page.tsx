@@ -1,9 +1,7 @@
 import { Metadata } from "next";
-import Link from "next/link";
-import Image from "next/image";
 import { Suspense } from "react";
 import prisma from "@/lib/prisma";
-import { IMAGES, luxeImage } from "@/lib/images";
+import { luxeImage } from "@/lib/images";
 import { buildProductSearchWhere } from "@/lib/catalogue";
 import {
   buildPublicCategoryTree,
@@ -13,13 +11,13 @@ import {
   type PublicCategory,
 } from "@/lib/categories";
 import { BoutiqueCatalog, type BoutiqueProduct } from "@/components/shop/BoutiqueCatalog";
-import { BoutiqueSearch } from "@/components/shop/BoutiqueSearch";
-import { BoutiqueCategoryGrid } from "@/components/shop/BoutiqueCategoryGrid";
 import { BOUTIQUE_CATEGORIES } from "@/lib/boutique";
-import { ShoppingBag } from "lucide-react";
+import { BoutiqueHero } from "@/components/shop/BoutiqueHero";
+import { BoutiqueSubNav } from "@/components/shop/BoutiqueSubNav";
+import { BoutiqueFeaturedRow } from "@/components/shop/BoutiqueFeaturedRow";
 
 export const metadata: Metadata = {
-  title: "Ma Boutique Luxe",
+  title: "La Boutique",
   description:
     "Boutique de luxe Conseil en Image avec Ariane — sacs, vêtements, accessoires et parfums sélectionnés avec exigence.",
 };
@@ -134,81 +132,39 @@ function getFallbackProducts(): BoutiqueProduct[] {
 
 export default async function BoutiquePage({ searchParams }: PageProps) {
   const params = await searchParams;
-  const { products, categoryRoots, categoryFilters, brands } = await getCatalogData(params);
+  const { products, categoryRoots, categoryFilters } = await getCatalogData(params);
+
+  const sectionTitle = params.category
+    ? categoryFilters.find((c) => c.slug === params.category)?.name ?? "Catalogue"
+    : params.q
+    ? "Résultats"
+    : "Tous les articles";
 
   return (
-    <div className="min-h-screen pt-24 pb-20">
-      <section className="relative mb-16 lg:mb-24">
-        <div className="container-premium">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
-            <div>
-              <p className="text-overline mb-4">Boutique de luxe</p>
-              <h1 className="heading-display mb-6">Ma Boutique</h1>
-              <p className="text-brand-600 leading-relaxed mb-8 max-w-lg">
-                Une sélection exigeante de sacs, vêtements, accessoires et parfums,
-                choisis pour sublimer votre image avec la même exigence que nos accompagnements.
-              </p>
-              <Link href="/panier" className="btn-primary inline-flex items-center gap-2">
-                <ShoppingBag className="w-4 h-4" />
-                Voir mon panier
-              </Link>
-            </div>
-            <div className="relative aspect-[4/5] lg:aspect-[3/4] bg-brand-100 overflow-hidden">
-              <Image
-                src={IMAGES.boutiqueHero}
-                alt="Boutique luxe Conseil en Image"
-                fill
-                className="object-cover"
-                priority
-                sizes="(max-width: 1024px) 100vw, 50vw"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+    <div className="min-h-screen bg-white">
+      <BoutiqueHero />
 
-      <div className="container-premium">
-        <Suspense fallback={null}>
-          <BoutiqueSearch
+      <Suspense fallback={<div className="h-12 border-b border-brand-100 bg-white" />}>
+        <BoutiqueSubNav roots={categoryRoots} />
+      </Suspense>
+
+      <div id="catalogue" className="max-w-[1600px] mx-auto px-4 lg:px-8 py-12 lg:py-16">
+        {!params.category && !params.q && !params.brand && (
+          <BoutiqueFeaturedRow products={products} />
+        )}
+
+        <section>
+          <h2 className="font-sans text-xs uppercase tracking-[0.2em] text-brand-500 text-center mb-10">
+            {sectionTitle}
+          </h2>
+          <BoutiqueCatalog
+            products={products}
             categories={categoryFilters}
-            brands={brands}
+            hideCategoryFilter
+            variant="lancel"
           />
-        </Suspense>
-
-        <BoutiqueCategoryGrid roots={categoryRoots} activeSlug={params.category} />
-
-        <BoutiqueCatalog
-          products={products}
-          categories={categoryFilters}
-          hideCategoryFilter
-        />
-
-        <div className="mt-24 grid lg:grid-cols-2 gap-8">
-          <div className="p-10 bg-brand-950 text-white">
-            <p className="text-overline text-brand-400 mb-3">Conciergerie shopping</p>
-            <h2 className="font-display text-2xl mb-4">Personal shopping luxe</h2>
-            <p className="text-brand-300 text-sm leading-relaxed mb-6">
-              Besoin d&apos;une sélection sur mesure ? Notre service de conciergerie vous accompagne
-              pour trouver les pièces parfaites, en boutique ou sur commande.
-            </p>
-            <Link href="/contact?type=diagnostic" className="btn-primary bg-white text-brand-950 hover:bg-brand-100 inline-flex items-center gap-2 text-xs">
-              Demander la conciergerie
-            </Link>
-          </div>
-          <div className="p-10 bg-brand-50 border border-brand-100 flex flex-col justify-center">
-            <p className="text-overline mb-3">Coaching image</p>
-            <h2 className="font-display text-2xl mb-4">Complétez votre style</h2>
-            <p className="text-brand-600 text-sm leading-relaxed mb-6">
-              Nos accompagnements Standard, Gold et Platinum vous aident à harmoniser
-              vos achats luxe avec votre personnalité et vos objectifs.
-            </p>
-            <Link href="/offres" className="btn-secondary text-xs inline-block w-fit">
-              Voir les accompagnements
-            </Link>
-          </div>
-        </div>
+        </section>
       </div>
     </div>
   );
 }
-

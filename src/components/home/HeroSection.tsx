@@ -23,15 +23,6 @@ export function HeroSection() {
 
       <div className="container-premium relative z-10 pt-32 pb-20">
         <div className="max-w-2xl">
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-overline text-brand-200 mb-6"
-          >
-            Conseil en image · Abidjan & Digital
-          </motion.p>
-
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -64,7 +55,7 @@ export function HeroSection() {
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link href="/offres" className="btn-secondary border-white text-white hover:bg-white hover:text-brand-950">
-              Découvrir les offres
+              Découvrir nos prestations
             </Link>
           </motion.div>
         </div>

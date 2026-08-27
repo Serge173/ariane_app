@@ -54,7 +54,7 @@ export const adminNav: AdminNavItem[] = [
     ],
   },
   {
-    name: "Offres & Produits",
+    name: "Prestations & Produits",
     href: "/admin/offres",
     icon: Package,
     children: [
@@ -87,12 +87,12 @@ export const adminNav: AdminNavItem[] = [
 
 export const publicNav = [
   { name: "Accueil", href: "/" },
-  { name: "Offres", href: "/offres" },
+  { name: "Nos prestations", href: "/offres" },
   { name: "Orientation", href: "/orientation" },
   { name: "À propos", href: "/a-propos" },
   { name: "Blog", href: "/blog" },
   { name: "Contact", href: "/contact" },
-  { name: "La boutique Ariane", href: "/boutique", highlight: true },
+  { name: "Boutique", href: "/boutique", highlight: true },
 ];
 
 export function getDashboardPath(role?: string): string {

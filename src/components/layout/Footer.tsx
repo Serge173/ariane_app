@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { Instagram, Facebook, Linkedin, ExternalLink } from "lucide-react";
+import { Instagram, Facebook, Linkedin, ExternalLink, ChevronDown } from "lucide-react";
 
 const footerLinks = {
   navigation: [
     { name: "Accueil", href: "/" },
-    { name: "Offres", href: "/offres" },
+    { name: "Nos prestations", href: "/offres" },
     { name: "Orientation", href: "/orientation" },
     { name: "À propos", href: "/a-propos" },
     { name: "Blog", href: "/blog" },
@@ -59,13 +59,52 @@ function TikTokIcon({ className }: { className?: string }) {
   );
 }
 
+function FooterDropdown({
+  title,
+  children,
+  wide = false,
+}: {
+  title: string;
+  children: React.ReactNode;
+  wide?: boolean;
+}) {
+  return (
+    <div className="relative group/drop">
+      <button
+        type="button"
+        className="flex items-center gap-1.5 font-sans text-xs uppercase tracking-wide font-medium text-brand-400 hover:text-white group-hover/drop:text-white group-focus-within/drop:text-white transition-colors py-1"
+        aria-haspopup="true"
+      >
+        {title}
+        <ChevronDown
+          className="w-3.5 h-3.5 text-brand-500 transition-transform duration-200 group-hover/drop:rotate-180 group-focus-within/drop:rotate-180"
+          strokeWidth={1.5}
+        />
+      </button>
+
+      <div
+        className={`absolute bottom-full left-0 z-50 pb-2 min-w-[180px] ${wide ? "w-64" : ""}
+          opacity-0 invisible translate-y-2 pointer-events-none
+          group-hover/drop:opacity-100 group-hover/drop:visible group-hover/drop:translate-y-0 group-hover/drop:pointer-events-auto
+          group-focus-within/drop:opacity-100 group-focus-within/drop:visible group-focus-within/drop:translate-y-0 group-focus-within/drop:pointer-events-auto
+          transition-all duration-200 ease-out`}
+        role="menu"
+      >
+        <div className="py-3 px-4 bg-brand-900 border border-brand-700 shadow-xl shadow-black/30">
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function Footer() {
   return (
     <footer className="bg-brand-950 text-brand-200 mt-auto">
-      <div className="container-premium py-16 lg:py-20">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-8">
-          <div className="sm:col-span-2 lg:col-span-1">
-            <Link href="/" className="inline-block mb-6">
+      <div className="container-premium py-10 lg:py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-end">
+          <div className="lg:col-span-4">
+            <Link href="/" className="inline-block mb-4">
               <span className="font-display text-2xl font-light text-white tracking-wide">
                 Conseil en Image
               </span>
@@ -73,90 +112,98 @@ export function Footer() {
                 avec Ariane
               </span>
             </Link>
-            <p className="text-sm text-brand-400 leading-relaxed">
+            <p className="text-sm text-brand-400 leading-relaxed max-w-sm">
               Coaching en image premium à Abidjan et à distance.
               Alignez votre image avec votre personnalité et vos ambitions.
             </p>
           </div>
 
-          <div>
-            <h3 className="text-xs uppercase tracking-ultra text-brand-400 mb-6">Navigation</h3>
-            <ul className="space-y-3">
-              {footerLinks.navigation.map((link) => (
-                <li key={link.href}>
-                  <Link href={link.href} className="text-sm text-brand-300 hover:text-white transition-colors link-underline">
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+          <div className="lg:col-span-5 flex flex-wrap gap-x-8 gap-y-3 items-center">
+            <FooterDropdown title="Navigation">
+              <ul className="space-y-2" role="none">
+                {footerLinks.navigation.map((link) => (
+                  <li key={link.href} role="none">
+                    <Link
+                      href={link.href}
+                      role="menuitem"
+                      className="block font-sans text-sm text-brand-300 hover:text-white transition-colors whitespace-nowrap"
+                    >
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </FooterDropdown>
+
+            <FooterDropdown title="Informations">
+              <ul className="space-y-2" role="none">
+                {footerLinks.legal.map((link) => (
+                  <li key={link.href} role="none">
+                    <Link
+                      href={link.href}
+                      role="menuitem"
+                      className="block font-sans text-sm text-brand-300 hover:text-white transition-colors whitespace-nowrap"
+                    >
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </FooterDropdown>
+
+            <FooterDropdown title="Réseaux sociaux" wide>
+              <ul className="space-y-3" role="none">
+                {socialLinks.map((social) => (
+                  <li key={social.name} role="none">
+                    <a
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      role="menuitem"
+                      className="group/social flex items-start gap-2.5 text-sm text-brand-300 hover:text-white transition-colors"
+                    >
+                      <span className="mt-0.5 flex-shrink-0 text-brand-400 group-hover/social:text-white transition-colors">
+                        {social.icon ? (
+                          <social.icon className="w-4 h-4" strokeWidth={1.5} />
+                        ) : (
+                          <TikTokIcon className="w-4 h-4" />
+                        )}
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block font-medium">{social.name}</span>
+                        <span className="block text-xs text-brand-500 group-hover/social:text-brand-300 transition-colors truncate">
+                          {social.label}
+                        </span>
+                      </span>
+                      <ExternalLink className="w-3 h-3 mt-1 opacity-0 group-hover/social:opacity-100 transition-opacity flex-shrink-0" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </FooterDropdown>
           </div>
 
-          <div>
-            <h3 className="text-xs uppercase tracking-ultra text-brand-400 mb-6">Informations</h3>
-            <ul className="space-y-3">
-              {footerLinks.legal.map((link) => (
-                <li key={link.href}>
-                  <Link href={link.href} className="text-sm text-brand-300 hover:text-white transition-colors link-underline">
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-xs uppercase tracking-ultra text-brand-400 mb-6">Contact</h3>
-            <div className="space-y-3 text-sm text-brand-300">
+          <div className="lg:col-span-3">
+          <h3 className="font-sans text-xs uppercase tracking-wide font-medium text-brand-400 mb-3">Contact</h3>
+            <div className="space-y-1.5 font-sans text-sm text-brand-300">
               <p>Abidjan, Cocody</p>
               <p>Côte d&apos;Ivoire</p>
               <a href="tel:+2250749526194" className="block hover:text-white transition-colors">
                 +225 07 49 52 61 94
               </a>
-              <a href="mailto:contact@conseil-image-ariane.com" className="block hover:text-white transition-colors">
+              <a
+                href="mailto:contact@conseil-image-ariane.com"
+                className="block hover:text-white transition-colors break-all"
+              >
                 contact@conseil-image-ariane.com
               </a>
             </div>
           </div>
-
-          <div>
-            <h3 className="text-xs uppercase tracking-ultra text-brand-400 mb-6">Réseaux sociaux</h3>
-            <ul className="space-y-4">
-              {socialLinks.map((social) => (
-                <li key={social.name}>
-                  <a
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group flex items-start gap-3 text-sm text-brand-300 hover:text-white transition-colors"
-                  >
-                    <span className="mt-0.5 flex-shrink-0 text-brand-400 group-hover:text-white transition-colors">
-                      {social.icon ? (
-                        <social.icon className="w-4 h-4" strokeWidth={1.5} />
-                      ) : (
-                        <TikTokIcon className="w-4 h-4" />
-                      )}
-                    </span>
-                    <span>
-                      <span className="block font-medium">{social.name}</span>
-                      <span className="block text-xs text-brand-500 group-hover:text-brand-300 transition-colors">
-                        {social.label}
-                      </span>
-                    </span>
-                    <ExternalLink className="w-3 h-3 mt-1 ml-auto opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
         </div>
 
-        <div className="mt-16 pt-8 border-t border-brand-800 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-brand-500">
+        <div className="mt-10 pt-6 border-t border-brand-800">
+          <p className="text-xs text-brand-500 text-center sm:text-left">
             © {new Date().getFullYear()} Conseil en Image avec Ariane. Tous droits réservés.
-          </p>
-          <p className="text-xs text-brand-500">
-            Conçu avec élégance · Abidjan · Afrique & Diaspora
           </p>
         </div>
       </div>

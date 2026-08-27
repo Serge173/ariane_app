@@ -33,7 +33,7 @@ export default async function ClientCommandesPage() {
       {orders.length === 0 ? (
         <div className="bg-white border border-brand-100 text-center py-16">
           <p className="text-brand-500 mb-6">{CLIENT_SPACE_COPY.commandesEmpty}</p>
-          <Link href="/offres" className="btn-primary text-xs">Découvrir nos offres</Link>
+          <Link href="/offres" className="btn-primary text-xs">Découvrir nos prestations</Link>
           <Link href="/boutique" className="btn-secondary text-xs mt-3 inline-block">Voir la boutique</Link>
         </div>
       ) : (

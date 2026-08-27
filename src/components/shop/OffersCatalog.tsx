@@ -58,10 +58,10 @@ export function OffersCatalog({ products }: OffersCatalogProps) {
             )}
           </div>
           <div className="p-6">
-            <h3 className="font-display text-xl mb-2 group-hover:text-accent transition-colors">
+            <h3 className="product-title mb-2 group-hover:text-accent transition-colors">
               {product.name}
             </h3>
-            <p className="text-sm text-brand-500 mb-4 line-clamp-2">
+            <p className="product-description mb-4 line-clamp-2">
               {product.shortDescription}
             </p>
             <div className="flex items-center justify-between">

@@ -20,7 +20,7 @@ export default async function AdminOffresHubPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="heading-section mb-2">Offres & Produits</h1>
+        <h1 className="heading-section mb-2">Prestations & Produits</h1>
         <p className="text-brand-600">
           Gérez vos accompagnements coaching et vos articles de luxe séparément
         </p>
