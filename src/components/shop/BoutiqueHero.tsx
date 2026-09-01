@@ -12,12 +12,12 @@ export function BoutiqueHero() {
         className="object-cover"
         sizes="100vw"
       />
-      <div className="absolute inset-0 bg-brand-950/25" />
+      <div className="absolute inset-0 bg-white/45" />
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
-        <p className="font-sans text-[11px] uppercase tracking-[0.25em] text-white/90 mb-3">
+        <p className="font-sans text-[11px] uppercase tracking-[0.25em] text-brand-600 mb-3">
           Collection luxe
         </p>
-        <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-light text-white">
+        <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-light text-brand-950">
           La Boutique
         </h1>
       </div>

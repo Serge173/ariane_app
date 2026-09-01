@@ -18,7 +18,7 @@ export function HeroSection() {
           className="object-cover"
           sizes="100vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-brand-950/70 via-brand-950/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-brand-950/35 via-white/55 to-white/30" />
       </div>
 
       <div className="container-premium relative z-10 pt-32 pb-20">
@@ -27,7 +27,7 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1 }}
-            className="heading-display text-white mb-8"
+            className="heading-display text-brand-950 mb-8"
           >
             Révélez l&apos;image
             <br />
@@ -38,7 +38,7 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="text-lg text-brand-200 leading-relaxed mb-10 max-w-lg"
+            className="text-lg text-white/90 leading-relaxed mb-10 max-w-lg"
           >
             Un accompagnement premium pour aligner votre image avec votre personnalité,
             votre fonction et vos ambitions.
@@ -50,11 +50,11 @@ export function HeroSection() {
             transition={{ duration: 0.6, delay: 0.5 }}
             className="flex flex-col sm:flex-row gap-4"
           >
-            <Link href="/orientation" className="btn-primary bg-white text-brand-950 hover:bg-brand-100 inline-flex items-center gap-2">
+            <Link href="/orientation" className="btn-primary inline-flex items-center gap-2">
               Trouver mon accompagnement
               <ArrowRight className="w-4 h-4" />
             </Link>
-            <Link href="/offres" className="btn-secondary border-white text-white hover:bg-white hover:text-brand-950">
+            <Link href="/offres" className="btn-secondary">
               Découvrir nos prestations
             </Link>
           </motion.div>

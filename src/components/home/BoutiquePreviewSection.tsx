@@ -103,7 +103,7 @@ export async function BoutiquePreviewSection() {
   const products = await getLuxeProducts();
 
   return (
-    <section className="py-24 lg:py-32 bg-brand-50">
+    <section className="py-24 lg:py-32 bg-white">
       <div className="container-premium">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <p className="text-overline mb-4">Boutique de luxe</p>
