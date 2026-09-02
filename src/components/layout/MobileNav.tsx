@@ -135,22 +135,13 @@ export function MobileNav({
                   {accountLabel}
                 </Link>
               ) : (
-                <>
-                  <Link
-                    href="/connexion"
-                    onClick={onClose}
-                    className="block font-sans text-xs text-brand-800"
-                  >
-                    Connexion client
-                  </Link>
-                  <Link
-                    href="/admin/connexion"
-                    onClick={onClose}
-                    className="block font-sans text-[10px] text-brand-500"
-                  >
-                    Espace administration
-                  </Link>
-                </>
+                <Link
+                  href="/connexion"
+                  onClick={onClose}
+                  className="block font-sans text-xs text-brand-800"
+                >
+                  Connexion client
+                </Link>
               )}
             </div>
           </div>
