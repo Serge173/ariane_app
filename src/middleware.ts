@@ -8,6 +8,11 @@ export default withAuth(
     const role = token?.role as string | undefined;
     const path = req.nextUrl.pathname;
 
+    if (path.startsWith("/admin/admin/")) {
+      const fixed = path.replace(/^\/admin\/admin/, "/admin");
+      return NextResponse.redirect(new URL(fixed, req.url));
+    }
+
     if (path.startsWith("/admin")) {
       if (path === "/admin/connexion") {
         if (token && isAdmin(role)) {

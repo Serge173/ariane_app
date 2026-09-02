@@ -48,7 +48,7 @@ export function BoutiqueSubNav({ roots }: BoutiqueSubNavProps) {
     slug === null ? !activeCategory && !activeQ && !activeBrand : activeCategory === slug;
 
   return (
-    <div className="sticky top-16 lg:top-[4.25rem] z-40 bg-white border-b border-brand-100">
+    <div className="sticky top-16 lg:top-[4.25rem] z-40 bg-[#F7F5F0]/95 backdrop-blur-sm border-b border-brand-200/60 mt-6">
       <div className="max-w-[1600px] mx-auto px-4 lg:px-8">
         <div className="flex items-center justify-between gap-4 h-12">
           <nav

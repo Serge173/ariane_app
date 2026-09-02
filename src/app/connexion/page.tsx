@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { isAdmin } from "@/lib/auth";
 import { getDashboardPath } from "@/lib/navigation";
+import { fetchSessionSafe } from "@/lib/auth-session";
 import { CLIENT_SPACE_COPY } from "@/lib/client-space-copy";
 
 export default function ConnexionPage() {
@@ -48,13 +49,13 @@ export default function ConnexionPage() {
         return;
       }
 
-      const sessionRes = await fetch("/api/auth/session");
-      const session = await sessionRes.json();
+      const session = await fetchSessionSafe();
+      const user = session?.user as { role?: string } | undefined;
 
-      if (isAdmin(session?.user?.role)) {
+      if (isAdmin(user?.role)) {
         router.push("/admin");
       } else {
-        router.push(getDashboardPath(session?.user?.role));
+        router.push(getDashboardPath(user?.role));
       }
       router.refresh();
     } catch (err) {

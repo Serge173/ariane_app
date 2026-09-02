@@ -92,7 +92,14 @@ export default async function CatalogueHubPage() {
         </p>
       )}
 
-      <div className="mt-10 grid sm:grid-cols-2 gap-4">
+      <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <Link
+          href="/admin/catalogue/boutique"
+          className="flex items-center justify-between p-5 border border-brand-200 text-sm hover:border-brand-950 transition-colors group"
+        >
+          Page boutique (mise en avant)
+          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+        </Link>
         <Link
           href="/admin/catalogue/produits?type=LUXE"
           className="flex items-center justify-between p-5 bg-brand-950 text-white text-sm hover:bg-brand-800 transition-colors group"
@@ -102,7 +109,7 @@ export default async function CatalogueHubPage() {
         </Link>
         <Link
           href="/admin/catalogue/produits?type=SERVICE"
-          className="flex items-center justify-between p-5 border border-brand-200 text-sm hover:border-brand-950 transition-colors group"
+          className="flex items-center justify-between p-5 border border-brand-200 text-sm hover:border-brand-950 transition-colors group sm:col-span-2 lg:col-span-1"
         >
           Gérer les accompagnements
           <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

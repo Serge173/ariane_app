@@ -25,14 +25,14 @@ interface BoutiqueCatalogProps {
   products: BoutiqueProduct[];
   categories: { slug: string; name: string }[];
   hideCategoryFilter?: boolean;
-  variant?: "default" | "lancel";
+  variant?: "default" | "lancel" | "wix";
 }
 
 export function BoutiqueCatalog({
   products,
   categories,
   hideCategoryFilter,
-  variant = "lancel",
+  variant = "wix",
 }: BoutiqueCatalogProps) {
   const [activeCategory, setActiveCategory] = useState<string>("all");
 
@@ -73,7 +73,9 @@ export function BoutiqueCatalog({
 
       <div
         className={
-          variant === "lancel"
+          variant === "wix"
+            ? "grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-10 lg:gap-x-6 lg:gap-y-14"
+            : variant === "lancel"
             ? "grid grid-cols-2 lg:grid-cols-4 gap-x-3 gap-y-10 lg:gap-x-4 lg:gap-y-12"
             : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8"
         }
@@ -92,10 +94,10 @@ export function BoutiqueCatalog({
 
 function BoutiqueProductCard({
   product,
-  variant = "lancel",
+  variant = "wix",
 }: {
   product: BoutiqueProduct;
-  variant?: "default" | "lancel";
+  variant?: "default" | "lancel" | "wix";
 }) {
   const addItem = useCartStore((s) => s.addItem);
   const [added, setAdded] = useState(false);
@@ -123,6 +125,34 @@ function BoutiqueProductCard({
   };
 
   const href = `/boutique/${product.slug}`;
+
+  if (variant === "wix") {
+    return (
+      <article className="group text-center">
+        <Link href={href} className="block relative aspect-[3/4] bg-brand-100 overflow-hidden mb-4">
+          <ProductImage
+            src={product.images[0]}
+            fallback={luxeImage(product.slug)}
+            alt={product.name}
+            fill
+            className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+            sizes="(max-width: 1024px) 50vw, 25vw"
+          />
+          <div className="absolute inset-0 bg-brand-950/0 group-hover:bg-brand-950/25 transition-colors duration-300 flex items-center justify-center">
+            <span className="font-sans text-[10px] uppercase tracking-[0.25em] text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 border border-white px-5 py-2.5">
+              Aperçu rapide
+            </span>
+          </div>
+        </Link>
+        <Link href={href}>
+          <h3 className="font-sans text-sm text-brand-950 mb-1 line-clamp-2 group-hover:opacity-70 transition-opacity">
+            {product.name}
+          </h3>
+        </Link>
+        <p className="font-sans text-sm text-brand-600">{formatPrice(product.price)}</p>
+      </article>
+    );
+  }
 
   if (variant === "lancel") {
     return (

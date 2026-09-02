@@ -1,6 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      {
+        source: "/admin/admin/:path*",
+        destination: "/admin/:path*",
+        permanent: false,
+      },
+    ];
+  },
   async rewrites() {
     return [{ source: "/favicon.ico", destination: "/favicon.svg" }];
   },

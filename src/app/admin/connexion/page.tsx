@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Shield } from "lucide-react";
 import { isAdmin } from "@/lib/auth";
+import { fetchSessionSafe } from "@/lib/auth-session";
 
 export default function AdminConnexionPage() {
   const router = useRouter();
@@ -30,10 +31,10 @@ export default function AdminConnexionPage() {
         return;
       }
 
-      const sessionRes = await fetch("/api/auth/session");
-      const session = await sessionRes.json();
+      const session = await fetchSessionSafe();
+      const user = session?.user as { role?: string } | undefined;
 
-      if (!isAdmin(session?.user?.role)) {
+      if (!isAdmin(user?.role)) {
         setError("Accès réservé aux administrateurs");
         await signOut({ redirect: false });
         return;

@@ -271,6 +271,13 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
                       </div>
                       <div className="py-1">
                         <Link
+                          href="/admin/guide"
+                          className="block px-4 py-2 text-sm text-brand-700 hover:bg-brand-50"
+                          onClick={() => setUserMenuOpen(false)}
+                        >
+                          Guide d&apos;utilisation
+                        </Link>
+                        <Link
                           href="/admin/parametres"
                           className="block px-4 py-2 text-sm text-brand-700 hover:bg-brand-50"
                           onClick={() => setUserMenuOpen(false)}

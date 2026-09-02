@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import Link from "next/link";
 import { Suspense } from "react";
 import prisma from "@/lib/prisma";
 import { luxeImage } from "@/lib/images";
@@ -12,9 +13,16 @@ import {
 } from "@/lib/categories";
 import { BoutiqueCatalog, type BoutiqueProduct } from "@/components/shop/BoutiqueCatalog";
 import { BOUTIQUE_CATEGORIES } from "@/lib/boutique";
+import { BoutiquePromoBar } from "@/components/shop/BoutiquePromoBar";
 import { BoutiqueHero } from "@/components/shop/BoutiqueHero";
+import { BoutiqueCollectionTiles } from "@/components/shop/BoutiqueCollectionTiles";
+import { BoutiqueEditorialSpotlight } from "@/components/shop/BoutiqueEditorialSpotlight";
+import { BoutiqueStory } from "@/components/shop/BoutiqueStory";
 import { BoutiqueSubNav } from "@/components/shop/BoutiqueSubNav";
-import { BoutiqueFeaturedRow } from "@/components/shop/BoutiqueFeaturedRow";
+import {
+  getBoutiquePageSettings,
+  pickSpotlightProductIds,
+} from "@/lib/boutique-settings";
 
 export const metadata: Metadata = {
   title: "La Boutique",
@@ -132,39 +140,70 @@ function getFallbackProducts(): BoutiqueProduct[] {
 
 export default async function BoutiquePage({ searchParams }: PageProps) {
   const params = await searchParams;
-  const { products, categoryRoots, categoryFilters } = await getCatalogData(params);
+  const [{ products, categoryRoots, categoryFilters }, boutiqueSettings] = await Promise.all([
+    getCatalogData(params),
+    getBoutiquePageSettings(),
+  ]);
 
+  const hasFilter = Boolean(params.category || params.q || params.brand);
+  const spotlightIds = pickSpotlightProductIds(products, boutiqueSettings);
+  const spotlightProducts = spotlightIds
+    .map((id) => products.find((p) => p.id === id))
+    .filter((p): p is BoutiqueProduct => Boolean(p));
   const sectionTitle = params.category
     ? categoryFilters.find((c) => c.slug === params.category)?.name ?? "Catalogue"
     : params.q
     ? "Résultats"
-    : "Tous les articles";
+    : "Composer votre look";
 
   return (
-    <div className="min-h-screen bg-white">
-      <BoutiqueHero />
+    <div className="min-h-screen bg-[#F7F5F0]">
+      {!hasFilter ? (
+        <>
+          <BoutiquePromoBar />
+          <BoutiqueHero />
+          <BoutiqueCollectionTiles roots={categoryRoots} />
+          <BoutiqueEditorialSpotlight
+            products={spotlightProducts}
+            title={boutiqueSettings.spotlightTitle}
+            buttonLabel={boutiqueSettings.spotlightButtonLabel}
+          />
+        </>
+      ) : (
+        <div className="pt-24 lg:pt-28 pb-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+          <Link
+            href="/boutique"
+            className="font-sans text-xs uppercase tracking-[0.2em] text-brand-600 hover:text-brand-950 transition-colors"
+          >
+            ← Retour à la boutique
+          </Link>
+          <Suspense fallback={<div className="h-12 mt-6" />}>
+            <BoutiqueSubNav roots={categoryRoots} />
+          </Suspense>
+        </div>
+      )}
 
-      <Suspense fallback={<div className="h-12 border-b border-brand-100 bg-white" />}>
-        <BoutiqueSubNav roots={categoryRoots} />
-      </Suspense>
-
-      <div id="catalogue" className="max-w-[1600px] mx-auto px-4 lg:px-8 py-12 lg:py-16">
-        {!params.category && !params.q && !params.brand && (
-          <BoutiqueFeaturedRow products={products} />
-        )}
-
-        <section>
-          <h2 className="font-sans text-xs uppercase tracking-[0.2em] text-brand-500 text-center mb-10">
+      <div id="catalogue" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
+        <div className="text-center mb-12 lg:mb-16">
+          <h2 className="font-display text-3xl sm:text-4xl font-light italic text-brand-950 mb-3">
             {sectionTitle}
           </h2>
-          <BoutiqueCatalog
-            products={products}
-            categories={categoryFilters}
-            hideCategoryFilter
-            variant="lancel"
-          />
-        </section>
+          {!hasFilter && (
+            <p className="font-sans text-sm text-brand-600">
+              Une sélection épurée pour un shopping fluide et élégant.
+            </p>
+          )}
+        </div>
+
+        <BoutiqueCatalog
+          products={products}
+          categories={categoryFilters}
+          hideCategoryFilter
+          variant="wix"
+        />
       </div>
+
+      {!hasFilter && <BoutiqueStory />}
     </div>
   );
 }

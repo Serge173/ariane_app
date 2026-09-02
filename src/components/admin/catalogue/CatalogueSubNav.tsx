@@ -6,6 +6,7 @@ const tabs = [
   { id: "products", label: "Produits", href: "/admin/catalogue/produits" },
   { id: "categories", label: "Catégories", href: "/admin/catalogue/categories" },
   { id: "brands", label: "Marques", href: "/admin/catalogue/marques" },
+  { id: "boutique", label: "Page boutique", href: "/admin/catalogue/boutique" },
 ] as const;
 
 export function CatalogueSubNav({ active }: { active: (typeof tabs)[number]["id"] }) {

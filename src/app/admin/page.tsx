@@ -118,6 +118,7 @@ export default async function AdminDashboard() {
 
       <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
+          { label: "Guide d'utilisation", href: "/admin/guide" },
           { label: "Catalogue boutique", href: "/admin/catalogue" },
           { label: "Ajouter un produit", href: "/admin/catalogue/produits/nouveau" },
           { label: "Voir les clients", href: "/admin/clients" },

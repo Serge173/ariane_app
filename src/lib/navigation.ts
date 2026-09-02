@@ -13,6 +13,7 @@ import {
   FolderOpen,
   UserCircle,
   ShoppingBag,
+  BookOpen,
   type LucideIcon,
 } from "lucide-react";
 
@@ -51,6 +52,7 @@ export const adminNav: AdminNavItem[] = [
       { name: "Tous les produits", href: "/admin/catalogue/produits" },
       { name: "Catégories", href: "/admin/catalogue/categories" },
       { name: "Marques", href: "/admin/catalogue/marques" },
+      { name: "Page boutique", href: "/admin/catalogue/boutique" },
     ],
   },
   {
@@ -82,6 +84,7 @@ export const adminNav: AdminNavItem[] = [
     ],
   },
   { name: "Statistiques", href: "/admin/statistiques", icon: BarChart3 },
+  { name: "Guide", href: "/admin/guide", icon: BookOpen, exact: true },
   { name: "Paramètres", href: "/admin/parametres", icon: Settings },
 ];
 

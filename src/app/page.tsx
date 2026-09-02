@@ -1,13 +1,16 @@
 import Link from "next/link";
-import { HeroSection } from "@/components/home/HeroSection";
+import { HeroSlider } from "@/components/home/HeroSlider";
 import { OffersGrid } from "@/components/home/OffersGrid";
 import { BoutiquePreviewSection } from "@/components/home/BoutiquePreviewSection";
 import { CTASection } from "@/components/home/CTASection";
+import { getHeroSlides } from "@/lib/home-hero-slides";
 
 export default function HomePage() {
+  const heroSlides = getHeroSlides();
+
   return (
     <>
-      <HeroSection />
+      <HeroSlider slides={heroSlides} />
 
       <section className="py-24 lg:py-32 bg-white">
         <div className="container-premium">
