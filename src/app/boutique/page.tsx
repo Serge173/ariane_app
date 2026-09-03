@@ -154,15 +154,15 @@ export default async function BoutiquePage({ searchParams }: PageProps) {
     ? categoryFilters.find((c) => c.slug === params.category)?.name ?? "Catalogue"
     : params.q
     ? "Résultats"
-    : "Composer votre look";
+    : boutiqueSettings.catalogue.title;
 
   return (
     <div className="min-h-screen bg-[#F7F5F0]">
       {!hasFilter ? (
         <>
-          <BoutiquePromoBar />
-          <BoutiqueHero />
-          <BoutiqueCollectionTiles roots={categoryRoots} />
+          <BoutiquePromoBar text={boutiqueSettings.promoText} />
+          <BoutiqueHero hero={boutiqueSettings.hero} />
+          <BoutiqueCollectionTiles roots={categoryRoots} collections={boutiqueSettings.collections} />
           <BoutiqueEditorialSpotlight
             products={spotlightProducts}
             title={boutiqueSettings.spotlightTitle}
@@ -190,7 +190,7 @@ export default async function BoutiquePage({ searchParams }: PageProps) {
           </h2>
           {!hasFilter && (
             <p className="font-sans text-sm text-brand-600">
-              Une sélection épurée pour un shopping fluide et élégant.
+              {boutiqueSettings.catalogue.subtitle}
             </p>
           )}
         </div>
@@ -203,7 +203,7 @@ export default async function BoutiquePage({ searchParams }: PageProps) {
         />
       </div>
 
-      {!hasFilter && <BoutiqueStory />}
+      {!hasFilter && <BoutiqueStory story={boutiqueSettings.story} />}
     </div>
   );
 }

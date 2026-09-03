@@ -3,6 +3,7 @@ import { Inter, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers/Providers";
 import { AppShell } from "@/components/layout/AppShell";
+import { getSiteSettings } from "@/lib/site-settings";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -41,16 +42,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const siteSettings = await getSiteSettings();
+
   return (
     <html lang="fr" className={`${inter.variable} ${cormorant.variable}`}>
       <body className="min-h-screen flex flex-col">
         <Providers>
-          <AppShell>{children}</AppShell>
+          <AppShell siteSettings={siteSettings}>{children}</AppShell>
         </Providers>
       </body>
     </html>

@@ -7,8 +7,7 @@ import { ArrowRight } from "lucide-react";
 import { ProductImage } from "@/components/ui/ProductImage";
 import { Reveal } from "@/components/motion/Reveal";
 import { StaggerReveal } from "@/components/motion/StaggerReveal";
-
-const PREVIEW_COUNT = 4;
+import type { HomepageSettings } from "@/lib/homepage-settings";
 
 interface PreviewProduct {
   id: string;
@@ -71,7 +70,7 @@ function getFallbackProducts(): PreviewProduct[] {
   ];
 }
 
-async function getLuxeProducts(): Promise<PreviewProduct[]> {
+async function getLuxeProducts(count: number): Promise<PreviewProduct[]> {
   try {
     const products = await prisma.product.findMany({
       where: { isActive: true, productType: "LUXE" },
@@ -80,7 +79,7 @@ async function getLuxeProducts(): Promise<PreviewProduct[]> {
         brandRef: true,
       },
       orderBy: [{ isFeatured: "desc" }, { sortOrder: "asc" }, { name: "asc" }],
-      take: PREVIEW_COUNT,
+      take: count,
     });
 
     if (products.length === 0) return getFallbackProducts();
@@ -101,18 +100,21 @@ async function getLuxeProducts(): Promise<PreviewProduct[]> {
   }
 }
 
-export async function BoutiquePreviewSection() {
-  const products = await getLuxeProducts();
+export async function BoutiquePreviewSection({
+  preview,
+}: {
+  preview: HomepageSettings["boutiquePreview"];
+}) {
+  const products = await getLuxeProducts(preview.productCount);
 
   return (
     <section className="section-home lg:py-32 bg-white overflow-x-hidden">
       <div className="container-premium min-w-0">
         <Reveal className="section-home-intro">
-          <p className="text-overline mb-2.5 sm:mb-4">Boutique de luxe</p>
-          <h2 className="heading-section mb-3 sm:mb-5">Découvrez la boutique de luxe Ariane</h2>
+          <p className="text-overline mb-2.5 sm:mb-4">{preview.overline}</p>
+          <h2 className="heading-section mb-3 sm:mb-5">{preview.title}</h2>
           <p className="text-sm sm:text-base text-brand-600 leading-relaxed">
-            Une sélection raffinée de sacs, vêtements, accessoires et parfums,
-            choisis avec la même exigence que nos accompagnements.
+            {preview.intro}
           </p>
         </Reveal>
 
@@ -163,10 +165,10 @@ export async function BoutiquePreviewSection() {
 
         <div className="mt-8 sm:mt-12">
           <Link
-            href="/boutique"
+            href={preview.linkHref}
             className="link-underline font-sans text-sm uppercase tracking-wide text-brand-800 hover:text-brand-950 inline-flex items-center gap-2"
           >
-            Explorer la boutique
+            {preview.linkLabel}
             <ArrowRight className="w-4 h-4" strokeWidth={1.5} />
           </Link>
         </div>

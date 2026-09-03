@@ -1,0 +1,34 @@
+import Link from "next/link";
+import type { ReactNode } from "react";
+
+interface PageHeaderProps {
+  title: string;
+  description?: string;
+  action?: ReactNode;
+}
+
+export function PageHeader({ title, description, action }: PageHeaderProps) {
+  return (
+    <div className="admin-page-header">
+      <div className="min-w-0">
+        <h1 className="admin-page-title">{title}</h1>
+        {description ? <p className="admin-page-desc">{description}</p> : null}
+      </div>
+      {action ? <div className="shrink-0">{action}</div> : null}
+    </div>
+  );
+}
+
+export function PageHeaderLink({
+  href,
+  children,
+}: {
+  href: string;
+  children: ReactNode;
+}) {
+  return (
+    <Link href={href} className="admin-btn-primary">
+      {children}
+    </Link>
+  );
+}

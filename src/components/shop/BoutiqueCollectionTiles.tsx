@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { luxeImage } from "@/lib/images";
 import type { PublicCategoryTreeNode } from "@/lib/categories";
+import type { BoutiquePageSettings } from "@/lib/boutique-settings";
 
 const CATEGORY_IMAGES: Record<string, string> = {
   sacs: luxeImage("sac-cabas-cuir", 900),
@@ -12,21 +13,19 @@ const CATEGORY_IMAGES: Record<string, string> = {
 
 interface BoutiqueCollectionTilesProps {
   roots: PublicCategoryTreeNode[];
+  collections: BoutiquePageSettings["collections"];
 }
 
-export function BoutiqueCollectionTiles({ roots }: BoutiqueCollectionTilesProps) {
+export function BoutiqueCollectionTiles({ roots, collections }: BoutiqueCollectionTilesProps) {
   if (roots.length === 0) return null;
 
   return (
     <section className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div className="text-center max-w-2xl mx-auto mb-12 lg:mb-16">
         <h2 className="font-display text-3xl sm:text-4xl font-light italic text-brand-950 mb-4">
-          Les collections
+          {collections.title}
         </h2>
-        <p className="font-sans text-sm text-brand-600 leading-relaxed">
-          Sacs, vêtements, accessoires et parfums — une sélection pensée pour une
-          garde-robe d&apos;exception.
-        </p>
+        <p className="font-sans text-sm text-brand-600 leading-relaxed">{collections.intro}</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
@@ -48,7 +47,7 @@ export function BoutiqueCollectionTiles({ roots }: BoutiqueCollectionTilesProps)
             <div className="absolute inset-0 bg-brand-950/20 group-hover:bg-brand-950/30 transition-colors" />
             <div className="absolute inset-0 flex flex-col justify-end p-6 lg:p-8">
               <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-white/80 mb-2">
-                Collection
+                {collections.tileLabel}
               </p>
               <h3 className="font-display text-2xl lg:text-3xl font-light italic text-white">
                 {root.name}

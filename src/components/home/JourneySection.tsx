@@ -1,32 +1,27 @@
 "use client";
 
 import { StaggerReveal } from "@/components/motion/StaggerReveal";
+import type { HomepageSettings } from "@/lib/homepage-settings";
 
-const steps = [
-  { number: "01", title: "Découvrir", description: "Explorez nos accompagnements et notre univers premium" },
-  { number: "02", title: "S'orienter", description: "Répondez au questionnaire pour trouver votre formule idéale" },
-  { number: "03", title: "Réserver", description: "Choisissez votre créneau et finalisez votre réservation" },
-  { number: "04", title: "Payer", description: "Réglez en toute sécurité via Mobile Money ou carte bancaire" },
-  { number: "05", title: "Coaching", description: "Vivez votre séance et recevez vos livrables personnalisés" },
-  { number: "06", title: "Suivre", description: "Accédez à votre espace client pour votre coaching, vos commandes boutique et vos documents" },
-];
+interface JourneySectionProps {
+  journey: HomepageSettings["journey"];
+}
 
-export function JourneySection() {
+export function JourneySection({ journey }: JourneySectionProps) {
   return (
     <section className="section-home bg-brand-50 overflow-x-hidden">
       <div className="container-premium min-w-0">
         <div className="grid lg:grid-cols-12 gap-6 lg:gap-16 items-start">
           <div className="lg:col-span-4 lg:sticky lg:top-28 min-w-0">
-            <p className="text-overline mb-2.5 sm:mb-4">Votre parcours</p>
-            <h2 className="heading-section mb-3 sm:mb-5">De la découverte à la transformation</h2>
+            <p className="text-overline mb-2.5 sm:mb-4">{journey.overline}</p>
+            <h2 className="heading-section mb-3 sm:mb-5">{journey.title}</h2>
             <p className="text-sm sm:text-base text-brand-600 leading-relaxed">
-              Un parcours fluide et premium, pensé pour vous accompagner à chaque étape
-              de votre évolution image.
+              {journey.intro}
             </p>
           </div>
 
           <StaggerReveal className="lg:col-span-8 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 gap-2.5 sm:gap-4 lg:gap-x-8 lg:gap-y-6 w-full min-w-0">
-            {steps.map((step) => (
+            {journey.steps.map((step) => (
               <div
                 key={step.number}
                 className="card-premium bg-white border border-brand-100 p-2.5 sm:p-4 lg:p-5 min-w-0 w-full"

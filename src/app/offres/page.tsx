@@ -12,6 +12,7 @@ import {
 import { CatalogCategoryGrid } from "@/components/shop/BoutiqueCategoryGrid";
 import { CatalogSearch } from "@/components/shop/BoutiqueSearch";
 import { mapDbOfferProducts, OffersCatalog } from "@/components/shop/OffersCatalog";
+import { getPublicPagesSettings } from "@/lib/public-pages-settings";
 
 export const metadata: Metadata = {
   title: "Nos prestations",
@@ -74,20 +75,21 @@ async function getOffersData(params: { q?: string; category?: string }) {
 
 export default async function OffresPage({ searchParams }: PageProps) {
   const params = await searchParams;
-  const { products, categoryRoots, categoryFilters } = await getOffersData(params);
+  const [{ products, categoryRoots, categoryFilters }, page] = await Promise.all([
+    getOffersData(params),
+    getPublicPagesSettings(),
+  ]);
+  const content = page.offers;
 
   return (
     <div className="min-h-screen pt-24 pb-20">
       <div className="container-premium">
         <div className="text-center max-w-2xl mx-auto mb-12">
-          <p className="text-overline mb-4">Accompagnements</p>
-          <h1 className="heading-display mb-6">Nos formules</h1>
-          <p className="text-brand-600 leading-relaxed mb-8">
-            Quatre niveaux d&apos;accompagnement pensés pour répondre à chaque ambition.
-            Chaque formule inclut un suivi personnalisé dans votre espace client.
-          </p>
-          <Link href="/orientation" className="btn-secondary inline-flex items-center gap-2">
-            Aide au choix
+          <p className="text-overline mb-4">{content.overline}</p>
+          <h1 className="heading-display mb-6">{content.title}</h1>
+          <p className="text-brand-600 leading-relaxed mb-8">{content.intro}</p>
+          <Link href={content.helpLinkHref} className="btn-secondary inline-flex items-center gap-2">
+            {content.helpLinkLabel}
           </Link>
         </div>
 
@@ -108,13 +110,10 @@ export default async function OffresPage({ searchParams }: PageProps) {
         <OffersCatalog products={products} />
 
         <div className="mt-20 text-center max-w-xl mx-auto">
-          <h2 className="font-display text-2xl mb-4">Entreprises & Sur-mesure</h2>
-          <p className="text-brand-600 mb-6">
-            Ateliers en entreprise, accompagnements dirigeants et projets d&apos;image sur mesure.
-            Contactez-nous pour une proposition personnalisée.
-          </p>
-          <Link href="/contact?type=entreprise" className="btn-primary">
-            Demander une proposition
+          <h2 className="font-display text-2xl mb-4">{content.enterpriseTitle}</h2>
+          <p className="text-brand-600 mb-6">{content.enterpriseIntro}</p>
+          <Link href={content.enterpriseCtaHref} className="btn-primary">
+            {content.enterpriseCtaLabel}
           </Link>
         </div>
       </div>

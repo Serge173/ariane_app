@@ -8,11 +8,16 @@ import { Menu, X, ShoppingBag } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCartStore } from "@/lib/store/cart";
 import { isAdmin } from "@/lib/auth";
-import { getDashboardPath, publicNav } from "@/lib/navigation";
+import { getDashboardPath } from "@/lib/navigation";
+import type { SiteSettings } from "@/lib/site-settings";
 import { ProfileAvatar } from "@/components/ui/ProfileAvatar";
 import { MobileNav } from "@/components/layout/MobileNav";
 
-export function Header() {
+interface HeaderProps {
+  siteSettings: SiteSettings;
+}
+
+export function Header({ siteSettings }: HeaderProps) {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const [isOpen, setIsOpen] = useState(false);
@@ -22,6 +27,7 @@ export function Header() {
   const itemCount = useCartStore((s) => s.itemCount());
   const pulseAt = useCartStore((s) => s.pulseAt);
   const [pulse, setPulse] = useState(false);
+  const navLinks = siteSettings.nav;
 
   useEffect(() => {
     if (!pulseAt) return;
@@ -67,17 +73,17 @@ export function Header() {
           <div className="flex items-center h-14 sm:h-16 lg:h-[4.25rem] gap-2 lg:gap-0">
             <Link href="/" className="group shrink-0 min-w-0" onClick={() => setIsOpen(false)}>
               <span className="font-display text-lg sm:text-xl lg:text-2xl font-light tracking-wide text-brand-950 leading-tight">
-                Conseil en Image
+                {siteSettings.brand.title}
               </span>
               <span className="block text-[9px] sm:text-[10px] uppercase tracking-ultra text-brand-600 -mt-0.5">
-                avec Ariane
+                {siteSettings.brand.subtitle}
               </span>
             </Link>
 
             <div className="hidden lg:block flex-1 min-w-10 xl:min-w-16" aria-hidden />
 
             <nav className="hidden lg:flex items-center gap-3 xl:gap-4 shrink-0 mr-5 xl:mr-8">
-              {publicNav.map((item) => {
+              {navLinks.map((item) => {
                 const isActive =
                   item.href === "/"
                     ? pathname === "/"
@@ -88,7 +94,7 @@ export function Header() {
                     key={item.href}
                     href={item.href}
                     className={
-                      "highlight" in item && item.highlight
+                      item.highlight
                         ? "nav-link-highlight shrink-0"
                         : cn("nav-link shrink-0", isActive && "nav-link-active")
                     }
@@ -171,6 +177,7 @@ export function Header() {
         accountLabel={accountLabel}
         itemCount={itemCount}
         mounted={mounted}
+        navLinks={navLinks}
       />
     </>
   );

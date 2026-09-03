@@ -12,19 +12,22 @@ import {
   RISE_PX,
   STAGGER_HERO_TEXT,
 } from "@/lib/motion";
-import { HERO_PRIMARY_CTA, type HeroSlide } from "@/lib/home-hero-slides";
+import type { HeroSlideSettings } from "@/lib/homepage-settings";
 
 const AUTOPLAY_MS = 7000;
 
 interface HeroSliderProps {
-  slides: HeroSlide[];
+  slides: HeroSlideSettings[];
+  primaryCta: { href: string; label: string };
 }
 
 function HeroSlideText({
   slide,
+  primaryCta,
   isFirstLoad,
 }: {
-  slide: HeroSlide;
+  slide: HeroSlideSettings;
+  primaryCta: { href: string; label: string };
   isFirstLoad: boolean;
 }) {
   const reduced = useReducedMotion();
@@ -84,10 +87,10 @@ function HeroSlideText({
           }}
         >
           <Link
-            href={HERO_PRIMARY_CTA.href}
+            href={primaryCta.href}
             className="btn-primary mt-6 sm:mt-10 inline-flex items-center gap-2 max-w-[16rem] sm:max-w-none text-center leading-snug"
           >
-            {HERO_PRIMARY_CTA.label}
+            {primaryCta.label}
             <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={1.5} />
           </Link>
         </motion.div>
@@ -96,7 +99,7 @@ function HeroSlideText({
   );
 }
 
-export function HeroSlider({ slides }: HeroSliderProps) {
+export function HeroSlider({ slides, primaryCta }: HeroSliderProps) {
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
   const [useHeroDuration, setUseHeroDuration] = useState(true);
@@ -174,7 +177,7 @@ export function HeroSlider({ slides }: HeroSliderProps) {
 
       <div className="relative z-10 flex h-full items-end sm:items-center">
         <div className="container-premium w-full pt-[4.75rem] pb-9 sm:pt-32 sm:pb-20">
-          <HeroSlideText slide={current} isFirstLoad={useHeroDuration} />
+          <HeroSlideText slide={current} primaryCta={primaryCta} isFirstLoad={useHeroDuration} />
         </div>
       </div>
 

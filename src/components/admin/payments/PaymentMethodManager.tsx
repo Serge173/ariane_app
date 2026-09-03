@@ -36,6 +36,17 @@ interface PaymentMethodRow {
 
 const CUSTOM_TEMPLATE = "__custom__";
 
+async function readJsonError(res: Response): Promise<string> {
+  try {
+    const text = await res.text();
+    if (!text) return `Erreur serveur (${res.status})`;
+    const data = JSON.parse(text) as { error?: string };
+    return data.error || `Erreur serveur (${res.status})`;
+  } catch {
+    return `Erreur serveur (${res.status})`;
+  }
+}
+
 const emptyForm = {
   name: "",
   code: "",
@@ -157,8 +168,8 @@ export function PaymentMethodManager({ initial }: { initial: PaymentMethodRow[] 
       const { url } = await res.json();
       setField("logoUrl", url);
     } else {
-      const d = await res.json();
-      showError(d.error || "Erreur upload", "Upload échoué");
+      const d = await res.json().catch(() => null);
+      showError(d?.error || "Erreur upload", "Upload échoué");
     }
   };
 
@@ -192,8 +203,7 @@ export function PaymentMethodManager({ initial }: { initial: PaymentMethodRow[] 
       reset();
       refresh();
     } else {
-      const d = await res.json();
-      showError(d.error || "Erreur");
+      showError(await readJsonError(res));
     }
   };
 
@@ -248,8 +258,7 @@ export function PaymentMethodManager({ initial }: { initial: PaymentMethodRow[] 
         showSuccess("Le mode de paiement a été supprimé.", "Supprimé");
         refresh();
       } else {
-        const d = await res.json();
-        showError(d.error || "Erreur");
+        showError(await readJsonError(res));
       }
     }, "Supprimer le mode");
   };

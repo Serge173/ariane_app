@@ -311,3 +311,246 @@
     transform: none !important;
   }
 }
+
+/* ── Admin instrument (scoped) ── */
+@layer components {
+  [data-admin] {
+    --admin-duration: 160ms;
+    --admin-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --admin-bg: #fafafa;
+    --admin-surface: #ffffff;
+    --admin-ink: #1a1414;
+    --admin-muted: #6f6863;
+    --admin-line: #e8e4df;
+    --admin-attention: #f8e8ea;
+    --admin-accent: #9e1b2a;
+    --admin-accent-hover: #7f1522;
+  }
+
+  [data-admin] .admin-page-header {
+    @apply flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6;
+  }
+
+  [data-admin] .admin-page-title {
+    @apply font-sans text-[22px] font-medium leading-tight;
+    color: var(--admin-ink);
+  }
+
+  [data-admin] .admin-page-desc {
+    @apply font-sans text-sm mt-1;
+    color: var(--admin-muted);
+  }
+
+  [data-admin] .admin-btn-primary {
+    @apply inline-flex items-center justify-center px-4 py-2 text-white font-sans text-xs font-medium uppercase tracking-wide transition-colors;
+    background-color: var(--admin-accent);
+    transition-duration: var(--admin-duration);
+    transition-timing-function: var(--admin-ease);
+  }
+
+  [data-admin] .admin-btn-primary:hover {
+    background-color: var(--admin-accent-hover);
+  }
+
+  [data-admin] .admin-table-wrap {
+    @apply overflow-x-auto;
+    background-color: var(--admin-surface);
+    border: 1px solid var(--admin-line);
+  }
+
+  [data-admin] .admin-table {
+    @apply w-full text-sm font-sans;
+  }
+
+  [data-admin] .admin-table thead tr {
+    @apply text-left;
+    border-bottom: 1px solid var(--admin-line);
+  }
+
+  [data-admin] .admin-table th {
+    @apply py-2.5 px-4 text-[11px] font-medium uppercase tracking-wide;
+    color: var(--admin-muted);
+  }
+
+  [data-admin] .admin-table-row {
+    @apply transition-colors;
+    border-bottom: 1px solid color-mix(in srgb, var(--admin-line) 70%, transparent);
+    transition-duration: var(--admin-duration);
+  }
+
+  [data-admin] .admin-table-row--link {
+    @apply cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset;
+    --tw-ring-color: var(--admin-accent);
+  }
+
+  [data-admin] .admin-table-row--link:hover {
+    background-color: var(--admin-bg);
+  }
+
+  [data-admin] .admin-table td {
+    @apply py-2.5 px-4 h-10 align-middle;
+    color: var(--admin-ink);
+  }
+
+  [data-admin] .admin-status {
+    @apply inline-flex items-center gap-2 text-xs;
+    color: var(--admin-ink);
+  }
+
+  [data-admin] .admin-status-dot {
+    @apply w-1.5 h-1.5 rounded-full shrink-0;
+    background-color: var(--admin-muted);
+  }
+
+  [data-admin] .admin-status--attention .admin-status-dot {
+    background-color: var(--admin-accent);
+  }
+
+  [data-admin] .admin-status--attention {
+    @apply px-2 py-0.5 rounded-sm;
+    background-color: var(--admin-attention);
+  }
+
+  [data-admin] .admin-status--ink .admin-status-dot {
+    background-color: var(--admin-ink);
+  }
+
+  [data-admin] .admin-status--muted {
+    @apply line-through;
+    color: var(--admin-muted);
+    text-decoration-color: var(--admin-line);
+  }
+
+  [data-admin] .admin-empty {
+    @apply px-6 py-16 text-center;
+    background-color: var(--admin-surface);
+    border: 1px solid var(--admin-line);
+  }
+
+  [data-admin] .admin-empty-title {
+    @apply font-sans text-sm font-medium;
+    color: var(--admin-ink);
+  }
+
+  [data-admin] .admin-empty-desc {
+    @apply font-sans text-sm mt-1;
+    color: var(--admin-muted);
+  }
+
+  [data-admin] .admin-kpi {
+    @apply px-5 py-4 block;
+    background-color: var(--admin-surface);
+    border: 1px solid var(--admin-line);
+  }
+
+  [data-admin] .admin-kpi--link {
+    @apply transition-colors;
+    transition-duration: var(--admin-duration);
+  }
+
+  [data-admin] .admin-kpi--link:hover {
+    background-color: var(--admin-bg);
+  }
+
+  [data-admin] .admin-kpi-label {
+    @apply text-[10px] uppercase tracking-widest mb-1;
+    color: var(--admin-muted);
+  }
+
+  [data-admin] .admin-kpi-value {
+    @apply text-xl font-medium font-sans inline-flex items-center gap-2;
+    color: var(--admin-ink);
+  }
+
+  [data-admin] .admin-kpi-value--highlight {
+    color: var(--admin-accent);
+  }
+
+  [data-admin] .admin-kpi-dot {
+    @apply w-1.5 h-1.5 rounded-full shrink-0;
+    background-color: var(--admin-accent);
+  }
+
+  [data-admin] .admin-panel {
+    @apply p-5;
+    background-color: var(--admin-surface);
+    border: 1px solid var(--admin-line);
+  }
+
+  [data-admin] .admin-panel-head {
+    @apply flex items-center justify-between mb-4 pb-3;
+    border-bottom: 1px solid var(--admin-line);
+  }
+
+  [data-admin] .admin-panel-title {
+    @apply font-sans text-sm font-medium;
+    color: var(--admin-ink);
+  }
+
+  [data-admin] .admin-panel-link {
+    @apply text-xs transition-colors;
+    color: var(--admin-muted);
+    transition-duration: var(--admin-duration);
+  }
+
+  [data-admin] .admin-panel-link:hover {
+    color: var(--admin-accent);
+  }
+
+  [data-admin] .admin-dash-row {
+    @apply flex items-center justify-between py-3 last:border-0 transition-colors -mx-2 px-2;
+    border-bottom: 1px solid color-mix(in srgb, var(--admin-line) 60%, transparent);
+    transition-duration: var(--admin-duration);
+  }
+
+  [data-admin] .admin-dash-row:hover {
+    background-color: var(--admin-bg);
+  }
+
+  [data-admin] .admin-dash-row-primary {
+    @apply text-sm font-medium truncate;
+    color: var(--admin-ink);
+  }
+
+  [data-admin] .admin-dash-row-secondary {
+    @apply text-xs mt-0.5 truncate;
+    color: var(--admin-muted);
+  }
+
+  [data-admin] .admin-dash-row-meta {
+    @apply text-sm font-medium;
+    color: var(--admin-ink);
+  }
+
+  [data-admin] .admin-detail-grid {
+    @apply grid lg:grid-cols-3 gap-6;
+  }
+
+  [data-admin] .admin-detail-card {
+    @apply p-5;
+    background-color: var(--admin-surface);
+    border: 1px solid var(--admin-line);
+  }
+
+  [data-admin] .admin-detail-card-title {
+    @apply font-sans text-xs uppercase tracking-wide mb-4;
+    color: var(--admin-muted);
+  }
+
+  [data-admin] .admin-timeline-item {
+    @apply flex gap-3 pb-4 last:pb-0;
+  }
+
+  [data-admin] .admin-timeline-dot {
+    @apply w-2 h-2 rounded-full mt-1.5 shrink-0;
+    background-color: var(--admin-ink);
+  }
+
+  [data-admin] .admin-timeline-dot--active {
+    background-color: var(--admin-accent);
+  }
+
+  [data-admin] .heading-section {
+    @apply font-sans text-[22px] font-medium tracking-normal;
+  }
+}

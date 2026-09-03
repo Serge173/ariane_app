@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import { formatDate } from "@/lib/utils";
 import { IMAGES } from "@/lib/images";
 import { ProductImage } from "@/components/ui/ProductImage";
+import { getPublicPagesSettings } from "@/lib/public-pages-settings";
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -22,21 +23,20 @@ async function getPosts() {
 }
 
 export default async function BlogPage() {
-  const posts = await getPosts();
+  const [posts, page] = await Promise.all([getPosts(), getPublicPagesSettings()]);
+  const content = page.blog;
 
   return (
     <div className="min-h-screen pt-24 pb-20">
       <div className="container-premium">
         <div className="text-center max-w-2xl mx-auto mb-16">
-          <p className="text-overline mb-4">Blog</p>
-          <h1 className="heading-display mb-6">Expertise & Inspiration</h1>
-          <p className="text-brand-600">
-            Conseils en image, colorimétrie, leadership visuel et communication par l&apos;image.
-          </p>
+          <p className="text-overline mb-4">{content.overline}</p>
+          <h1 className="heading-display mb-6">{content.title}</h1>
+          <p className="text-brand-600">{content.intro}</p>
         </div>
 
         {posts.length === 0 ? (
-          <p className="text-center text-brand-500">Articles à venir prochainement.</p>
+          <p className="text-center text-brand-500">{content.emptyMessage}</p>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {posts.map((post) => (

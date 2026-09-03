@@ -14,6 +14,7 @@ import {
   UserCircle,
   ShoppingBag,
   BookOpen,
+  PenLine,
   type LucideIcon,
 } from "lucide-react";
 
@@ -44,6 +45,22 @@ export const adminNav: AdminNavItem[] = [
   { name: "Commandes", href: "/admin/commandes", icon: CreditCard },
   { name: "Clients", href: "/admin/clients", icon: Users },
   { name: "Rendez-vous", href: "/admin/rendez-vous", icon: Calendar },
+  {
+    name: "Contenu site",
+    href: "/admin/contenu",
+    icon: PenLine,
+    children: [
+      { name: "Page d'accueil", href: "/admin/contenu/accueil" },
+      { name: "Navigation & footer", href: "/admin/contenu/site" },
+      { name: "À propos", href: "/admin/contenu/a-propos" },
+      { name: "Prestations", href: "/admin/contenu/prestations" },
+      { name: "Orientation", href: "/admin/contenu/orientation" },
+      { name: "Blog", href: "/admin/contenu/blog" },
+      { name: "FAQ", href: "/admin/contenu/faq" },
+      { name: "Contact", href: "/admin/contenu/contact" },
+      { name: "Pages légales", href: "/admin/contenu/legal" },
+    ],
+  },
   {
     name: "Catalogue boutique",
     href: "/admin/catalogue",
@@ -120,6 +137,16 @@ export function isPaymentsSection(pathname: string): boolean {
   return pathname.startsWith("/admin/paiements");
 }
 
+export function isContentSection(pathname: string): boolean {
+  return pathname.startsWith("/admin/contenu");
+}
+
 export function isExpandableAdminSection(pathname: string): boolean {
-  return isOffresSection(pathname) || isCatalogueSection(pathname) || isBlogSection(pathname) || isPaymentsSection(pathname);
+  return (
+    isOffresSection(pathname) ||
+    isCatalogueSection(pathname) ||
+    isBlogSection(pathname) ||
+    isPaymentsSection(pathname) ||
+    isContentSection(pathname)
+  );
 }

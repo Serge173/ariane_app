@@ -5,26 +5,26 @@ import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 import { BoutiquePreviewSection } from "@/components/home/BoutiquePreviewSection";
 import { CTASection } from "@/components/home/CTASection";
 import { OffersSection } from "@/components/home/HomeSections";
-import { getHeroSlides } from "@/lib/home-hero-slides";
+import { getHomepageSettings } from "@/lib/homepage-settings";
 
-export default function HomePage() {
-  const heroSlides = getHeroSlides();
+export default async function HomePage() {
+  const homepage = await getHomepageSettings();
 
   return (
     <>
-      <HeroSlider slides={heroSlides} />
+      <HeroSlider slides={homepage.hero.slides} primaryCta={homepage.hero.primaryCta} />
 
-      <JourneySection />
+      <JourneySection journey={homepage.journey} />
 
-      <OffersSection>
+      <OffersSection intro={homepage.offersSection}>
         <OffersGrid />
       </OffersSection>
 
-      <TestimonialsSection />
+      <TestimonialsSection testimonials={homepage.testimonials} />
 
-      <BoutiquePreviewSection />
+      <BoutiquePreviewSection preview={homepage.boutiquePreview} />
 
-      <CTASection />
+      <CTASection cta={homepage.cta} />
     </>
   );
 }

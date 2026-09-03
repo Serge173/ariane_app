@@ -24,32 +24,18 @@ export async function PATCH(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { spotlightTitle, spotlightButtonLabel, spotlightProductIds } = body;
-
-    if (spotlightTitle !== undefined && !String(spotlightTitle).trim()) {
-      return jsonError("Le titre de la section est requis");
-    }
-    if (spotlightButtonLabel !== undefined && !String(spotlightButtonLabel).trim()) {
-      return jsonError("Le libellé du bouton est requis");
-    }
     if (
-      spotlightProductIds !== undefined &&
-      (!Array.isArray(spotlightProductIds) ||
-        spotlightProductIds.some((id: unknown) => typeof id !== "string"))
+      body.spotlightProductIds !== undefined &&
+      (!Array.isArray(body.spotlightProductIds) ||
+        body.spotlightProductIds.some((id: unknown) => typeof id !== "string"))
     ) {
       return jsonError("Sélection de produits invalide");
     }
-    if (Array.isArray(spotlightProductIds) && spotlightProductIds.length > 2) {
+    if (Array.isArray(body.spotlightProductIds) && body.spotlightProductIds.length > 2) {
       return jsonError("Maximum 2 produits pour la section");
     }
 
-    const updated = await updateBoutiquePageSettings({
-      spotlightTitle: spotlightTitle !== undefined ? String(spotlightTitle) : undefined,
-      spotlightButtonLabel:
-        spotlightButtonLabel !== undefined ? String(spotlightButtonLabel) : undefined,
-      spotlightProductIds: Array.isArray(spotlightProductIds) ? spotlightProductIds : undefined,
-    });
-
+    const updated = await updateBoutiquePageSettings(body);
     return NextResponse.json(updated);
   } catch {
     return jsonError("Impossible d'enregistrer les paramètres boutique", 500);

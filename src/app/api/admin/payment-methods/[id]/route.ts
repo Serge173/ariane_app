@@ -21,6 +21,7 @@ export async function PATCH(req: NextRequest, ctx: Ctx) {
   const { error } = await requireAdmin();
   if (error) return error;
 
+  try {
   const { id } = await ctx.params;
   const existing = await prisma.paymentMethodConfig.findUnique({ where: { id } });
   if (!existing) return jsonError("Mode de paiement introuvable", 404);
@@ -81,13 +82,22 @@ export async function PATCH(req: NextRequest, ctx: Ctx) {
   });
 
   return NextResponse.json(method);
+  } catch (err) {
+    console.error("[PATCH /api/admin/payment-methods/[id]]", err);
+    return jsonError("Impossible de mettre à jour le mode de paiement", 500);
+  }
 }
 
 export async function DELETE(_req: NextRequest, ctx: Ctx) {
   const { error } = await requireAdmin();
   if (error) return error;
 
+  try {
   const { id } = await ctx.params;
   await prisma.paymentMethodConfig.delete({ where: { id } });
   return NextResponse.json({ deleted: true });
+  } catch (err) {
+    console.error("[DELETE /api/admin/payment-methods/[id]]", err);
+    return jsonError("Impossible de supprimer le mode de paiement", 500);
+  }
 }

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect } from "react";
 import { ArrowUpRight, ShoppingBag } from "lucide-react";
-import { publicNav } from "@/lib/navigation";
+import type { SiteNavLink } from "@/lib/site-settings";
 import { ProfileAvatar } from "@/components/ui/ProfileAvatar";
 
 interface MobileNavProps {
@@ -16,6 +16,7 @@ interface MobileNavProps {
   accountLabel: string;
   itemCount: number;
   mounted: boolean;
+  navLinks: SiteNavLink[];
 }
 
 export function MobileNav({
@@ -26,6 +27,7 @@ export function MobileNav({
   accountLabel,
   itemCount,
   mounted,
+  navLinks,
 }: MobileNavProps) {
   useEffect(() => {
     if (!open) return;
@@ -38,8 +40,8 @@ export function MobileNav({
 
   if (!open) return null;
 
-  const mainLinks = publicNav.filter((item) => !("highlight" in item && item.highlight));
-  const boutiqueLink = publicNav.find((item) => "highlight" in item && item.highlight);
+  const mainLinks = navLinks.filter((item) => !item.highlight);
+  const boutiqueLink = navLinks.find((item) => item.highlight);
 
   return (
     <div className="lg:hidden fixed inset-0 z-40" role="dialog" aria-modal="true" aria-label="Menu">

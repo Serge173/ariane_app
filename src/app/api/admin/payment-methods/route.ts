@@ -22,6 +22,7 @@ export async function POST(req: NextRequest) {
   const { error } = await requireAdmin();
   if (error) return error;
 
+  try {
   const body = await req.json();
   const {
     name,
@@ -81,4 +82,8 @@ export async function POST(req: NextRequest) {
   });
 
   return NextResponse.json(method, { status: 201 });
+  } catch (err) {
+    console.error("[POST /api/admin/payment-methods]", err);
+    return jsonError("Impossible d'enregistrer le mode de paiement", 500);
+  }
 }

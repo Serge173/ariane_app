@@ -3,41 +3,25 @@
 import { cn } from "@/lib/utils";
 import { Reveal } from "@/components/motion/Reveal";
 import { StaggerReveal } from "@/components/motion/StaggerReveal";
+import type { HomepageSettings } from "@/lib/homepage-settings";
 
-const testimonials = [
-  {
-    name: "Marie K.",
-    role: "Directrice marketing",
-    content: "Une transformation remarquable. Ariane a su comprendre mes enjeux professionnels et m'a guidée avec une expertise rare.",
-    rating: 5,
-  },
-  {
-    name: "Fatou D.",
-    role: "Entrepreneure",
-    content: "Le parcours Gold a dépassé mes attentes. Mon image reflète enfin qui je suis vraiment.",
-    rating: 5,
-  },
-  {
-    name: "Aminata B.",
-    role: "Cadre supérieure",
-    content: "Professionnalisme, écoute et résultats concrets. Je recommande vivement à toute femme ambitieuse.",
-    rating: 5,
-  },
-];
+interface TestimonialsSectionProps {
+  testimonials: HomepageSettings["testimonials"];
+}
 
-export function TestimonialsSection() {
+export function TestimonialsSection({ testimonials }: TestimonialsSectionProps) {
   return (
     <section className="section-home bg-brand-950 text-white overflow-x-hidden">
       <div className="container-premium min-w-0">
         <Reveal className="section-home-intro">
-          <p className="text-overline text-brand-400 mb-2.5 sm:mb-4">Témoignages</p>
-          <h2 className="heading-section text-white mb-0 sm:mb-2">Ce qu&apos;elles en disent</h2>
+          <p className="text-overline text-brand-400 mb-2.5 sm:mb-4">{testimonials.overline}</p>
+          <h2 className="heading-section text-white mb-0 sm:mb-2">{testimonials.title}</h2>
         </Reveal>
 
         <StaggerReveal className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-8 w-full min-w-0">
-          {testimonials.map((t, index) => (
+          {testimonials.items.map((t, index) => (
             <div
-              key={t.name}
+              key={`${t.name}-${index}`}
               className={cn(
                 "border border-brand-800 p-3.5 sm:p-5 lg:p-8 min-w-0 w-full",
                 index === 2 && "sm:col-span-2 lg:col-span-1 sm:max-w-md sm:mx-auto lg:max-w-none lg:mx-0"

@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma";
 import { formatDate } from "@/lib/utils";
 import { IMAGES } from "@/lib/images";
 import { renderBlogContent } from "@/lib/blog";
+import { getPublicPagesSettings } from "@/lib/public-pages-settings";
 import { ProductImage } from "@/components/ui/ProductImage";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
@@ -51,8 +52,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
-  const post = await getPost(slug);
+  const [post, pageSettings] = await Promise.all([getPost(slug), getPublicPagesSettings()]);
   if (!post) notFound();
+  const blogShell = pageSettings.blog;
 
   const paragraphs = renderBlogContent(post.content);
   const related = await getRelatedPosts(post.id, post.tags);
@@ -120,19 +122,17 @@ export default async function BlogPostPage({ params }: Props) {
         </div>
 
         <footer className="mt-16 pt-10 border-t border-brand-100">
-          <p className="text-overline mb-2">Conseil en Image avec Ariane</p>
-          <p className="text-brand-600 mb-6">
-            Envie d&apos;aller plus loin ? Découvrez nos accompagnements personnalisés.
-          </p>
-          <Link href="/offres" className="btn-primary inline-flex items-center gap-2 text-xs">
-            Voir nos prestations
+          <p className="text-overline mb-2">{blogShell.articleFooterOverline}</p>
+          <p className="text-brand-600 mb-6">{blogShell.articleFooterText}</p>
+          <Link href={blogShell.articleFooterCtaHref} className="btn-primary inline-flex items-center gap-2 text-xs">
+            {blogShell.articleFooterCtaLabel}
             <ArrowRight className="w-4 h-4" />
           </Link>
         </footer>
 
         {related.length > 0 && (
           <section className="mt-20">
-            <h2 className="font-display text-2xl mb-8">Articles similaires</h2>
+            <h2 className="font-display text-2xl mb-8">{blogShell.relatedTitle}</h2>
             <div className="grid sm:grid-cols-3 gap-6">
               {related.map((item) => (
                 <Link

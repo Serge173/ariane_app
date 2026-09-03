@@ -23,9 +23,18 @@ const config: Config = {
           950: "#28241f",
         },
         accent: {
-          DEFAULT: "#9B1B30",
-          light: "#B83248",
-          dark: "#7A1525",
+          DEFAULT: "#9E1B2A",
+          light: "#B4232C",
+          dark: "#7F1522",
+          hover: "#7F1522",
+        },
+        admin: {
+          bg: "#FAFAFA",
+          surface: "#FFFFFF",
+          ink: "#1A1414",
+          muted: "#6F6863",
+          line: "#E8E4DF",
+          attention: "#F8E8EA",
         },
         surface: {
           DEFAULT: "#FFFFFF",
