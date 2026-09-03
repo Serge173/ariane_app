@@ -94,7 +94,6 @@ export const publicNav = [
   { name: "Orientation", href: "/orientation" },
   { name: "À propos", href: "/a-propos" },
   { name: "Blog", href: "/blog" },
-  { name: "Contact", href: "/contact" },
   { name: "Boutique", href: "/boutique", highlight: true },
 ];
 

@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, ArrowLeft, Check } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { DURATION, EASE_COUTURE, EASE_EXIT, RISE_PX } from "@/lib/motion";
 
 interface QuestionOption {
   value: string;
@@ -121,10 +122,24 @@ function calculateRecommendation(answers: Record<string, string>): string {
   return Object.entries(scores).sort(([, a], [, b]) => b - a)[0][0];
 }
 
+const fadeVariants = (reduced: boolean | null) => ({
+  initial: { opacity: 0, y: reduced ? 0 : 8 },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: reduced ? 0.15 : DURATION.short, ease: EASE_COUTURE },
+  },
+  exit: {
+    opacity: 0,
+    transition: { duration: reduced ? 0.15 : DURATION.short, ease: EASE_EXIT },
+  },
+});
+
 export default function OrientationPage() {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [result, setResult] = useState<string | null>(null);
+  const reduced = useReducedMotion();
 
   const currentQuestion = questions[step];
   const progress = ((step + 1) / questions.length) * 100;
@@ -134,7 +149,7 @@ export default function OrientationPage() {
     setAnswers(newAnswers);
 
     if (step < questions.length - 1) {
-      setTimeout(() => setStep(step + 1), 300);
+      setTimeout(() => setStep(step + 1), 240);
     } else {
       const recommendation = calculateRecommendation(newAnswers);
       setResult(recommendation);
@@ -156,8 +171,15 @@ export default function OrientationPage() {
       <div className="min-h-screen pt-24 pb-20">
         <div className="container-premium max-w-2xl">
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, y: reduced ? 0 : RISE_PX }}
+            animate={{
+              opacity: 1,
+              y: 0,
+              transition: {
+                duration: reduced ? 0.15 : DURATION.medium,
+                ease: EASE_COUTURE,
+              },
+            }}
             className="text-center"
           >
             <div className="w-16 h-16 bg-brand-950 text-white rounded-full flex items-center justify-center mx-auto mb-8">
@@ -203,7 +225,7 @@ export default function OrientationPage() {
 
         <div className="h-1 bg-brand-100 mb-12">
           <div
-            className="h-full bg-brand-950 transition-all duration-500"
+            className="h-full bg-brand-950 transition-[width] duration-[400ms] linear"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -211,10 +233,7 @@ export default function OrientationPage() {
         <AnimatePresence mode="wait">
           <motion.div
             key={step}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.3 }}
+            {...fadeVariants(reduced)}
           >
             <h2 className="font-display text-2xl mb-8">{currentQuestion.question}</h2>
             <div className="space-y-3">
@@ -222,11 +241,12 @@ export default function OrientationPage() {
                 <button
                   key={option.value}
                   onClick={() => handleAnswer(option.value)}
-                  className={`w-full text-left p-5 border transition-all duration-300 ${
+                  className={`w-full text-left p-5 border transition-colors duration-[var(--duration-micro)] ${
                     answers[currentQuestion.id] === option.value
                       ? "border-brand-950 bg-brand-50"
                       : "border-brand-200 hover:border-brand-400 hover:bg-brand-50/50"
                   }`}
+                  style={{ transitionTimingFunction: "var(--ease-couture)" }}
                 >
                   <span className="text-sm">{option.label}</span>
                 </button>

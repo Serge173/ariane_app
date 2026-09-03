@@ -1,3 +1,9 @@
+"use client";
+
+import { cn } from "@/lib/utils";
+import { Reveal } from "@/components/motion/Reveal";
+import { StaggerReveal } from "@/components/motion/StaggerReveal";
+
 const testimonials = [
   {
     name: "Marie K.",
@@ -21,29 +27,37 @@ const testimonials = [
 
 export function TestimonialsSection() {
   return (
-    <section className="py-24 lg:py-32 bg-brand-950 text-white">
-      <div className="container-premium">
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <p className="text-overline text-brand-400 mb-4">Témoignages</p>
-          <h2 className="heading-section text-white mb-6">Ce qu&apos;elles en disent</h2>
-        </div>
+    <section className="section-home bg-brand-950 text-white overflow-x-hidden">
+      <div className="container-premium min-w-0">
+        <Reveal className="section-home-intro">
+          <p className="text-overline text-brand-400 mb-2.5 sm:mb-4">Témoignages</p>
+          <h2 className="heading-section text-white mb-0 sm:mb-2">Ce qu&apos;elles en disent</h2>
+        </Reveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {testimonials.map((t) => (
-            <div key={t.name} className="border border-brand-800 p-8">
-              <div className="flex gap-1 mb-6">
+        <StaggerReveal className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-8 w-full min-w-0">
+          {testimonials.map((t, index) => (
+            <div
+              key={t.name}
+              className={cn(
+                "border border-brand-800 p-3.5 sm:p-5 lg:p-8 min-w-0 w-full",
+                index === 2 && "sm:col-span-2 lg:col-span-1 sm:max-w-md sm:mx-auto lg:max-w-none lg:mx-0"
+              )}
+            >
+              <div className="flex gap-0.5 mb-2.5 sm:mb-4 lg:mb-6">
                 {Array.from({ length: t.rating }).map((_, i) => (
-                  <span key={i} className="text-accent-light">★</span>
+                  <span key={i} className="text-accent text-xs sm:text-sm">★</span>
                 ))}
               </div>
-              <p className="text-brand-200 leading-relaxed mb-8 italic">&ldquo;{t.content}&rdquo;</p>
-              <div>
-                <p className="font-medium">{t.name}</p>
-                <p className="text-sm text-brand-400">{t.role}</p>
+              <p className="text-xs sm:text-sm lg:text-base text-brand-200 leading-relaxed mb-3 sm:mb-5 lg:mb-8 line-clamp-4 sm:line-clamp-none">
+                &ldquo;{t.content}&rdquo;
+              </p>
+              <div className="min-w-0">
+                <p className="text-xs sm:text-sm font-medium truncate">{t.name}</p>
+                <p className="text-[10px] sm:text-xs lg:text-sm text-brand-400 truncate">{t.role}</p>
               </div>
             </div>
           ))}
-        </div>
+        </StaggerReveal>
       </div>
     </section>
   );

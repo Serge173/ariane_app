@@ -23,9 +23,9 @@ const config: Config = {
           950: "#28241f",
         },
         accent: {
-          DEFAULT: "#8B7355",
-          light: "#A69076",
-          dark: "#6B5740",
+          DEFAULT: "#9B1B30",
+          light: "#B83248",
+          dark: "#7A1525",
         },
         surface: {
           DEFAULT: "#FFFFFF",
@@ -44,9 +44,8 @@ const config: Config = {
         "30": "7.5rem",
       },
       animation: {
-        "fade-in": "fadeIn 0.6s ease-out forwards",
-        "slide-up": "slideUp 0.6s ease-out forwards",
-        "slide-in": "slideIn 0.4s ease-out forwards",
+        "fade-in": "fadeIn var(--duration-medium) var(--ease-couture) forwards",
+        "slide-up": "slideUp var(--duration-medium) var(--ease-couture) forwards",
       },
       keyframes: {
         fadeIn: {
@@ -54,12 +53,8 @@ const config: Config = {
           "100%": { opacity: "1" },
         },
         slideUp: {
-          "0%": { opacity: "0", transform: "translateY(20px)" },
+          "0%": { opacity: "0", transform: "translateY(12px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
-        },
-        slideIn: {
-          "0%": { opacity: "0", transform: "translateX(-10px)" },
-          "100%": { opacity: "1", transform: "translateX(0)" },
         },
       },
       letterSpacing: {

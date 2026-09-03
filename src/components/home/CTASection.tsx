@@ -1,27 +1,28 @@
+"use client";
+
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { Reveal } from "@/components/motion/Reveal";
 
 export function CTASection() {
   return (
-    <section className="py-24 lg:py-32 bg-white">
-      <div className="container-premium text-center max-w-3xl mx-auto">
-        <p className="text-overline mb-4">Prête à commencer ?</p>
-        <h2 className="heading-section mb-6">
-          Votre transformation commence ici
-        </h2>
-        <p className="text-brand-600 leading-relaxed mb-10 max-w-xl mx-auto">
-          Répondez à notre questionnaire d&apos;orientation en 2 minutes
-          et découvrez l&apos;accompagnement qui vous correspond.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link href="/orientation" className="btn-primary inline-flex items-center gap-2">
-            Commencer le questionnaire
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-          <Link href="/contact" className="btn-secondary">
+    <section className="section-home bg-brand-50 border-t border-brand-100">
+      <div className="container-premium max-w-2xl">
+        <Reveal>
+          <p className="text-overline mb-2.5 sm:mb-4">Une question ?</p>
+          <h2 className="heading-section mb-3 sm:mb-5">
+            Parlons de votre projet image
+          </h2>
+          <p className="text-sm sm:text-base text-brand-600 leading-relaxed mb-6 sm:mb-8">
+            Notre équipe vous répond sous 24 h pour toute demande d&apos;information
+            ou d&apos;accompagnement sur mesure.
+          </p>
+          <Link
+            href="/contact"
+            className="link-underline font-sans text-sm uppercase tracking-wide text-brand-800 hover:text-brand-950"
+          >
             Nous contacter
           </Link>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

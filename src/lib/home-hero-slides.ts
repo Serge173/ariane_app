@@ -10,6 +10,11 @@ export interface HeroSlide {
   cta?: string;
 }
 
+export const HERO_PRIMARY_CTA = {
+  href: "/reservation",
+  label: "Cliquez ici pour prendre un rdv",
+} as const;
+
 export function getHeroSlides(): HeroSlide[] {
   return [
     {
@@ -18,8 +23,8 @@ export function getHeroSlides(): HeroSlide[] {
       imageAlt: "Conseil en image premium",
       overline: "Conseil en image avec Ariane",
       title: "Révélez l'image qui vous ressemble",
-      href: "/orientation",
-      cta: "Trouver mon accompagnement",
+      href: "/reservation",
+      cta: "Cliquez ici pour prendre un rdv",
     },
     {
       id: "boutique",

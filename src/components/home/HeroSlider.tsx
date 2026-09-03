@@ -3,10 +3,16 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { HeroSlide } from "@/lib/home-hero-slides";
+import {
+  DURATION,
+  EASE_COUTURE,
+  RISE_PX,
+  STAGGER_HERO_TEXT,
+} from "@/lib/motion";
+import { HERO_PRIMARY_CTA, type HeroSlide } from "@/lib/home-hero-slides";
 
 const AUTOPLAY_MS = 7000;
 
@@ -14,14 +20,98 @@ interface HeroSliderProps {
   slides: HeroSlide[];
 }
 
+function HeroSlideText({
+  slide,
+  isFirstLoad,
+}: {
+  slide: HeroSlide;
+  isFirstLoad: boolean;
+}) {
+  const reduced = useReducedMotion();
+
+  const base = {
+    duration: reduced ? 0.15 : DURATION.medium,
+    ease: EASE_COUTURE,
+  };
+
+  const titleDuration = reduced ? 0.15 : isFirstLoad ? DURATION.hero : DURATION.medium;
+
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={slide.id}
+        className="max-w-2xl lg:max-w-3xl"
+        initial="hidden"
+        animate="visible"
+        exit={{ opacity: 0, transition: { duration: reduced ? 0.15 : DURATION.short, ease: EASE_COUTURE } }}
+        variants={{
+          hidden: {},
+          visible: {
+            transition: {
+              staggerChildren: reduced ? 0 : STAGGER_HERO_TEXT,
+            },
+          },
+        }}
+      >
+        <motion.p
+          variants={{
+            hidden: { opacity: 0, y: reduced ? 0 : RISE_PX },
+            visible: { opacity: 1, y: 0, transition: base },
+          }}
+          className="mb-2.5 sm:mb-5 font-sans text-[9px] sm:text-[10px] uppercase tracking-[0.32em] text-white/75"
+        >
+          {slide.overline}
+        </motion.p>
+
+        <motion.h1
+          variants={{
+            hidden: { opacity: 0, y: reduced ? 0 : RISE_PX },
+            visible: {
+              opacity: 1,
+              y: 0,
+              transition: { ...base, duration: titleDuration },
+            },
+          }}
+          className="font-display text-[1.45rem] leading-[1.12] sm:text-5xl lg:text-6xl font-light text-white"
+        >
+          {slide.title}
+        </motion.h1>
+
+        <motion.div
+          variants={{
+            hidden: { opacity: 0, y: reduced ? 0 : RISE_PX },
+            visible: { opacity: 1, y: 0, transition: base },
+          }}
+        >
+          <Link
+            href={HERO_PRIMARY_CTA.href}
+            className="btn-primary mt-6 sm:mt-10 inline-flex items-center gap-2 max-w-[16rem] sm:max-w-none text-center leading-snug"
+          >
+            {HERO_PRIMARY_CTA.label}
+            <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={1.5} />
+          </Link>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
 export function HeroSlider({ slides }: HeroSliderProps) {
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [useHeroDuration, setUseHeroDuration] = useState(true);
+  const reduced = useReducedMotion();
   const count = slides.length;
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setUseHeroDuration(false), 1200);
+    return () => window.clearTimeout(timer);
+  }, []);
 
   const goTo = useCallback(
     (index: number) => {
       if (count === 0) return;
+      setUseHeroDuration(false);
       setActive((index + count) % count);
     },
     [count]
@@ -41,75 +131,65 @@ export function HeroSlider({ slides }: HeroSliderProps) {
 
   return (
     <section
-      className="relative h-[100svh] min-h-[560px] w-full overflow-hidden"
+      className="relative h-[68svh] min-h-[360px] sm:h-[82svh] sm:min-h-[460px] lg:h-[100svh] lg:min-h-[560px] w-full overflow-hidden"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       aria-roledescription="carousel"
       aria-label="Mise en avant"
     >
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={current.id}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1.1, ease: "easeInOut" }}
-          className="absolute inset-0"
-        >
-          <Image
-            src={current.image}
-            alt={current.imageAlt}
-            fill
-            priority={active === 0}
-            className="object-cover object-center"
-            sizes="100vw"
-          />
-          <div className="absolute inset-0 bg-brand-950/30" />
-        </motion.div>
-      </AnimatePresence>
-
-      <div className="relative z-10 flex h-full items-center">
-        <div className="container-premium w-full pt-24 pb-20 sm:pt-28 lg:pt-32">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={current.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.7, ease: "easeOut" }}
-              className="max-w-2xl lg:max-w-3xl"
-            >
-              <p className="mb-5 font-sans text-[10px] uppercase tracking-[0.35em] text-white/75">
-                {current.overline}
-              </p>
-              <h1 className="font-display text-[2rem] leading-[1.08] sm:text-5xl lg:text-6xl font-light text-white">
-                {current.title}
-              </h1>
-              {current.href && current.cta && (
-                <Link
-                  href={current.href}
-                  className="mt-10 inline-flex items-center gap-2 border-b border-white/60 pb-1 font-sans text-xs uppercase tracking-[0.2em] text-white transition-colors hover:border-white"
-                >
-                  {current.cta}
-                  <ArrowRight className="h-3.5 w-3.5" strokeWidth={1.5} />
-                </Link>
+      {slides.map((slide, index) => {
+        const isActive = index === active;
+        return (
+          <motion.div
+            key={slide.id}
+            className="absolute inset-0"
+            animate={{ opacity: isActive ? 1 : 0 }}
+            transition={{
+              duration: reduced ? 0.15 : DURATION.medium,
+              ease: EASE_COUTURE,
+            }}
+            style={{ zIndex: isActive ? 1 : 0 }}
+            aria-hidden={!isActive}
+          >
+            <div
+              className={cn(
+                "absolute inset-0 overflow-hidden",
+                isActive && !reduced && "animate-ken-burns"
               )}
-            </motion.div>
-          </AnimatePresence>
+              key={isActive ? `kb-${slide.id}-${active}` : slide.id}
+            >
+              <Image
+                src={slide.image}
+                alt={slide.imageAlt}
+                fill
+                priority={index === 0}
+                className="object-cover object-center"
+                sizes="100vw"
+              />
+            </div>
+            <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/15 to-black/40" />
+          </motion.div>
+        );
+      })}
+
+      <div className="relative z-10 flex h-full items-end sm:items-center">
+        <div className="container-premium w-full pt-[4.75rem] pb-9 sm:pt-32 sm:pb-20">
+          <HeroSlideText slide={current} isFirstLoad={useHeroDuration} />
         </div>
       </div>
 
       {count > 1 && (
-        <div className="absolute bottom-8 left-0 right-0 z-10 flex justify-center gap-2 sm:bottom-10">
+        <div className="absolute bottom-5 sm:bottom-10 left-0 right-0 z-10 flex justify-center gap-1.5 sm:gap-2">
           {slides.map((slide, index) => (
             <button
               key={slide.id}
               type="button"
               onClick={() => goTo(index)}
               className={cn(
-                "h-px transition-all duration-500",
+                "h-px transition-[width,background-color] duration-[var(--duration-micro)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-transparent",
                 index === active ? "w-10 bg-white" : "w-6 bg-white/35 hover:bg-white/55"
               )}
+              style={{ transitionTimingFunction: "var(--ease-couture)" }}
               aria-label={`Slide ${index + 1}`}
               aria-current={index === active ? "true" : undefined}
             />

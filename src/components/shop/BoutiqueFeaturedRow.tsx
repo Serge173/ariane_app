@@ -22,15 +22,17 @@ export function BoutiqueFeaturedRow({ products }: { products: BoutiqueProduct[] 
             href={`/boutique/${product.slug}`}
             className="group shrink-0 w-[42vw] sm:w-[28vw] lg:w-[22vw] max-w-[280px]"
           >
-            <div className="relative aspect-[3/4] bg-brand-100 overflow-hidden mb-3">
+            <div className="relative aspect-[3/4] product-frame mb-3">
               <ProductImage
                 src={product.images[0]}
                 fallback={luxeImage(product.slug)}
                 alt={product.name}
                 fill
-                className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                className="product-frame__image"
                 sizes="280px"
               />
+              <div className="product-frame__overlay" aria-hidden />
+              <span className="product-frame__label">Voir</span>
             </div>
             {product.brand && (
               <p className="font-sans text-[10px] uppercase tracking-widest text-brand-400 mb-1 truncate">

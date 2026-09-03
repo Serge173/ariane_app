@@ -19,7 +19,6 @@ interface AddToCartButtonProps {
 
 export function AddToCartButton({ product, productType, variant = "primary" }: AddToCartButtonProps) {
   const addItem = useCartStore((s) => s.addItem);
-  const [added, setAdded] = useState(false);
   const [error, setError] = useState("");
 
   const isLuxe = productType === "LUXE";
@@ -37,17 +36,15 @@ export function AddToCartButton({ product, productType, variant = "primary" }: A
       return;
     }
     setError("");
-    setAdded(true);
-    setTimeout(() => setAdded(false), 2000);
   };
 
   const btnClass = variant === "primary" ? "btn-primary" : "btn-secondary";
 
   return (
     <div>
-      <button onClick={handleAdd} className={`${btnClass} inline-flex items-center gap-2`}>
+      <button type="button" onClick={handleAdd} className={`${btnClass} inline-flex items-center gap-2`}>
         <Icon className="w-4 h-4" />
-        {added ? "Ajouté ✓" : label}
+        {label}
       </button>
       {error && <p className="text-xs text-red-600 mt-2 max-w-sm">{error}</p>}
     </div>

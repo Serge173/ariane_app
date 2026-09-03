@@ -100,7 +100,6 @@ function BoutiqueProductCard({
   variant?: "default" | "lancel" | "wix";
 }) {
   const addItem = useCartStore((s) => s.addItem);
-  const [added, setAdded] = useState(false);
   const [error, setError] = useState("");
 
   const handleAdd = (e: React.MouseEvent) => {
@@ -120,8 +119,6 @@ function BoutiqueProductCard({
       return;
     }
     setError("");
-    setAdded(true);
-    setTimeout(() => setAdded(false), 2000);
   };
 
   const href = `/boutique/${product.slug}`;
@@ -129,20 +126,17 @@ function BoutiqueProductCard({
   if (variant === "wix") {
     return (
       <article className="group text-center">
-        <Link href={href} className="block relative aspect-[3/4] bg-brand-100 overflow-hidden mb-4">
+        <Link href={href} className="block relative aspect-[3/4] product-frame mb-4">
           <ProductImage
             src={product.images[0]}
             fallback={luxeImage(product.slug)}
             alt={product.name}
             fill
-            className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+            className="product-frame__image"
             sizes="(max-width: 1024px) 50vw, 25vw"
           />
-          <div className="absolute inset-0 bg-brand-950/0 group-hover:bg-brand-950/25 transition-colors duration-300 flex items-center justify-center">
-            <span className="font-sans text-[10px] uppercase tracking-[0.25em] text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 border border-white px-5 py-2.5">
-              Aperçu rapide
-            </span>
-          </div>
+          <div className="product-frame__overlay" aria-hidden />
+          <span className="product-frame__label">Voir</span>
         </Link>
         <Link href={href}>
           <h3 className="font-sans text-sm text-brand-950 mb-1 line-clamp-2 group-hover:opacity-70 transition-opacity">
@@ -157,15 +151,17 @@ function BoutiqueProductCard({
   if (variant === "lancel") {
     return (
       <Link href={href} className="group block">
-        <div className="relative aspect-[3/4] bg-brand-100 overflow-hidden mb-3">
+        <div className="relative aspect-[3/4] product-frame mb-3">
           <ProductImage
             src={product.images[0]}
             fallback={luxeImage(product.slug)}
             alt={product.name}
             fill
-            className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+            className="product-frame__image"
             sizes="(max-width: 1024px) 50vw, 25vw"
           />
+          <div className="product-frame__overlay" aria-hidden />
+          <span className="product-frame__label">Voir</span>
         </div>
         {product.brand && (
           <p className="font-sans text-[10px] uppercase tracking-widest text-brand-400 mb-1 truncate">
@@ -182,23 +178,20 @@ function BoutiqueProductCard({
 
   return (
     <article className="group card-premium overflow-hidden flex flex-col">
-      <Link href={href} className="block relative aspect-[3/4] overflow-hidden bg-brand-100">
+      <Link href={href} className="block relative aspect-[3/4] product-frame">
         <ProductImage
           src={product.images[0]}
           fallback={luxeImage(product.slug)}
           alt={product.name}
           fill
-          className="object-cover transition-transform duration-700 group-hover:scale-105"
+          className="product-frame__image"
           sizes="(max-width: 768px) 100vw, 25vw"
         />
+        <div className="product-frame__overlay" aria-hidden />
+        <span className="product-frame__label">Voir</span>
         {product.isFeatured && (
-          <span className="absolute top-4 left-4 bg-brand-950 text-white text-[10px] uppercase tracking-widest px-3 py-1">
+          <span className="absolute top-4 left-4 z-10 bg-brand-950 text-white text-[10px] uppercase tracking-widest px-3 py-1">
             Exclusif
-          </span>
-        )}
-        {product.categoryName && (
-          <span className="absolute top-4 right-4 bg-white/90 text-brand-700 text-[10px] uppercase tracking-widest px-3 py-1">
-            {product.categoryName}
           </span>
         )}
       </Link>
@@ -208,7 +201,7 @@ function BoutiqueProductCard({
           <p className="text-[10px] uppercase tracking-ultra text-brand-400 mb-1">{product.brand}</p>
         )}
         <Link href={href}>
-          <h3 className="product-title mb-2 group-hover:text-accent transition-colors">
+          <h3 className="product-title mb-2">
             {product.name}
           </h3>
         </Link>
@@ -223,7 +216,7 @@ function BoutiqueProductCard({
             className="btn-primary flex-1 text-[10px] py-2.5 inline-flex items-center justify-center gap-1"
           >
             <ShoppingBag className="w-3.5 h-3.5" />
-            {added ? "Ajouté ✓" : "Ajouter"}
+            Ajouter
           </button>
           <Link
             href={href}
