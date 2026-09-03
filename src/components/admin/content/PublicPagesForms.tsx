@@ -15,6 +15,7 @@ import type {
   OrientationPageSettings,
 } from "@/lib/public-pages-settings";
 import { updatePublicPagesSettings } from "@/lib/public-pages-settings";
+import { parseJsonResponse } from "@/lib/fetch-json";
 
 async function savePatch(
   patch: Parameters<typeof updatePublicPagesSettings>[0],
@@ -25,8 +26,9 @@ async function savePatch(
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(patch),
   });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error || "Enregistrement impossible");
+  const data = await parseJsonResponse<PublicPagesSettings & { error?: string }>(res);
+  if (!res.ok) throw new Error(data?.error || `Enregistrement impossible (${res.status})`);
+  if (!data) throw new Error("Réponse serveur invalide");
   onSaved(data);
 }
 

@@ -44,8 +44,8 @@ export function Footer({ siteSettings }: FooterProps) {
   return (
     <footer className="bg-brand-950 text-brand-200 mt-auto">
       <div className="container-premium py-8 sm:py-10 lg:py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
-          <div className="lg:col-span-4 pb-2 lg:pb-0 border-b border-brand-800 lg:border-0">
+        <div className="flex flex-col lg:flex-row lg:items-start lg:gap-10 xl:gap-14">
+          <div className="pb-6 lg:pb-0 border-b border-brand-800 lg:border-0 lg:w-[30%] lg:max-w-sm lg:flex-shrink-0">
             <Link href="/" className="inline-block mb-3 lg:mb-4">
               <span className="font-display text-xl sm:text-2xl font-light text-white tracking-wide">
                 {brand.title}
@@ -54,12 +54,13 @@ export function Footer({ siteSettings }: FooterProps) {
                 {brand.subtitle}
               </span>
             </Link>
-            <p className="text-sm text-brand-400 leading-relaxed max-w-sm">
+            <p className="text-sm text-brand-400 leading-relaxed">
               {footer.description}
             </p>
           </div>
 
-          <FooterAccordionSection title="Navigation">
+          <div className="lg:flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 sm:gap-8 lg:gap-6 xl:gap-10 min-w-0">
+            <FooterAccordionSection title="Navigation">
             <ul className="space-y-2.5">
               {footer.navigation.map((link) => (
                 <li key={link.href}>
@@ -72,9 +73,9 @@ export function Footer({ siteSettings }: FooterProps) {
                 </li>
               ))}
             </ul>
-          </FooterAccordionSection>
+            </FooterAccordionSection>
 
-          <FooterAccordionSection title="Informations">
+            <FooterAccordionSection title="Informations">
             <ul className="space-y-2.5">
               {footer.legal.map((link) => (
                 <li key={link.href}>
@@ -87,9 +88,9 @@ export function Footer({ siteSettings }: FooterProps) {
                 </li>
               ))}
             </ul>
-          </FooterAccordionSection>
+            </FooterAccordionSection>
 
-          <FooterAccordionSection title="Réseaux">
+            <FooterAccordionSection title="Réseaux">
             <ul className="space-y-3">
               {footer.social.map((social) => (
                 <li key={social.name}>
@@ -100,15 +101,15 @@ export function Footer({ siteSettings }: FooterProps) {
                     className="group flex items-center gap-2 text-sm text-brand-300 hover:text-white transition-colors duration-[var(--duration-micro)] min-w-0"
                   >
                     <SocialIcon social={social} />
-                    <span className="truncate">{social.label}</span>
+                    <span className="min-w-0 break-words">{social.label}</span>
                     <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
                   </a>
                 </li>
               ))}
             </ul>
-          </FooterAccordionSection>
+            </FooterAccordionSection>
 
-          <FooterAccordionSection title="Contact">
+            <FooterAccordionSection title="Contact">
             <div className="space-y-2 font-sans text-sm text-brand-300">
               <p>{footer.contact.line1}</p>
               <p>{footer.contact.line2}</p>
@@ -122,7 +123,8 @@ export function Footer({ siteSettings }: FooterProps) {
                 {footer.contact.email}
               </a>
             </div>
-          </FooterAccordionSection>
+            </FooterAccordionSection>
+          </div>
         </div>
 
         <div className="mt-8 lg:mt-12 pt-5 lg:pt-6 border-t border-brand-800">

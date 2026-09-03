@@ -6,6 +6,7 @@ import Image from "next/image";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { IMAGES } from "@/lib/images";
 import {
   DURATION,
   EASE_COUTURE,
@@ -103,6 +104,7 @@ export function HeroSlider({ slides, primaryCta }: HeroSliderProps) {
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
   const [useHeroDuration, setUseHeroDuration] = useState(true);
+  const [failedImages, setFailedImages] = useState<Set<string>>(() => new Set());
   const reduced = useReducedMotion();
   const count = slides.length;
 
@@ -121,6 +123,15 @@ export function HeroSlider({ slides, primaryCta }: HeroSliderProps) {
   );
 
   const next = useCallback(() => goTo(active + 1), [active, goTo]);
+
+  const markImageFailed = useCallback((slideId: string) => {
+    setFailedImages((prev) => {
+      if (prev.has(slideId)) return prev;
+      const nextSet = new Set(prev);
+      nextSet.add(slideId);
+      return nextSet;
+    });
+  }, []);
 
   useEffect(() => {
     if (paused || count <= 1) return;
@@ -162,12 +173,13 @@ export function HeroSlider({ slides, primaryCta }: HeroSliderProps) {
               key={isActive ? `kb-${slide.id}-${active}` : slide.id}
             >
               <Image
-                src={slide.image}
+                src={failedImages.has(slide.id) ? IMAGES.hero : slide.image}
                 alt={slide.imageAlt}
                 fill
                 priority={index === 0}
                 className="object-cover object-center"
                 sizes="100vw"
+                onError={() => markImageFailed(slide.id)}
               />
             </div>
             <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/15 to-black/40" />

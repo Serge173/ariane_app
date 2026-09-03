@@ -36,18 +36,7 @@ interface PaymentMethodRow {
 
 const CUSTOM_TEMPLATE = "__custom__";
 
-async function readJsonError(res: Response): Promise<string> {
-  try {
-    const text = await res.text();
-    if (!text) return `Erreur serveur (${res.status})`;
-    const data = JSON.parse(text) as { error?: string };
-    return data.error || `Erreur serveur (${res.status})`;
-  } catch {
-    return `Erreur serveur (${res.status})`;
-  }
-}
-
-const emptyForm = {
+import { readApiError } from "@/lib/fetch-json";
   name: "",
   code: "",
   description: "",
@@ -203,7 +192,7 @@ export function PaymentMethodManager({ initial }: { initial: PaymentMethodRow[] 
       reset();
       refresh();
     } else {
-      showError(await readJsonError(res));
+      showError(await readApiError(res));
     }
   };
 
@@ -258,7 +247,7 @@ export function PaymentMethodManager({ initial }: { initial: PaymentMethodRow[] 
         showSuccess("Le mode de paiement a été supprimé.", "Supprimé");
         refresh();
       } else {
-        showError(await readJsonError(res));
+        showError(await readApiError(res));
       }
     }, "Supprimer le mode");
   };
