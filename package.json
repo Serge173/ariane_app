@@ -1,7 +1,11 @@
 {
   "name": "conseil-image-ariane",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "private": true,
+  "engines": {
+    "node": "20.x",
+    "npm": "10.x"
+  },
   "allowScripts": {
     "@prisma/client@6.19.3": true,
     "@prisma/engines@6.19.3": true,
