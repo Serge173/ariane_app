@@ -1,3 +1,4 @@
+import { resolveAppUrl } from "@/lib/app-url";
 import prisma from "@/lib/prisma";
 import type { Prisma } from "@prisma/client";
 
@@ -18,9 +19,7 @@ export interface PlatformSettingsPublic {
 }
 
 function defaultsFromEnv(): PlatformSettings {
-  const appUrl =
-    process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") ||
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3001");
+  const appUrl = resolveAppUrl();
 
   return {
     appUrl,
