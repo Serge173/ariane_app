@@ -1,7 +1,15 @@
 {
   "name": "conseil-image-ariane",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
+  "allowScripts": {
+    "@prisma/client": "6.19.3",
+    "@prisma/engines": "6.19.3",
+    "esbuild": "0.28.2",
+    "prisma": "6.19.3",
+    "sharp": "0.34.5",
+    "unrs-resolver": "1.12.2"
+  },
   "scripts": {
     "dev": "next dev -p 3001",
     "dev:network": "next dev -H 0.0.0.0 -p 3001",
