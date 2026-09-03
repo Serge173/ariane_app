@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import { IMAGES, luxeImage } from "@/lib/images";
 import type { Prisma } from "@prisma/client";
-import { BRAND_FULL_NAME, migrateBrandText } from "@/lib/brand";
+import { BRAND_FULL_NAME, migrateBrandInObject, migrateBrandText } from "@/lib/brand";
 
 export const HOMEPAGE_SETTINGS_KEY = "homepage_settings";
 

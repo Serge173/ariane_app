@@ -15,6 +15,7 @@ import { PaymentMethodCard } from "@/components/payments/PaymentMethodCard";
 import { PaymentMethodDetailModal } from "@/components/payments/PaymentMethodDetailModal";
 import { Plus, Trash2, Loader2, Eye, EyeOff, Upload } from "lucide-react";
 import { useFeedbackModal } from "@/hooks/useFeedbackModal";
+import { readApiError } from "@/lib/fetch-json";
 import type { PaymentMethodProvider, PaymentMethodContext } from "@prisma/client";
 
 interface PaymentMethodRow {
@@ -36,7 +37,7 @@ interface PaymentMethodRow {
 
 const CUSTOM_TEMPLATE = "__custom__";
 
-import { readApiError } from "@/lib/fetch-json";
+const emptyForm = {
   name: "",
   code: "",
   description: "",
