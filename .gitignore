@@ -50,3 +50,10 @@ public/uploads/avatars/*
 # uploaded blog images
 public/uploads/blog/*
 !public/uploads/blog/.gitkeep
+
+# uploaded payment logos (fichiers versionnés conservés ; nouveaux uploads locaux ignorés)
+public/uploads/payments/*
+!public/uploads/payments/.gitkeep
+!public/uploads/payments/3e6e6045-66d1-479d-9643-96d8579c441a.png
+!public/uploads/payments/8a4daf8e-85e2-42a2-93b9-a1ab975c8c1d.png
+!public/uploads/payments/d3092004-8f75-48a7-a2ed-954b1f8b1d40.jpg
