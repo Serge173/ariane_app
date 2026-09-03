@@ -1,4 +1,5 @@
 import { IMAGES, luxeImage } from "@/lib/images";
+import { BRAND_FULL_NAME } from "@/lib/brand";
 
 export interface HeroSlide {
   id: string;
@@ -20,8 +21,8 @@ export function getHeroSlides(): HeroSlide[] {
     {
       id: "coaching",
       image: IMAGES.hero.replace(/w=\d+/, "w=1920"),
-      imageAlt: "Conseil en image premium",
-      overline: "Conseil en image avec Ariane",
+      imageAlt: "Mode et style premium",
+      overline: BRAND_FULL_NAME,
       title: "Révélez l'image qui vous ressemble",
       href: "/reservation",
       cta: "Cliquez ici pour prendre un rdv",

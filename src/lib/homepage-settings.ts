@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { IMAGES, luxeImage } from "@/lib/images";
 import type { Prisma } from "@prisma/client";
+import { BRAND_FULL_NAME, migrateBrandText } from "@/lib/brand";
 
 export const HOMEPAGE_SETTINGS_KEY = "homepage_settings";
 
@@ -61,8 +62,8 @@ export const DEFAULT_HOMEPAGE_SETTINGS: HomepageSettings = {
       {
         id: "coaching",
         image: IMAGES.hero.replace(/w=\d+/, "w=1920"),
-        imageAlt: "Conseil en image premium",
-        overline: "Conseil en image avec Ariane",
+        imageAlt: "Mode et style premium",
+        overline: BRAND_FULL_NAME,
         title: "Révélez l'image qui vous ressemble",
       },
       {
@@ -164,7 +165,7 @@ function parseSlides(raw: unknown): HeroSlideSettings[] {
         id: str(s.id, fallback.id),
         image: str(s.image, fallback.image),
         imageAlt: str(s.imageAlt, fallback.imageAlt),
-        overline: str(s.overline, fallback.overline),
+        overline: migrateBrandText(str(s.overline, fallback.overline)),
         title: str(s.title, fallback.title),
       };
     })
@@ -227,7 +228,7 @@ export async function getHomepageSettings(): Promise<HomepageSettings> {
       raw.hero && typeof raw.hero === "object" ? raw.hero : {};
     const primaryRaw =
       heroRaw.primaryCta && typeof heroRaw.primaryCta === "object" ? heroRaw.primaryCta : {};
-    return {
+    return migrateBrandInObject({
       hero: {
         primaryCta: {
           href: str(
@@ -289,7 +290,7 @@ export async function getHomepageSettings(): Promise<HomepageSettings> {
           DEFAULT_HOMEPAGE_SETTINGS.cta.linkHref
         ),
       },
-    };
+    });
   } catch {
     return { ...DEFAULT_HOMEPAGE_SETTINGS };
   }

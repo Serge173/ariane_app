@@ -12,6 +12,7 @@ import {
   isAdminLinkActive,
   type AdminNavGroup,
 } from "@/lib/admin-navigation";
+import { BRAND_TITLE } from "@/lib/brand";
 import { ProfileAvatar } from "@/components/ui/ProfileAvatar";
 import { formatRole } from "@/lib/user-roles";
 
@@ -127,7 +128,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         <div className="px-5 py-5 border-b border-admin-line">
           <Link href="/admin" className="block" onClick={() => setSidebarOpen(false)}>
             <span className="font-sans text-[15px] font-medium text-admin-ink tracking-tight">
-              Conseil en Image
+              {BRAND_TITLE}
             </span>
             <span className="block text-[10px] uppercase tracking-[0.2em] text-admin-muted mt-0.5">
               Admin

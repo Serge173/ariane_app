@@ -12,7 +12,7 @@ export function HeroSection() {
       <div className="absolute inset-0 z-0">
         <Image
           src={IMAGES.hero}
-          alt="Conseil en image premium"
+          alt="Mode et style premium"
           fill
           priority
           className="object-cover"

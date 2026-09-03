@@ -29,7 +29,7 @@ export const adminGuideSections: GuideSection[] = [
     blocks: [
       {
         type: "p",
-        text: "Ce guide décrit l'utilisation complète du back-office de la plateforme Conseil en Image avec Ariane. Il couvre chaque menu, chaque écran et les actions disponibles au quotidien.",
+        text: "Ce guide décrit l'utilisation complète du back-office de la plateforme Bienvenue à la mode avec Ariane. Il couvre chaque menu, chaque écran et les actions disponibles au quotidien.",
       },
       { type: "h3", text: "Accéder à l'administration" },
       {

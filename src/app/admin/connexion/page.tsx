@@ -7,6 +7,7 @@ import Link from "next/link";
 import { Shield } from "lucide-react";
 import { isAdmin } from "@/lib/auth";
 import { fetchSessionSafe } from "@/lib/auth-session";
+import { BRAND_FULL_NAME } from "@/lib/brand";
 
 export default function AdminConnexionPage() {
   const router = useRouter();
@@ -57,7 +58,7 @@ export default function AdminConnexionPage() {
             <Shield className="w-7 h-7 text-white" strokeWidth={1.5} />
           </div>
           <h1 className="font-display text-3xl text-white mb-2">Administration</h1>
-          <p className="text-sm text-brand-400">Connexion réservée à l&apos;équipe Conseil en Image</p>
+          <p className="text-sm text-brand-400">Connexion réservée à l&apos;équipe {BRAND_FULL_NAME}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="bg-white p-8 space-y-6">

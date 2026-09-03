@@ -4,6 +4,7 @@ import "./globals.css";
 import { Providers } from "@/components/providers/Providers";
 import { AppShell } from "@/components/layout/AppShell";
 import { getSiteSettings } from "@/lib/site-settings";
+import { BRAND_FULL_NAME } from "@/lib/brand";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -21,8 +22,8 @@ const cormorant = Cormorant_Garamond({
 
 export const metadata: Metadata = {
   title: {
-    default: "Conseil en Image avec Ariane | Coaching Premium Abidjan",
-    template: "%s | Conseil en Image avec Ariane",
+    default: `${BRAND_FULL_NAME} | Coaching Premium Abidjan`,
+    template: `%s | ${BRAND_FULL_NAME}`,
   },
   description:
     "Plateforme premium de conseil en image, coaching personnel et professionnel à Abidjan. Découvrez votre accompagnement, réservez et suivez votre parcours de transformation.",
@@ -38,7 +39,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "fr_FR",
-    siteName: "Conseil en Image avec Ariane",
+    siteName: BRAND_FULL_NAME,
   },
 };
 

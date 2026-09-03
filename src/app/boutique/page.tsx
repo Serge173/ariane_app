@@ -23,11 +23,12 @@ import {
   getBoutiquePageSettings,
   pickSpotlightProductIds,
 } from "@/lib/boutique-settings";
+import { BRAND_FULL_NAME } from "@/lib/brand";
 
 export const metadata: Metadata = {
   title: "La Boutique",
   description:
-    "Boutique de luxe Conseil en Image avec Ariane — sacs, vêtements, accessoires et parfums sélectionnés avec exigence.",
+    `Boutique de luxe ${BRAND_FULL_NAME} — sacs, vêtements, accessoires et parfums sélectionnés avec exigence.`,
 };
 
 interface PageProps {

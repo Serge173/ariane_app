@@ -71,7 +71,7 @@ const fallbackProducts: Record<string, {
   "foulard-soie-signature": {
     name: "Foulard Soie Signature", brand: "Collection Ariane", price: 75000,
     shortDescription: "Imprimé exclusif, 100% soie",
-    description: "Foulard carré en soie twill, imprimé exclusif Conseil en Image avec Ariane. Fini main.",
+    description: "Foulard carré en soie twill, imprimé exclusif Bienvenue à la mode avec Ariane. Fini main.",
     features: ["100% soie twill", "Imprimé exclusif", "90 × 90 cm", "Fini main"],
     images: [luxeImage("foulard-soie-signature", 1200)],
     categoryName: "Accessoires",

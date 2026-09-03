@@ -1,4 +1,5 @@
 import { getPlatformSettings } from "@/lib/platform-settings";
+import { BRAND_TITLE } from "@/lib/brand";
 
 interface PaymentInitParams {
   orderId: string;
@@ -40,7 +41,7 @@ export async function initPayment(params: PaymentInitParams): Promise<PaymentRes
         transaction_id: orderNumber,
         amount,
         currency: "XOF",
-        description: `Conseil en Image - ${orderNumber}`,
+        description: `${BRAND_TITLE} - ${orderNumber}`,
         notify_url: settings.cinetpayNotifyUrl,
         return_url: `${appUrl}${confirmationPath}`,
         channels,

@@ -1,5 +1,10 @@
 import prisma from "@/lib/prisma";
 import type { Prisma } from "@prisma/client";
+import {
+  BRAND_SUBTITLE,
+  BRAND_TITLE,
+  migrateBrandTitle,
+} from "@/lib/brand";
 
 export const SITE_SETTINGS_KEY = "site_settings";
 
@@ -74,8 +79,8 @@ function parseSocial(raw: unknown, fallback: SiteSocialLink[]): SiteSocialLink[]
 
 export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   brand: {
-    title: "Conseil en Image",
-    subtitle: "avec Ariane",
+    title: BRAND_TITLE,
+    subtitle: BRAND_SUBTITLE,
   },
   nav: [
     { name: "Accueil", href: "/" },
@@ -130,7 +135,9 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       footerRaw.contact && typeof footerRaw.contact === "object" ? footerRaw.contact : {};
     return {
       brand: {
-        title: str((brandRaw as { title?: string }).title, DEFAULT_SITE_SETTINGS.brand.title),
+        title: migrateBrandTitle(
+          str((brandRaw as { title?: string }).title, DEFAULT_SITE_SETTINGS.brand.title)
+        ),
         subtitle: str((brandRaw as { subtitle?: string }).subtitle, DEFAULT_SITE_SETTINGS.brand.subtitle),
       },
       nav: parseLinks(raw.nav, DEFAULT_SITE_SETTINGS.nav),

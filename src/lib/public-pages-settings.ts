@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { IMAGES } from "@/lib/images";
 import type { Prisma } from "@prisma/client";
+import { BRAND_FULL_NAME, migrateBrandInObject } from "@/lib/brand";
 
 export const PUBLIC_PAGES_SETTINGS_KEY = "public_pages_settings";
 
@@ -211,7 +212,7 @@ export const DEFAULT_PUBLIC_PAGES_SETTINGS: PublicPagesSettings = {
     overline: "À propos",
     title: "Ariane DAGO",
     paragraphs: [
-      "Fondatrice de Conseil en Image avec Ariane, je accompagne hommes et femmes ambitieux dans l'alignement de leur image avec leur personnalité, leur fonction et leurs ambitions.",
+      "Fondatrice de la marque Bienvenue à la mode avec Ariane, je accompagne hommes et femmes ambitieux dans l'alignement de leur image avec leur personnalité, leur fonction et leurs ambitions.",
       "Basée à Abidjan, je propose des accompagnements en présentiel et à distance pour une clientèle en Côte d'Ivoire, en Afrique et dans la diaspora.",
       "Mon approche allie expertise technique, sensibilité esthétique et compréhension des enjeux professionnels pour une transformation authentique et durable.",
     ],
@@ -283,7 +284,7 @@ export const DEFAULT_PUBLIC_PAGES_SETTINGS: PublicPagesSettings = {
     title: "Expertise & Inspiration",
     intro: "Conseils en image, colorimétrie, leadership visuel et communication par l'image.",
     emptyMessage: "Articles à venir prochainement.",
-    articleFooterOverline: "Conseil en Image avec Ariane",
+    articleFooterOverline: BRAND_FULL_NAME,
     articleFooterText: "Envie d'aller plus loin ? Découvrez nos accompagnements personnalisés.",
     articleFooterCtaLabel: "Voir nos prestations",
     articleFooterCtaHref: "/offres",
@@ -292,7 +293,7 @@ export const DEFAULT_PUBLIC_PAGES_SETTINGS: PublicPagesSettings = {
   legal: {
     cgv: {
       title: "Conditions générales de vente",
-      intro: "Les présentes conditions générales de vente régissent les relations entre Conseil en Image avec Ariane et ses clients.",
+      intro: `Les présentes conditions générales de vente régissent les relations entre ${BRAND_FULL_NAME} et ses clients.`,
       sections: [
         {
           title: "1. Prestations",
@@ -312,7 +313,7 @@ export const DEFAULT_PUBLIC_PAGES_SETTINGS: PublicPagesSettings = {
     confidentialite: {
       title: "Politique de confidentialité",
       intro:
-        "Conseil en Image avec Ariane s'engage à protéger vos données personnelles conformément à la réglementation applicable.",
+        `${BRAND_FULL_NAME} s'engage à protéger vos données personnelles conformément à la réglementation applicable.`,
       sections: [
         {
           title: "Données collectées",
@@ -335,7 +336,7 @@ export const DEFAULT_PUBLIC_PAGES_SETTINGS: PublicPagesSettings = {
       sections: [
         {
           title: "Éditeur du site",
-          body: "Conseil en Image avec Ariane\nDAGO Stéphanie Ariane\nAbidjan, Cocody — Côte d'Ivoire\ncontact@conseil-image-ariane.com",
+          body: `${BRAND_FULL_NAME}\nDAGO Stéphanie Ariane\nAbidjan, Cocody — Côte d'Ivoire\ncontact@conseil-image-ariane.com`,
         },
         {
           title: "Hébergement",
@@ -509,7 +510,7 @@ export async function getPublicPagesSettings(): Promise<PublicPagesSettings> {
     const typesRaw: Partial<ContactPageSettings["types"]> =
       contactRaw.types && typeof contactRaw.types === "object" ? contactRaw.types : {};
 
-    return {
+    return migrateBrandInObject({
       about: {
         overline: str(aboutRaw.overline, DEFAULT_PUBLIC_PAGES_SETTINGS.about.overline),
         title: str(aboutRaw.title, DEFAULT_PUBLIC_PAGES_SETTINGS.about.title),
@@ -579,7 +580,7 @@ export async function getPublicPagesSettings(): Promise<PublicPagesSettings> {
           DEFAULT_PUBLIC_PAGES_SETTINGS.orientation.recommendations
         ),
       },
-    };
+    });
   } catch {
     return structuredClone(DEFAULT_PUBLIC_PAGES_SETTINGS);
   }
