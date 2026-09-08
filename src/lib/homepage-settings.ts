@@ -260,7 +260,7 @@ function ensureMinTestimonials(items: TestimonialSettings[]): TestimonialSetting
 function parseTestimonials(raw: unknown): TestimonialSettings[] {
   if (!Array.isArray(raw)) return DEFAULT_HOMEPAGE_SETTINGS.testimonials.items;
   const items = raw
-    .map((item, index) => {
+    .map((item, index): TestimonialSettings | null => {
       if (!item || typeof item !== "object") return null;
       const t = item as Partial<TestimonialSettings>;
       const before = typeof t.before === "string" ? t.before.trim() : "";
@@ -272,10 +272,10 @@ function parseTestimonials(raw: unknown): TestimonialSettings[] {
         name: str(t.name, "Cliente accompagnée"),
         role: str(t.role, fallback?.role ?? ""),
         content,
-        before: before || undefined,
-        after: after || undefined,
-        beforeImage: str(t.beforeImage, fallback?.beforeImage ?? ""),
-        afterImage: str(t.afterImage, fallback?.afterImage ?? ""),
+        ...(before ? { before } : {}),
+        ...(after ? { after } : {}),
+        beforeImage: str(t.beforeImage, fallback?.beforeImage ?? "") || undefined,
+        afterImage: str(t.afterImage, fallback?.afterImage ?? "") || undefined,
         beforeImageAlt: str(t.beforeImageAlt, fallback?.beforeImageAlt ?? "Avant l'accompagnement"),
         afterImageAlt: str(t.afterImageAlt, fallback?.afterImageAlt ?? "Après l'accompagnement"),
         rating: typeof t.rating === "number" ? Math.min(5, Math.max(1, t.rating)) : 5,
