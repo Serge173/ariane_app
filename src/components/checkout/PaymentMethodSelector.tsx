@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { type PaymentMethodOption } from "@/lib/payment-methods";
+import { BOOKING_COPY, getBookingPaymentButtonLabel, type BookingPaymentContext } from "@/lib/booking-copy";
 import { PaymentMethodCard } from "@/components/payments/PaymentMethodCard";
 import { PaymentMethodDetailContent } from "@/components/payments/PaymentMethodDetailContent";
 
@@ -11,6 +12,7 @@ interface PaymentMethodSelectorProps {
   value: string;
   onChange: (code: string) => void;
   loading?: boolean;
+  context?: "boutique" | "appointment";
 }
 
 export function PaymentMethodSelector({
@@ -18,7 +20,9 @@ export function PaymentMethodSelector({
   value,
   onChange,
   loading,
+  context = "boutique",
 }: PaymentMethodSelectorProps) {
+  const copy = BOOKING_COPY[context];
   const [focusedCode, setFocusedCode] = useState<string | null>(value || null);
 
   useEffect(() => {
@@ -36,7 +40,7 @@ export function PaymentMethodSelector({
   if (methods.length === 0) {
     return (
       <p className="text-sm text-brand-500 p-4 border border-brand-100 bg-brand-50">
-        Aucun mode de paiement disponible pour le moment. Contactez-nous pour finaliser votre commande.
+        {copy.emptyPayment}
       </p>
     );
   }
@@ -72,7 +76,7 @@ export function PaymentMethodSelector({
           <PaymentMethodDetailContent method={focusedMethod} />
           {focusedMethod.instructions && value === focusedMethod.code && (
             <p className="mt-4 text-xs text-brand-600 bg-white border border-brand-100 p-3">
-              Ce mode est sélectionné pour votre commande.
+              {copy.paymentSelected}
             </p>
           )}
         </div>
@@ -81,12 +85,12 @@ export function PaymentMethodSelector({
   );
 }
 
-export function getPaymentButtonLabel(code: string, methods: PaymentMethodOption[]): string {
-  const method = methods.find((m) => m.code === code);
-  if (method?.provider === "CASH_ON_DELIVERY" || method?.provider === "MANUAL" || method?.provider === "BANK_TRANSFER") {
-    return "Confirmer ma commande";
-  }
-  return "Confirmer et payer";
+export function getPaymentButtonLabel(
+  code: string,
+  methods: PaymentMethodOption[],
+  context: BookingPaymentContext = "boutique"
+): string {
+  return getBookingPaymentButtonLabel(code, methods, context);
 }
 
 export function isCodPayment(code: string, methods: PaymentMethodOption[]): boolean {

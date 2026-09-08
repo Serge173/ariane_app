@@ -12,6 +12,7 @@ import { getDashboardPath } from "@/lib/navigation";
 import type { SiteSettings } from "@/lib/site-settings";
 import { ProfileAvatar } from "@/components/ui/ProfileAvatar";
 import { MobileNav } from "@/components/layout/MobileNav";
+import { ShoppingNavDropdown } from "@/components/layout/ShoppingNavDropdown";
 
 interface HeaderProps {
   siteSettings: SiteSettings;
@@ -87,7 +88,11 @@ export function Header({ siteSettings }: HeaderProps) {
                 const isActive =
                   item.href === "/"
                     ? pathname === "/"
-                    : pathname === item.href || pathname.startsWith(`${item.href}/`);
+                    : pathname === item.href || pathname.startsWith(`${item.href.split("?")[0]}/`);
+
+                if (item.highlight && item.children?.length) {
+                  return <ShoppingNavDropdown key={item.name} item={item} pathname={pathname} />;
+                }
 
                 return (
                   <Link
@@ -149,15 +154,10 @@ export function Header({ siteSettings }: HeaderProps) {
               <button
                 type="button"
                 onClick={() => setIsOpen((v) => !v)}
-                className="lg:hidden flex items-center gap-2 pl-2 pr-1 py-2 text-brand-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded-sm"
+                className="lg:hidden p-2 text-brand-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded-sm"
                 aria-label={isOpen ? "Fermer le menu" : "Ouvrir le menu"}
                 aria-expanded={isOpen}
               >
-                {!isOpen && (
-                  <span className="font-sans text-[10px] uppercase tracking-[0.25em]">
-                    Menu
-                  </span>
-                )}
                 {isOpen ? (
                   <X className="w-5 h-5" strokeWidth={1.5} />
                 ) : (

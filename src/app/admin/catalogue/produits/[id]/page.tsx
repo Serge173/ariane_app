@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { CatalogueSubNav } from "@/components/admin/catalogue/CatalogueSubNav";
 import { ProductForm } from "@/components/admin/catalogue/ProductForm";
+import { variantsToFormRows } from "@/components/admin/catalogue/ProductVariantEditor";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -12,7 +13,11 @@ async function getData(id: string) {
     const [product, categories, brands] = await Promise.all([
       prisma.product.findUnique({
         where: { id },
-        include: { category: true, brandRef: true },
+        include: {
+          category: true,
+          brandRef: true,
+          variants: { orderBy: { sortOrder: "asc" } },
+        },
       }),
       prisma.category.findMany({
         where: { isActive: true },
@@ -61,7 +66,13 @@ export default async function EditProductPage({ params }: Props) {
     <div>
       <CatalogueSubNav active="products" />
       <h1 className="heading-section mb-8">Modifier — {product.name}</h1>
-      <ProductForm mode="edit" initial={initial} categories={categories} brands={brands} />
+      <ProductForm
+        mode="edit"
+        initial={initial}
+        initialVariants={variantsToFormRows(product.variants)}
+        categories={categories}
+        brands={brands}
+      />
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { IMAGES, luxeImage, coachingImage } from "../src/lib/images";
 import { buildKeywordsFromProduct } from "../src/lib/catalogue";
+import { buildVariantLabel } from "../src/lib/shop/variants";
 import { slugify } from "../src/lib/utils";
 
 const prisma = new PrismaClient();
@@ -302,9 +303,10 @@ async function main() {
       brand: item.brand,
       categoryName: category?.name,
       features: item.features,
+      extra: ["sacs", "vetements"].includes(item.categorySlug) || item.price >= 280000 ? ["luxe"] : ["premium"],
     });
 
-    await prisma.product.upsert({
+    const product = await prisma.product.upsert({
       where: { slug: item.slug },
       update: {
         name: item.name,
@@ -319,6 +321,8 @@ async function main() {
         isFeatured: item.isFeatured,
         productType: "LUXE",
         images: [item.image],
+        material: item.slug.includes("blazer") || item.slug.includes("robe") ? "Soie mélangée premium" : undefined,
+        composition: item.slug.includes("blazer") ? "70% soie, 30% laine" : item.slug.includes("robe") ? "100% soie" : undefined,
       },
       create: {
         name: item.name,
@@ -335,8 +339,83 @@ async function main() {
         productType: "LUXE",
         categoryId: categoryMap[item.categorySlug],
         images: [item.image],
+        material: item.slug.includes("blazer") || item.slug.includes("robe") ? "Soie mélangée premium" : undefined,
+        composition: item.slug.includes("blazer") ? "70% soie, 30% laine" : item.slug.includes("robe") ? "100% soie" : undefined,
       },
     });
+
+    if (item.slug === "blazer-soie-noire") {
+      const sizes = ["S", "M", "L"];
+      for (const [index, size] of sizes.entries()) {
+        const color = "Noir";
+        await prisma.productVariant.upsert({
+          where: { id: `${product.id}-${size}-noir` },
+          update: {
+            name: buildVariantLabel(size, color),
+            size,
+            color,
+            sku: `BLZ-${size}-NOIR`,
+            price: item.price,
+            stock: size === "M" ? 2 : 4,
+            sortOrder: index,
+            isActive: true,
+            trackInventory: true,
+          },
+          create: {
+            id: `${product.id}-${size}-noir`,
+            productId: product.id,
+            name: buildVariantLabel(size, color),
+            size,
+            color,
+            sku: `BLZ-${size}-NOIR`,
+            price: item.price,
+            stock: size === "M" ? 2 : 4,
+            sortOrder: index,
+            isActive: true,
+            trackInventory: true,
+          },
+        });
+      }
+    }
+
+    if (item.slug === "robe-soie-elegance") {
+      const combos = [
+        { size: "S", color: "Ivoire", stock: 3 },
+        { size: "M", color: "Ivoire", stock: 2 },
+        { size: "M", color: "Noir", stock: 1 },
+        { size: "L", color: "Noir", stock: 2 },
+      ];
+      for (const [index, combo] of combos.entries()) {
+        const id = `${product.id}-${combo.size}-${combo.color.toLowerCase()}`;
+        await prisma.productVariant.upsert({
+          where: { id },
+          update: {
+            name: buildVariantLabel(combo.size, combo.color),
+            size: combo.size,
+            color: combo.color,
+            sku: `ROB-${combo.size}-${combo.color.toUpperCase()}`,
+            price: item.price,
+            stock: combo.stock,
+            sortOrder: index,
+            isActive: true,
+            trackInventory: true,
+          },
+          create: {
+            id,
+            productId: product.id,
+            name: buildVariantLabel(combo.size, combo.color),
+            size: combo.size,
+            color: combo.color,
+            sku: `ROB-${combo.size}-${combo.color.toUpperCase()}`,
+            price: item.price,
+            stock: combo.stock,
+            sortOrder: index,
+            isActive: true,
+            trackInventory: true,
+          },
+        });
+      }
+    }
   }
 
   const orientationQuestions = [

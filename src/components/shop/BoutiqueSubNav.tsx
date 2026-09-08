@@ -5,6 +5,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Search } from "lucide-react";
 import type { PublicCategoryTreeNode } from "@/lib/categories";
+import { SHOPPING_LINE_OPTIONS, shoppingHref } from "@/lib/shopping";
+import { cn } from "@/lib/utils";
 
 interface BoutiqueSubNavProps {
   roots: PublicCategoryTreeNode[];
@@ -16,6 +18,7 @@ export function BoutiqueSubNav({ roots }: BoutiqueSubNavProps) {
   const activeCategory = searchParams.get("category");
   const activeBrand = searchParams.get("brand");
   const activeQ = searchParams.get("q");
+  const activeLine = searchParams.get("line");
   const [searchOpen, setSearchOpen] = useState(false);
   const [q, setQ] = useState(activeQ ?? "");
 
@@ -48,8 +51,24 @@ export function BoutiqueSubNav({ roots }: BoutiqueSubNavProps) {
     slug === null ? !activeCategory && !activeQ && !activeBrand : activeCategory === slug;
 
   return (
-    <div className="sticky top-16 lg:top-[4.25rem] z-40 bg-[#F7F5F0]/95 backdrop-blur-sm border-b border-brand-200/60 mt-6">
+    <div className="sticky top-16 lg:top-[4.25rem] z-30 bg-[#F7F5F0]/95 backdrop-blur-sm border-b border-brand-200/60 mt-6">
       <div className="max-w-[1600px] mx-auto px-4 lg:px-8">
+        <div className="flex items-center gap-4 py-2 border-b border-brand-200/50">
+          {SHOPPING_LINE_OPTIONS.map(({ name, line }) => (
+            <Link
+              key={line}
+              href={shoppingHref(line)}
+              className={cn(
+                "font-sans text-[10px] uppercase tracking-[0.2em] whitespace-nowrap transition-colors pb-0.5 border-b-2",
+                activeLine === line
+                  ? "text-brand-950 border-brand-950"
+                  : "text-brand-500 border-transparent hover:text-brand-950"
+              )}
+            >
+              {name}
+            </Link>
+          ))}
+        </div>
         <div className="flex items-center justify-between gap-4 h-12">
           <nav
             className="flex items-center gap-5 overflow-x-auto scrollbar-hide flex-1 min-w-0"

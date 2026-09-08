@@ -10,6 +10,11 @@ import {
 } from "@/lib/categories";
 import { Loader2 } from "lucide-react";
 import { useFeedbackModal } from "@/hooks/useFeedbackModal";
+import {
+  ProductVariantEditor,
+  variantsToFormRows,
+  type VariantFormRow,
+} from "@/components/admin/catalogue/ProductVariantEditor";
 
 export interface CategoryOption {
   id: string;
@@ -49,6 +54,7 @@ export interface ProductFormData {
 
 interface ProductFormProps {
   initial?: Partial<ProductFormData>;
+  initialVariants?: VariantFormRow[];
   categories: CategoryOption[];
   brands: BrandOption[];
   mode: "create" | "edit";
@@ -74,9 +80,10 @@ const empty: ProductFormData = {
   sortOrder: "0",
 };
 
-export function ProductForm({ initial, categories, brands, mode }: ProductFormProps) {
+export function ProductForm({ initial, initialVariants = [], categories, brands, mode }: ProductFormProps) {
   const router = useRouter();
   const [form, setForm] = useState<ProductFormData>({ ...empty, ...initial });
+  const [variants, setVariants] = useState<VariantFormRow[]>(initialVariants);
   const [loading, setLoading] = useState(false);
   const [autoSlug, setAutoSlug] = useState(mode === "create");
   const { showSuccess, showError, FeedbackModal } = useFeedbackModal();
@@ -100,7 +107,7 @@ export function ProductForm({ initial, categories, brands, mode }: ProductFormPr
     const res = await fetch(url, {
       method,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
+      body: JSON.stringify({ ...form, variants: form.productType === "LUXE" ? variants : [] }),
     });
 
     const data = await res.json();
@@ -332,6 +339,10 @@ export function ProductForm({ initial, categories, brands, mode }: ProductFormPr
           </p>
         </div>
       </section>
+
+      {form.productType === "LUXE" && (
+        <ProductVariantEditor rows={variants} onChange={setVariants} basePrice={form.price || "0"} />
+      )}
 
       <section className="bg-white border border-brand-100 p-6 space-y-4">
         <h2 className="font-display text-lg">Publication</h2>

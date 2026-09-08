@@ -4,6 +4,7 @@ import type { Prisma } from "@prisma/client";
 import { BRAND_FULL_NAME, migrateBrandInObject, migrateBrandText } from "@/lib/brand";
 
 export const HOMEPAGE_SETTINGS_KEY = "homepage_settings";
+export const MIN_TESTIMONIALS = 4;
 
 export interface HeroSlideSettings {
   id: string;
@@ -23,6 +24,12 @@ export interface TestimonialSettings {
   name: string;
   role: string;
   content: string;
+  before?: string;
+  after?: string;
+  beforeImage?: string;
+  afterImage?: string;
+  beforeImageAlt?: string;
+  afterImageAlt?: string;
   rating: number;
 }
 
@@ -35,6 +42,7 @@ export interface SectionIntroSettings {
 export interface HomepageSettings {
   hero: {
     primaryCta: { href: string; label: string };
+    scarcityLabel: string;
     slides: HeroSlideSettings[];
   };
   journey: SectionIntroSettings & { steps: JourneyStepSettings[] };
@@ -55,16 +63,17 @@ function str(value: unknown, fallback: string): string {
 export const DEFAULT_HOMEPAGE_SETTINGS: HomepageSettings = {
   hero: {
     primaryCta: {
-      href: "/reservation",
-      label: "Cliquez ici pour prendre un rdv",
+      href: "/reservation?intent=rdv",
+      label: "Démarrer mon parcours de ma découverte",
     },
+    scarcityLabel: "5 créneaux disponibles par mois pour coaching sur mesure",
     slides: [
       {
         id: "coaching",
         image: IMAGES.hero.replace(/w=\d+/, "w=1920"),
         imageAlt: "Mode et style premium",
         overline: BRAND_FULL_NAME,
-        title: "Révélez l'image qui vous ressemble",
+        title: "Votre image doit être à la hauteur de la dimension que vous souhaitez atteindre.",
       },
       {
         id: "boutique",
@@ -122,23 +131,52 @@ export const DEFAULT_HOMEPAGE_SETTINGS: HomepageSettings = {
     intro: "",
     items: [
       {
-        name: "Marie K.",
-        role: "Directrice marketing",
-        content:
-          "Une transformation remarquable. Ariane a su comprendre mes enjeux professionnels et m'a guidée avec une expertise rare.",
+        name: "Cliente accompagnée",
+        role: "Parcours image personnelle",
+        content: "",
+        before: "J'achète beaucoup mais je ne sais pas réellement ce qui me représente.",
+        after: "Je comprends les codes qui me correspondent et je peux faire mes choix avec intention.",
+        beforeImage: IMAGES.testimonials.personalBefore,
+        afterImage: IMAGES.testimonials.personalAfter,
+        beforeImageAlt: "Avant l'accompagnement — garde-robe sans direction claire",
+        afterImageAlt: "Après l'accompagnement — style personnel affirmé",
         rating: 5,
       },
       {
-        name: "Fatou D.",
-        role: "Entrepreneure",
-        content: "Le parcours Gold a dépassé mes attentes. Mon image reflète enfin qui je suis vraiment.",
+        name: "Cliente accompagnée",
+        role: "Image professionnelle",
+        content: "",
+        before: "Image professionnelle correcte mais peu distinctive.",
+        after:
+          "Identité visuelle personnelle cohérente avec le niveau de responsabilité et les ambitions.",
+        beforeImage: IMAGES.testimonials.proBefore,
+        afterImage: IMAGES.testimonials.proAfter,
+        beforeImageAlt: "Avant l'accompagnement — tenue professionnelle neutre",
+        afterImageAlt: "Après l'accompagnement — identité visuelle distinctive",
         rating: 5,
       },
       {
-        name: "Aminata B.",
-        role: "Cadre supérieure",
-        content:
-          "Professionnalisme, écoute et résultats concrets. Je recommande vivement à toute femme ambitieuse.",
+        name: "Cliente accompagnée",
+        role: "Garde-robe événementielle",
+        content: "",
+        before: "Je ne savais pas quoi porter pour les occasions importantes.",
+        after: "J'ai une garde-robe événementielle cohérente qui me met en confiance.",
+        beforeImage: IMAGES.testimonials.eventBefore,
+        afterImage: IMAGES.testimonials.eventAfter,
+        beforeImageAlt: "Avant l'accompagnement — tenue d'occasion hésitante",
+        afterImageAlt: "Après l'accompagnement — look événement maîtrisé",
+        rating: 5,
+      },
+      {
+        name: "Cliente accompagnée",
+        role: "Couleurs & morphologie",
+        content: "",
+        before: "Je portais des couleurs qui m'éteignaient sans m'en rendre compte.",
+        after: "Je connais ma palette et mes coupes idéales — chaque tenue me valorise.",
+        beforeImage: IMAGES.testimonials.colorsBefore,
+        afterImage: IMAGES.testimonials.colorsAfter,
+        beforeImageAlt: "Avant l'accompagnement — couleurs peu flatteuses",
+        afterImageAlt: "Après l'accompagnement — palette harmonisée",
         rating: 5,
       },
     ],
@@ -153,6 +191,23 @@ export const DEFAULT_HOMEPAGE_SETTINGS: HomepageSettings = {
   },
 };
 
+const LEGACY_HERO_PRIMARY_CTA_LABEL = "Cliquez ici pour prendre un rdv";
+const LEGACY_HERO_COACHING_TITLE = "Révélez l'image qui vous ressemble";
+
+function migrateHeroCtaLabel(label: string): string {
+  if (label === LEGACY_HERO_PRIMARY_CTA_LABEL) {
+    return DEFAULT_HOMEPAGE_SETTINGS.hero.primaryCta.label;
+  }
+  return label;
+}
+
+function migrateHeroSlideTitle(title: string): string {
+  if (title === LEGACY_HERO_COACHING_TITLE) {
+    return DEFAULT_HOMEPAGE_SETTINGS.hero.slides[0].title;
+  }
+  return title;
+}
+
 function parseSlides(raw: unknown): HeroSlideSettings[] {
   if (!Array.isArray(raw)) return DEFAULT_HOMEPAGE_SETTINGS.hero.slides;
   const slides = raw
@@ -166,7 +221,7 @@ function parseSlides(raw: unknown): HeroSlideSettings[] {
         image: str(s.image, fallback.image),
         imageAlt: str(s.imageAlt, fallback.imageAlt),
         overline: migrateBrandText(str(s.overline, fallback.overline)),
-        title: str(s.title, fallback.title),
+        title: migrateHeroSlideTitle(str(s.title, fallback.title)),
       };
     })
     .filter((s): s is HeroSlideSettings => s !== null);
@@ -191,22 +246,51 @@ function parseSteps(raw: unknown): JourneyStepSettings[] {
   return steps.length > 0 ? steps.slice(0, 8) : DEFAULT_HOMEPAGE_SETTINGS.journey.steps;
 }
 
+function ensureMinTestimonials(items: TestimonialSettings[]): TestimonialSettings[] {
+  const defaults = DEFAULT_HOMEPAGE_SETTINGS.testimonials.items;
+  if (items.length >= MIN_TESTIMONIALS) return items.slice(0, 6);
+
+  const padded = [...items];
+  for (let i = items.length; i < MIN_TESTIMONIALS && i < defaults.length; i++) {
+    padded.push(defaults[i]);
+  }
+  return padded.length >= MIN_TESTIMONIALS ? padded : defaults;
+}
+
 function parseTestimonials(raw: unknown): TestimonialSettings[] {
   if (!Array.isArray(raw)) return DEFAULT_HOMEPAGE_SETTINGS.testimonials.items;
   const items = raw
-    .map((item) => {
+    .map((item, index) => {
       if (!item || typeof item !== "object") return null;
       const t = item as Partial<TestimonialSettings>;
-      if (!t.name || !t.content) return null;
+      const before = typeof t.before === "string" ? t.before.trim() : "";
+      const after = typeof t.after === "string" ? t.after.trim() : "";
+      const content = typeof t.content === "string" ? t.content.trim() : "";
+      if (!before && !after && !content) return null;
+      const fallback = DEFAULT_HOMEPAGE_SETTINGS.testimonials.items[index];
       return {
-        name: str(t.name, ""),
-        role: str(t.role, ""),
-        content: str(t.content, ""),
+        name: str(t.name, "Cliente accompagnée"),
+        role: str(t.role, fallback?.role ?? ""),
+        content,
+        before: before || undefined,
+        after: after || undefined,
+        beforeImage: str(t.beforeImage, fallback?.beforeImage ?? ""),
+        afterImage: str(t.afterImage, fallback?.afterImage ?? ""),
+        beforeImageAlt: str(t.beforeImageAlt, fallback?.beforeImageAlt ?? "Avant l'accompagnement"),
+        afterImageAlt: str(t.afterImageAlt, fallback?.afterImageAlt ?? "Après l'accompagnement"),
         rating: typeof t.rating === "number" ? Math.min(5, Math.max(1, t.rating)) : 5,
       };
     })
     .filter((t): t is TestimonialSettings => t !== null);
-  return items.length > 0 ? items.slice(0, 6) : DEFAULT_HOMEPAGE_SETTINGS.testimonials.items;
+
+  if (items.length === 0) return DEFAULT_HOMEPAGE_SETTINGS.testimonials.items;
+
+  const isLegacySet = items.some((t) =>
+    ["Marie K.", "Fatou D.", "Aminata B."].includes(t.name)
+  );
+  if (isLegacySet) return DEFAULT_HOMEPAGE_SETTINGS.testimonials.items;
+
+  return ensureMinTestimonials(items);
 }
 
 function parseSectionIntro(raw: unknown, fallback: SectionIntroSettings): SectionIntroSettings {
@@ -235,11 +319,17 @@ export async function getHomepageSettings(): Promise<HomepageSettings> {
             (primaryRaw as { href?: string }).href,
             DEFAULT_HOMEPAGE_SETTINGS.hero.primaryCta.href
           ),
-          label: str(
-            (primaryRaw as { label?: string }).label,
-            DEFAULT_HOMEPAGE_SETTINGS.hero.primaryCta.label
+          label: migrateHeroCtaLabel(
+            str(
+              (primaryRaw as { label?: string }).label,
+              DEFAULT_HOMEPAGE_SETTINGS.hero.primaryCta.label
+            )
           ),
         },
+        scarcityLabel: str(
+          (heroRaw as { scarcityLabel?: string }).scarcityLabel,
+          DEFAULT_HOMEPAGE_SETTINGS.hero.scarcityLabel
+        ),
         slides: parseSlides(heroRaw.slides),
       },
       journey: {
@@ -308,6 +398,10 @@ export async function updateHomepageSettings(
             label: str(patch.hero.primaryCta.label, current.hero.primaryCta.label),
           }
         : current.hero.primaryCta,
+      scarcityLabel:
+        patch.hero?.scarcityLabel !== undefined
+          ? str(patch.hero.scarcityLabel, current.hero.scarcityLabel)
+          : current.hero.scarcityLabel,
       slides: patch.hero?.slides ? parseSlides(patch.hero.slides) : current.hero.slides,
     },
     journey: {

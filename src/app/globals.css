@@ -273,6 +273,16 @@
   }
 }
 
+@keyframes flash-ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.animate-flash-ticker {
+  animation: flash-ticker 28s linear infinite;
+  width: max-content;
+}
+
 @keyframes ken-burns {
   from { transform: scale(1); }
   to { transform: scale(1.06); }

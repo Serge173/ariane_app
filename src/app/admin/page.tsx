@@ -7,45 +7,73 @@ import { EmptyState } from "@/components/admin/ui/EmptyState";
 import { orderStatusTone } from "@/lib/admin-status";
 
 export default async function AdminDashboard() {
-  let stats = { orders: 0, revenue: 0, clients: 0, appointments: 0, pendingMessages: 0 };
+  let stats = {
+    orders: 0,
+    revenue: 0,
+    clients: 0,
+    appointments: 0,
+    pendingMessages: 0,
+    pendingRdvRequests: 0,
+  };
   let recentOrders: Awaited<ReturnType<typeof getRecentOrders>> = [];
   let upcomingAppointments: Awaited<ReturnType<typeof getUpcomingAppointments>> = [];
   let pendingOrders: Awaited<ReturnType<typeof getPendingOrders>> = [];
+  let recentRdvRequests: Awaited<ReturnType<typeof getRecentRdvRequests>> = [];
 
   try {
-    const [orderCount, revenue, clientCount, appointmentCount, messages, orders, appointments, pending] =
-      await Promise.all([
-        prisma.order.count(),
-        prisma.order.aggregate({ where: { status: { notIn: ["CANCELLED", "REFUNDED"] } }, _sum: { total: true } }),
-        prisma.user.count({ where: { role: "CLIENT" } }),
-        prisma.appointment.count({ where: { status: { in: ["SCHEDULED", "CONFIRMED"] } } }),
-        prisma.contactRequest.count({ where: { isRead: false } }),
-        getRecentOrders(),
-        getUpcomingAppointments(),
-        getPendingOrders(),
-      ]);
+    const [
+      orderCount,
+      revenue,
+      clientCount,
+      appointmentCount,
+      messages,
+      rdvRequests,
+      orders,
+      appointments,
+      pending,
+      rdvRecent,
+    ] = await Promise.all([
+      prisma.order.count(),
+      prisma.order.aggregate({ where: { status: { notIn: ["CANCELLED", "REFUNDED"] } }, _sum: { total: true } }),
+      prisma.user.count({ where: { role: "CLIENT" } }),
+      prisma.appointment.count({ where: { status: { in: ["SCHEDULED", "CONFIRMED"] } } }),
+      prisma.contactRequest.count({ where: { isRead: false, type: { not: "rdv" } } }),
+      prisma.contactRequest.count({ where: { isRead: false, type: "rdv" } }),
+      getRecentOrders(),
+      getUpcomingAppointments(),
+      getPendingOrders(),
+      getRecentRdvRequests(),
+    ]);
     stats = {
       orders: orderCount,
       revenue: revenue._sum.total || 0,
       clients: clientCount,
       appointments: appointmentCount,
       pendingMessages: messages,
+      pendingRdvRequests: rdvRequests,
     };
     recentOrders = orders;
     upcomingAppointments = appointments;
     pendingOrders = pending;
+    recentRdvRequests = rdvRecent;
   } catch {}
 
   return (
     <div>
       <PageHeader title="Tableau de bord" />
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 mb-6">
         <AdminKpi label="Commandes" value={stats.orders} href="/admin/commandes" />
         <AdminKpi label="Chiffre d'affaires" value={formatPrice(stats.revenue)} href="/admin/statistiques" />
         <AdminKpi label="Clients" value={stats.clients} href="/admin/clients" />
         <AdminKpi
-          label="Messages non lus"
+          label="Demandes RDV"
+          value={stats.pendingRdvRequests}
+          href="/admin/rendez-vous"
+          highlight={stats.pendingRdvRequests > 0}
+        />
+        <AdminKpi
+          label="Messages contact"
           value={stats.pendingMessages}
           href="/admin/messages"
           highlight={stats.pendingMessages > 0}
@@ -79,7 +107,32 @@ export default async function AdminDashboard() {
           )}
         </DashboardPanel>
 
-        <DashboardPanel title="Prochains rendez-vous" href="/admin/rendez-vous">
+        <DashboardPanel title="Demandes de RDV récentes" href="/admin/rendez-vous">
+          {recentRdvRequests.length === 0 ? (
+            <EmptyState title="Aucune demande de RDV" description="Formulaire footer ou page /reservation?intent=rdv" />
+          ) : (
+            recentRdvRequests.slice(0, 6).map((req) => (
+              <DashboardRow
+                key={req.id}
+                href="/admin/rendez-vous"
+                primary={`${req.firstName} ${req.lastName}`}
+                secondary={req.email}
+                meta={new Date(req.createdAt).toLocaleDateString("fr-FR")}
+                status={
+                  req.isRead ? (
+                    <StatusDot label="Lu" tone="neutral" />
+                  ) : (
+                    <StatusDot label="Nouveau" tone="attention" />
+                  )
+                }
+              />
+            ))
+          )}
+        </DashboardPanel>
+      </div>
+
+      <div className="grid lg:grid-cols-2 gap-4 mt-4">
+        <DashboardPanel title="Prochains rendez-vous confirmés" href="/admin/rendez-vous">
           {upcomingAppointments.length === 0 ? (
             <EmptyState title="Aucun rendez-vous planifié" />
           ) : (
@@ -94,12 +147,10 @@ export default async function AdminDashboard() {
             ))
           )}
         </DashboardPanel>
-      </div>
 
-      {recentOrders.length > 0 && (
-        <div className="mt-4">
-          <DashboardPanel title="Activité récente" href="/admin/commandes" linkLabel="Toutes les commandes">
-            {recentOrders.slice(0, 5).map((order) => (
+        {recentOrders.length > 0 && (
+          <DashboardPanel title="Activité boutique récente" href="/admin/commandes" linkLabel="Toutes les commandes">
+            {recentOrders.slice(0, 6).map((order) => (
               <DashboardRow
                 key={order.id}
                 href={`/admin/commandes/${order.id}`}
@@ -109,8 +160,8 @@ export default async function AdminDashboard() {
               />
             ))}
           </DashboardPanel>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
@@ -138,5 +189,13 @@ async function getUpcomingAppointments() {
     take: 10,
     orderBy: { date: "asc" },
     include: { user: true },
+  });
+}
+
+async function getRecentRdvRequests() {
+  return prisma.contactRequest.findMany({
+    where: { type: "rdv" },
+    take: 10,
+    orderBy: { createdAt: "desc" },
   });
 }

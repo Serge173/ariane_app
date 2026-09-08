@@ -77,6 +77,14 @@ export const ORDER_STATUS_LABELS: Record<string, string> = {
   REFUNDED: "Remboursée",
 };
 
+export const FULFILLMENT_STATUS_LABELS: Record<string, string> = {
+  PENDING: "Payée — à préparer",
+  PREPARING: "En préparation",
+  SHIPPED: "Expédiée",
+  DELIVERED: "Livrée",
+  CANCELLED: "Annulée",
+};
+
 export const APPOINTMENT_STATUS_LABELS: Record<string, string> = {
   SCHEDULED: "Planifié",
   CONFIRMED: "Confirmé",

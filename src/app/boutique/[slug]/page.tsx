@@ -3,11 +3,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { luxeImage } from "@/lib/images";
-import { formatPrice } from "@/lib/utils";
+import { BRAND_FULL_NAME } from "@/lib/brand";
 import { Check, ChevronRight, Truck, ShieldCheck } from "lucide-react";
 import { formatCategoryLabel } from "@/lib/categories";
-import { AddToCartButton } from "@/components/shop/AddToCartButton";
-import { ProductImage } from "@/components/ui/ProductImage";
+import { ProductGallery } from "@/components/shop/ProductGallery";
+import { ProductPurchasePanel } from "@/components/shop/ProductPurchasePanel";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -17,7 +17,10 @@ async function getProduct(slug: string) {
   try {
     return await prisma.product.findFirst({
       where: { slug, productType: "LUXE" },
-      include: { category: { include: { parent: true } } },
+      include: {
+        category: { include: { parent: true } },
+        variants: { where: { isActive: true }, orderBy: { sortOrder: "asc" } },
+      },
     });
   } catch {
     return null;
@@ -71,7 +74,7 @@ const fallbackProducts: Record<string, {
   "foulard-soie-signature": {
     name: "Foulard Soie Signature", brand: "Collection Ariane", price: 75000,
     shortDescription: "Imprimé exclusif, 100% soie",
-    description: "Foulard carré en soie twill, imprimé exclusif Bienvenue à la mode avec Ariane. Fini main.",
+    description: `Foulard carré en soie twill, imprimé exclusif ${BRAND_FULL_NAME}. Fini main.`,
     features: ["100% soie twill", "Imprimé exclusif", "90 × 90 cm", "Fini main"],
     images: [luxeImage("foulard-soie-signature", 1200)],
     categoryName: "Accessoires",
@@ -128,6 +131,23 @@ export default async function BoutiqueProductPage({ params }: Props) {
         categorySlug: dbProduct.category.slug,
         parentCategorySlug: dbProduct.category.parent?.slug ?? null,
         parentCategoryName: dbProduct.category.parent?.name ?? null,
+        compareAtPrice: dbProduct.compareAtPrice,
+        material: dbProduct.material,
+        composition: dbProduct.composition,
+        careInstructions: dbProduct.careInstructions,
+        origin: dbProduct.origin,
+        variants: dbProduct.variants.map((v) => ({
+          id: v.id,
+          name: v.name,
+          size: v.size,
+          color: v.color,
+          sku: v.sku,
+          price: v.price,
+          compareAtPrice: v.compareAtPrice,
+          stock: v.stock,
+          trackInventory: v.trackInventory,
+          isActive: v.isActive,
+        })),
       }
     : {
         id: slug,
@@ -143,6 +163,12 @@ export default async function BoutiqueProductPage({ params }: Props) {
         categorySlug: null,
         parentCategorySlug: null,
         parentCategoryName: null,
+        compareAtPrice: null,
+        material: null,
+        composition: null,
+        careInstructions: null,
+        origin: null,
+        variants: [],
       };
 
   return (
@@ -184,17 +210,11 @@ export default async function BoutiqueProductPage({ params }: Props) {
         </nav>
 
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20">
-          <div className="relative aspect-[4/5] bg-brand-100 overflow-hidden">
-            <ProductImage
-              src={product.images[0]}
-              fallback={luxeImage(slug, 1200)}
-              alt={product.name}
-              fill
-              className="object-cover"
-              priority
-              sizes="(max-width: 1024px) 100vw, 50vw"
-            />
-          </div>
+          <ProductGallery
+            images={product.images}
+            fallback={luxeImage(slug, 1200)}
+            alt={product.name}
+          />
 
           <div className="flex flex-col justify-center">
             {product.brand && (
@@ -203,9 +223,20 @@ export default async function BoutiqueProductPage({ params }: Props) {
             <p className="text-xs uppercase tracking-widest text-brand-400 mb-2">{product.categoryName}</p>
             <h1 className="heading-section mb-4">{product.name}</h1>
             <p className="product-description-lg mb-6">{product.shortDescription}</p>
-            <p className="text-2xl font-light mb-8">{formatPrice(product.price)}</p>
 
-            <ul className="space-y-3 mb-10">
+            <ProductPurchasePanel
+              product={{
+                id: product.id,
+                slug: product.slug,
+                name: product.name,
+                price: product.price,
+                compareAtPrice: product.compareAtPrice,
+                image: product.images[0],
+              }}
+              variants={product.variants}
+            />
+
+            <ul className="space-y-3 mb-10 mt-10">
               {product.features.map((feature) => (
                 <li key={feature} className="flex items-start gap-3 product-description">
                   <Check className="w-4 h-4 text-accent mt-0.5 flex-shrink-0" />
@@ -213,22 +244,6 @@ export default async function BoutiqueProductPage({ params }: Props) {
                 </li>
               ))}
             </ul>
-
-            <div className="flex flex-col sm:flex-row gap-4 mb-8">
-              <AddToCartButton
-                product={{
-                  productId: product.id,
-                  slug: product.slug,
-                  name: product.name,
-                  price: product.price,
-                  image: product.images[0],
-                }}
-                productType="LUXE"
-              />
-              <Link href="/panier" className="btn-secondary text-center inline-flex items-center justify-center">
-                Voir le panier
-              </Link>
-            </div>
 
             <div className="flex flex-col sm:flex-row gap-6 pt-6 border-t border-brand-100 text-xs text-brand-500">
               <span className="flex items-center gap-2">
@@ -243,9 +258,40 @@ export default async function BoutiqueProductPage({ params }: Props) {
           </div>
         </div>
 
-        <div className="mt-20 max-w-3xl">
-          <h2 className="font-sans text-2xl font-semibold tracking-tight mb-6">Description</h2>
-          <div className="product-description-lg whitespace-pre-line">{product.description}</div>
+        <div className="mt-20 max-w-3xl space-y-12">
+          <div>
+            <h2 className="font-sans text-2xl font-semibold tracking-tight mb-6">Description</h2>
+            <div className="product-description-lg whitespace-pre-line">{product.description}</div>
+          </div>
+
+          {(product.material || product.composition || product.careInstructions || product.origin) && (
+            <div className="grid sm:grid-cols-2 gap-6 pt-8 border-t border-brand-100">
+              {product.material && (
+                <div>
+                  <h3 className="text-overline text-brand-500 mb-2">Matière</h3>
+                  <p className="text-sm text-brand-600">{product.material}</p>
+                </div>
+              )}
+              {product.composition && (
+                <div>
+                  <h3 className="text-overline text-brand-500 mb-2">Composition</h3>
+                  <p className="text-sm text-brand-600">{product.composition}</p>
+                </div>
+              )}
+              {product.careInstructions && (
+                <div>
+                  <h3 className="text-overline text-brand-500 mb-2">Entretien</h3>
+                  <p className="text-sm text-brand-600">{product.careInstructions}</p>
+                </div>
+              )}
+              {product.origin && (
+                <div>
+                  <h3 className="text-overline text-brand-500 mb-2">Origine</h3>
+                  <p className="text-sm text-brand-600">{product.origin}</p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -111,7 +111,7 @@ export const publicNav = [
   { name: "Orientation", href: "/orientation" },
   { name: "À propos", href: "/a-propos" },
   { name: "Blog", href: "/blog" },
-  { name: "Boutique", href: "/boutique", highlight: true },
+  { name: "Shopping", href: "/boutique?line=luxe", highlight: true },
 ];
 
 export function getDashboardPath(role?: string): string {

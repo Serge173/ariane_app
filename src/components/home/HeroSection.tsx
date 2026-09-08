@@ -29,9 +29,7 @@ export function HeroSection() {
             transition={{ duration: 0.8, delay: 0.1 }}
             className="heading-display text-brand-950 mb-8"
           >
-            Révélez l&apos;image
-            <br />
-            <span className="italic font-light">qui vous ressemble</span>
+            Votre image doit être à la hauteur de la dimension que vous souhaitez atteindre.
           </motion.h1>
 
           <motion.p

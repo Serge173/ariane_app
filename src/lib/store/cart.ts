@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { CartProductType } from "@/lib/cart";
+import { cartLineKey } from "@/lib/cart-line";
 
 export interface CartItem {
   productId: string;
@@ -11,6 +12,9 @@ export interface CartItem {
   productType: CartProductType;
   image?: string;
   mode?: "IN_PERSON" | "DIGITAL" | "HYBRID";
+  variantId?: string;
+  variantLabel?: string;
+  sku?: string;
 }
 
 type AddItemResult = { ok: true } | { ok: false; error: "mixed" };
@@ -20,8 +24,8 @@ interface CartStore {
   toastAt: number;
   toastMessage: string | null;
   addItem: (item: CartItem) => AddItemResult;
-  removeItem: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  removeItem: (lineKey: string) => void;
+  updateQuantity: (lineKey: string, quantity: number) => void;
   clearCart: () => void;
   total: () => number;
   itemCount: () => number;
@@ -43,11 +47,12 @@ export const useCartStore = create<CartStore>()(
           }
         }
 
-        const found = existing.find((i) => i.productId === item.productId);
+        const key = cartLineKey(item);
+        const found = existing.find((i) => cartLineKey(i) === key);
         if (found) {
           set({
             items: existing.map((i) =>
-              i.productId === item.productId
+              cartLineKey(i) === key
                 ? { ...i, quantity: i.quantity + item.quantity }
                 : i
             ),
@@ -65,17 +70,17 @@ export const useCartStore = create<CartStore>()(
         }
         return { ok: true };
       },
-      removeItem: (productId) => {
-        set({ items: get().items.filter((i) => i.productId !== productId) });
+      removeItem: (lineKey) => {
+        set({ items: get().items.filter((i) => cartLineKey(i) !== lineKey) });
       },
-      updateQuantity: (productId, quantity) => {
+      updateQuantity: (lineKey, quantity) => {
         if (quantity <= 0) {
-          get().removeItem(productId);
+          get().removeItem(lineKey);
           return;
         }
         set({
           items: get().items.map((i) =>
-            i.productId === productId ? { ...i, quantity } : i
+            cartLineKey(i) === lineKey ? { ...i, quantity } : i
           ),
         });
       },

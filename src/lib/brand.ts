@@ -1,18 +1,30 @@
-export const BRAND_TITLE = "Bienvenue à la mode";
-export const BRAND_SUBTITLE = "avec Ariane";
-export const BRAND_FULL_NAME = "Bienvenue à la mode avec Ariane";
+export const BRAND_TITLE = "Bienvenue dans l'univers";
+export const BRAND_SUBTITLE = "de la découverte de soi";
+export const BRAND_FULL_NAME = "Bienvenue dans l'univers de la découverte de soi";
 
 /** Ancien nom — migration des réglages déjà en base */
 export const LEGACY_BRAND_TITLE = "Conseil en Image";
 export const LEGACY_BRAND_FULL_NAME = "Conseil en Image avec Ariane";
 
+/** Branding précédent — migration */
+export const PREVIOUS_BRAND_TITLE = "Bienvenue à la mode";
+export const PREVIOUS_BRAND_SUBTITLE = "avec Ariane";
+export const PREVIOUS_BRAND_FULL_NAME = "Bienvenue à la mode avec Ariane";
+
 export function migrateBrandTitle(title: string): string {
-  return title === LEGACY_BRAND_TITLE ? BRAND_TITLE : title;
+  if (title === LEGACY_BRAND_TITLE || title === PREVIOUS_BRAND_TITLE) return BRAND_TITLE;
+  return title;
+}
+
+export function migrateBrandSubtitle(subtitle: string): string {
+  if (subtitle === PREVIOUS_BRAND_SUBTITLE) return BRAND_SUBTITLE;
+  return subtitle;
 }
 
 export function migrateBrandText(text: string): string {
   return text
     .replaceAll(LEGACY_BRAND_FULL_NAME, BRAND_FULL_NAME)
+    .replaceAll(PREVIOUS_BRAND_FULL_NAME, BRAND_FULL_NAME)
     .replaceAll("Conseil en image avec Ariane", BRAND_FULL_NAME);
 }
 

@@ -12,8 +12,8 @@ export interface HeroSlide {
 }
 
 export const HERO_PRIMARY_CTA = {
-  href: "/reservation",
-  label: "Cliquez ici pour prendre un rdv",
+  href: "/reservation?intent=rdv",
+  label: "Démarrer mon parcours de ma découverte",
 } as const;
 
 export function getHeroSlides(): HeroSlide[] {
@@ -23,9 +23,9 @@ export function getHeroSlides(): HeroSlide[] {
       image: IMAGES.hero.replace(/w=\d+/, "w=1920"),
       imageAlt: "Mode et style premium",
       overline: BRAND_FULL_NAME,
-      title: "Révélez l'image qui vous ressemble",
-      href: "/reservation",
-      cta: "Cliquez ici pour prendre un rdv",
+      title: "Votre image doit être à la hauteur de la dimension que vous souhaitez atteindre.",
+      href: "/reservation?intent=rdv",
+      cta: "Démarrer mon parcours de ma découverte",
     },
     {
       id: "boutique",

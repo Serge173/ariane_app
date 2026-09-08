@@ -5,6 +5,7 @@ import { requireAdmin, jsonError } from "@/lib/admin-api";
 import { slugify } from "@/lib/utils";
 import { buildKeywordsFromProduct, parseKeywordsInput, parseLinesInput } from "@/lib/catalogue";
 import { getCategoryDescendantIds } from "@/lib/categories";
+import { syncProductVariants } from "@/lib/shop/sync-variants";
 
 export async function GET(req: NextRequest) {
   const { error } = await requireAdmin();
@@ -83,6 +84,7 @@ export async function POST(req: NextRequest) {
     isActive = true,
     isFeatured = false,
     sortOrder = 0,
+    variants,
   } = body;
 
   if (!name?.trim()) return jsonError("Le nom est requis");
@@ -144,8 +146,17 @@ export async function POST(req: NextRequest) {
       isFeatured,
       sortOrder: Number(sortOrder) || 0,
     },
-    include: { category: { include: { parent: true } }, brandRef: true },
+    include: { category: { include: { parent: true } }, brandRef: true, variants: true },
   });
 
-  return NextResponse.json(product, { status: 201 });
+  if (productType === "LUXE" && Array.isArray(variants)) {
+    await syncProductVariants(prisma, product.id, variants);
+  }
+
+  const withVariants = await prisma.product.findUnique({
+    where: { id: product.id },
+    include: { category: { include: { parent: true } }, brandRef: true, variants: true },
+  });
+
+  return NextResponse.json(withVariants ?? product, { status: 201 });
 }

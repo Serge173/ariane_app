@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCartStore } from "@/lib/store/cart";
 import { formatPrice } from "@/lib/utils";
 import { cartCheckoutPath, cartKindLabel, getCartKind } from "@/lib/cart";
+import { cartLineKey } from "@/lib/cart-line";
 import { Trash2, ArrowRight, AlertTriangle } from "lucide-react";
 import { ProductImage } from "@/components/ui/ProductImage";
 import { IMAGES } from "@/lib/images";
@@ -57,8 +58,10 @@ export default function PanierPage() {
         )}
 
         <div className="space-y-6 mb-12">
-          {items.map((item) => (
-            <div key={item.productId} className="flex gap-6 p-6 border border-brand-100">
+          {items.map((item) => {
+            const lineKey = cartLineKey(item);
+            return (
+            <div key={lineKey} className="flex gap-6 p-6 border border-brand-100">
               {item.image && (
                 <div className="relative w-24 h-32 flex-shrink-0 bg-brand-100">
                   <ProductImage src={item.image} fallback={IMAGES.productFallback} alt={item.name} fill className="object-cover" />
@@ -69,25 +72,28 @@ export default function PanierPage() {
                   {item.productType === "LUXE" ? "Boutique" : "Accompagnement"}
                 </p>
                 <h3 className="product-title text-lg mb-1">{item.name}</h3>
+                {item.variantLabel && (
+                  <p className="text-xs text-brand-500 mb-1">{item.variantLabel}</p>
+                )}
                 <p className="text-sm text-brand-500 mb-4">{formatPrice(item.price)}</p>
                 <div className="flex items-center gap-4">
                   <div className="flex items-center border border-brand-200">
                     <button
-                      onClick={() => updateQuantity(item.productId, item.quantity - 1)}
+                      onClick={() => updateQuantity(lineKey, item.quantity - 1)}
                       className="px-3 py-1 hover:bg-brand-50"
                     >
                       −
                     </button>
                     <span className="px-4 py-1 text-sm">{item.quantity}</span>
                     <button
-                      onClick={() => updateQuantity(item.productId, item.quantity + 1)}
+                      onClick={() => updateQuantity(lineKey, item.quantity + 1)}
                       className="px-3 py-1 hover:bg-brand-50"
                     >
                       +
                     </button>
                   </div>
                   <button
-                    onClick={() => removeItem(item.productId)}
+                    onClick={() => removeItem(lineKey)}
                     className="text-brand-400 hover:text-red-600 transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -98,7 +104,8 @@ export default function PanierPage() {
                 <p className="font-medium">{formatPrice(item.price * item.quantity)}</p>
               </div>
             </div>
-          ))}
+          );
+          })}
         </div>
 
         <div className="border-t border-brand-200 pt-8">
@@ -124,7 +131,7 @@ export default function PanierPage() {
                 href={checkoutPath}
                 className="btn-primary flex-1 text-center inline-flex items-center justify-center gap-2"
               >
-                {cartKind === "LUXE" ? "Commander" : "Réserver mon accompagnement"}
+                {cartKind === "LUXE" ? "Finaliser ma commande" : "Finaliser ma demande de RDV"}
                 <ArrowRight className="w-4 h-4" />
               </Link>
             ) : (

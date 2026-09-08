@@ -19,6 +19,8 @@ export interface BoutiqueProduct {
   isFeatured?: boolean;
   categorySlug?: string;
   categoryName?: string;
+  hasVariants?: boolean;
+  fromPrice?: boolean;
 }
 
 interface BoutiqueCatalogProps {
@@ -105,6 +107,7 @@ function BoutiqueProductCard({
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (product.hasVariants) return;
     const result = addItem({
       productId: product.id,
       slug: product.slug,
@@ -143,7 +146,10 @@ function BoutiqueProductCard({
             {product.name}
           </h3>
         </Link>
-        <p className="font-sans text-sm text-brand-600">{formatPrice(product.price)}</p>
+        <p className="font-sans text-sm text-brand-600">
+          {product.fromPrice && <span className="text-brand-400 text-xs mr-1">À partir de</span>}
+          {formatPrice(product.price)}
+        </p>
       </article>
     );
   }

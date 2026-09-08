@@ -11,8 +11,9 @@ import {
   PaymentMethodSelector,
   getPaymentButtonLabel,
 } from "@/components/checkout/PaymentMethodSelector";
-import { Calendar, Clock } from "lucide-react";
+import { Calendar, Clock, Sparkles } from "lucide-react";
 import { useFeedbackModal } from "@/hooks/useFeedbackModal";
+import { BOOKING_COPY } from "@/lib/booking-copy";
 
 const TIME_SLOTS = [
   "09:00", "10:00", "11:00", "12:00",
@@ -44,7 +45,7 @@ function ReservationForm() {
     date: "",
     time: "",
     mode: "IN_PERSON" as "IN_PERSON" | "DIGITAL" | "HYBRID",
-    notes: "",
+    objective: "",
     paymentMethod: "",
   });
 
@@ -53,11 +54,21 @@ function ReservationForm() {
   const { showError, FeedbackModal } = useFeedbackModal();
 
   const productSlug = searchParams.get("product");
+  const intent = searchParams.get("intent");
   const cartKind = getCartKind(items);
   const hasCartItems = items.length > 0;
-  const isDirectBooking = !hasCartItems && Boolean(productSlug);
+  const isDiscoveryRdv = intent === "rdv" && !productSlug;
+  const isPurchaseFlow = !isDiscoveryRdv && (hasCartItems || Boolean(productSlug));
+  const totalSteps = isDiscoveryRdv ? 2 : 3;
+  const copy = BOOKING_COPY.appointment;
 
   useEffect(() => {
+    if (intent === "rdv" && !productSlug) {
+      if (hasCartItems && cartKind === "MIXED") {
+        router.replace("/panier");
+      }
+      return;
+    }
     if (hasCartItems && cartKind === "LUXE") {
       router.replace("/checkout");
     } else if (hasCartItems && cartKind === "MIXED") {
@@ -65,7 +76,7 @@ function ReservationForm() {
     } else if (!hasCartItems && !productSlug) {
       router.replace("/offres");
     }
-  }, [hasCartItems, cartKind, productSlug, router]);
+  }, [hasCartItems, cartKind, productSlug, intent, router]);
 
   useEffect(() => {
     if (!productSlug || hasCartItems) return;
@@ -92,6 +103,11 @@ function ReservationForm() {
   const cartTotal = hasCartItems ? total() : directProduct?.price || 0;
 
   useEffect(() => {
+    if (isDiscoveryRdv) {
+      setMethodsLoading(false);
+      return;
+    }
+
     setMethodsLoading(true);
     fetch("/api/payment-methods?context=accompagnement")
       .then((r) => (r.ok ? r.json() : []))
@@ -106,9 +122,45 @@ function ReservationForm() {
         }));
       })
       .finally(() => setMethodsLoading(false));
-  }, [cartTotal]);
+  }, [cartTotal, isDiscoveryRdv]);
 
-  const handleSubmit = async () => {
+  const updateForm = (field: string, value: string) => {
+    setForm((f) => ({ ...f, [field]: value }));
+  };
+
+  const handleDiscoverySubmit = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/appointment-requests", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName: form.firstName,
+          lastName: form.lastName,
+          email: form.email,
+          phone: form.phone,
+          date: form.date,
+          time: form.time,
+          mode: form.mode,
+          objective: form.objective,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erreur");
+
+      router.push("/reservation/confirmation?type=rdv");
+    } catch (err) {
+      showError(
+        err instanceof Error ? err.message : "Une erreur est survenue",
+        "Demande impossible"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePurchaseSubmit = async () => {
     setLoading(true);
     try {
       const res = await fetch("/api/orders", {
@@ -121,7 +173,15 @@ function ReservationForm() {
             : productSlug
             ? [{ productSlug, quantity: 1 }]
             : [],
-          ...form,
+          firstName: form.firstName,
+          lastName: form.lastName,
+          email: form.email,
+          phone: form.phone,
+          date: form.date,
+          time: form.time,
+          mode: form.mode,
+          notes: form.objective,
+          paymentMethod: form.paymentMethod,
         }),
       });
 
@@ -144,161 +204,205 @@ function ReservationForm() {
     }
   };
 
-  const updateForm = (field: string, value: string) => {
-    setForm((f) => ({ ...f, [field]: value }));
-  };
-
   const minDate = new Date();
   minDate.setDate(minDate.getDate() + 1);
   const minDateStr = minDate.toISOString().split("T")[0];
 
-  if ((!hasCartItems && !productSlug) || (hasCartItems && cartKind !== "SERVICE")) {
+  if ((!isDiscoveryRdv && !isPurchaseFlow) || (hasCartItems && cartKind !== "SERVICE" && !isDiscoveryRdv)) {
     return null;
   }
+
+  const modeLabel =
+    form.mode === "IN_PERSON" ? "Présentiel" : form.mode === "DIGITAL" ? "Digital" : "Hybride";
 
   return (
     <>
       {FeedbackModal}
       <div className="min-h-screen pt-24 pb-20">
-      <div className="container-premium max-w-3xl">
-        <p className="text-overline mb-2">Accompagnement</p>
-        <h1 className="heading-section mb-4">Réserver votre accompagnement</h1>
-        <p className="text-brand-600 mb-12">
-          Étape {step} sur 3 — {step === 1 ? "Vos coordonnées" : step === 2 ? "Date et créneau" : "Paiement"}
-        </p>
+        <div className="container-premium max-w-3xl">
+          <p className="text-overline mb-2 flex items-center gap-2">
+            <Sparkles className="w-3.5 h-3.5" strokeWidth={1.5} />
+            {isDiscoveryRdv ? "Demande de rendez-vous" : "Accompagnement"}
+          </p>
+          <h1 className="heading-section mb-4">{copy.pageTitle}</h1>
+          <p className="text-brand-600 mb-12">
+            Étape {step} sur {totalSteps} — {copy.stepLabel(step, totalSteps)}
+          </p>
 
-        <div className="h-1 bg-brand-100 mb-12">
-          <div className="h-full bg-brand-950 transition-all" style={{ width: `${(step / 3) * 100}%` }} />
-        </div>
-
-        {step === 1 && (
-          <div className="space-y-6">
-            <div className="grid sm:grid-cols-2 gap-6">
-              <div>
-                <label className="label-field">Prénom *</label>
-                <input className="input-field" value={form.firstName} onChange={(e) => updateForm("firstName", e.target.value)} required />
-              </div>
-              <div>
-                <label className="label-field">Nom *</label>
-                <input className="input-field" value={form.lastName} onChange={(e) => updateForm("lastName", e.target.value)} required />
-              </div>
-            </div>
-            <div>
-              <label className="label-field">Email *</label>
-              <input type="email" className="input-field" value={form.email} onChange={(e) => updateForm("email", e.target.value)} required />
-            </div>
-            <div>
-              <label className="label-field">Téléphone / WhatsApp *</label>
-              <input type="tel" className="input-field" value={form.phone} onChange={(e) => updateForm("phone", e.target.value)} placeholder="+225..." required />
-            </div>
-            <div>
-              <label className="label-field">Mode d&apos;accompagnement</label>
-              <select className="input-field" value={form.mode} onChange={(e) => updateForm("mode", e.target.value)}>
-                <option value="IN_PERSON">Présentiel (Abidjan)</option>
-                <option value="DIGITAL">100% Digital</option>
-                <option value="HYBRID">Hybride</option>
-              </select>
-            </div>
-            <div>
-              <label className="label-field">Notes ou besoins particuliers</label>
-              <textarea className="input-field min-h-[100px]" value={form.notes} onChange={(e) => updateForm("notes", e.target.value)} />
-            </div>
-            <button onClick={() => setStep(2)} className="btn-primary" disabled={!form.firstName || !form.email || !form.phone}>
-              Continuer
-            </button>
+          <div className="h-1 bg-brand-100 mb-12">
+            <div className="h-full bg-brand-950 transition-all" style={{ width: `${(step / totalSteps) * 100}%` }} />
           </div>
-        )}
 
-        {step === 2 && (
-          <div className="space-y-6">
-            <div>
-              <label className="label-field flex items-center gap-2">
-                <Calendar className="w-4 h-4" /> Date souhaitée *
-              </label>
-              <input type="date" className="input-field" min={minDateStr} value={form.date} onChange={(e) => updateForm("date", e.target.value)} required />
-            </div>
-            <div>
-              <label className="label-field flex items-center gap-2">
-                <Clock className="w-4 h-4" /> Créneau horaire *
-              </label>
-              <div className="grid grid-cols-4 gap-3">
-                {TIME_SLOTS.map((time) => (
-                  <button
-                    key={time}
-                    type="button"
-                    onClick={() => updateForm("time", time)}
-                    className={`py-3 text-sm border transition-all ${
-                      form.time === time ? "border-brand-950 bg-brand-50" : "border-brand-200 hover:border-brand-400"
-                    }`}
-                  >
-                    {time.replace(":", "h")}
-                  </button>
-                ))}
+          {step === 1 && (
+            <div className="space-y-6">
+              <div className="p-4 bg-brand-50 border border-brand-100 text-sm text-brand-600 leading-relaxed">
+                {isDiscoveryRdv
+                  ? "Indiquez vos coordonnées et votre objectif. Aucune information de livraison n'est requise pour un rendez-vous."
+                  : "Renseignez vos coordonnées et précisez le mode d'accompagnement souhaité."}
               </div>
-            </div>
-            <div className="flex gap-4">
-              <button type="button" onClick={() => setStep(1)} className="btn-secondary">Retour</button>
-              <button type="button" onClick={() => setStep(3)} className="btn-primary" disabled={!form.date || !form.time}>
-                Continuer
-              </button>
-            </div>
-          </div>
-        )}
 
-        {step === 3 && (
-          <div className="space-y-6">
-            <div className="p-6 bg-brand-50 border border-brand-100 mb-6">
-              <h3 className="font-display text-lg mb-4">Récapitulatif accompagnement</h3>
-              {hasCartItems ? (
-                items.map((item) => (
-                  <div key={item.productId} className="flex justify-between text-sm mb-2">
-                    <span>{item.name} × {item.quantity}</span>
-                    <span>{formatPrice(item.price * item.quantity)}</span>
-                  </div>
-                ))
-              ) : directProduct ? (
-                <div className="flex justify-between text-sm mb-2">
-                  <span>{directProduct.name}</span>
-                  <span>{formatPrice(directProduct.price)}</span>
+              <div className="grid sm:grid-cols-2 gap-6">
+                <div>
+                  <label className="label-field">Prénom *</label>
+                  <input className="input-field" value={form.firstName} onChange={(e) => updateForm("firstName", e.target.value)} required />
                 </div>
-              ) : (
-                <p className="text-sm text-brand-600">Formule : {productSlug}</p>
-              )}
-              <div className="flex justify-between font-medium mt-4 pt-4 border-t border-brand-200">
-                <span>Total</span>
-                <span>{formatPrice(cartTotal)}</span>
+                <div>
+                  <label className="label-field">Nom *</label>
+                  <input className="input-field" value={form.lastName} onChange={(e) => updateForm("lastName", e.target.value)} required />
+                </div>
               </div>
-              <p className="text-xs text-brand-500 mt-2">
-                Rendez-vous : {form.date} à {form.time?.replace(":", "h")} —{" "}
-                {form.mode === "IN_PERSON" ? "Présentiel" : form.mode === "DIGITAL" ? "Digital" : "Hybride"}
-              </p>
-            </div>
-
-            <div>
-              <label className="label-field">Mode de paiement *</label>
-              <PaymentMethodSelector
-                methods={paymentMethods}
-                value={form.paymentMethod}
-                onChange={(code) => updateForm("paymentMethod", code)}
-                loading={methodsLoading}
-              />
-            </div>
-
-            <div className="flex gap-4">
-              <button type="button" onClick={() => setStep(2)} className="btn-secondary">Retour</button>
+              <div>
+                <label className="label-field">Email *</label>
+                <input type="email" className="input-field" value={form.email} onChange={(e) => updateForm("email", e.target.value)} required />
+              </div>
+              <div>
+                <label className="label-field">Téléphone / WhatsApp *</label>
+                <input type="tel" className="input-field" value={form.phone} onChange={(e) => updateForm("phone", e.target.value)} placeholder="+225..." required />
+              </div>
+              <div>
+                <label className="label-field">Mode d&apos;accompagnement *</label>
+                <select className="input-field" value={form.mode} onChange={(e) => updateForm("mode", e.target.value)}>
+                  <option value="IN_PERSON">Présentiel (Abidjan)</option>
+                  <option value="DIGITAL">100% Digital</option>
+                  <option value="HYBRID">Hybride</option>
+                </select>
+              </div>
+              <div>
+                <label className="label-field">
+                  {isDiscoveryRdv ? "Votre objectif ou votre besoin *" : "Notes ou besoins particuliers"}
+                </label>
+                <textarea
+                  className="input-field min-h-[100px]"
+                  value={form.objective}
+                  onChange={(e) => updateForm("objective", e.target.value)}
+                  placeholder={
+                    isDiscoveryRdv
+                      ? "Ex. : premier échange image, préparation professionnelle, garde-robe..."
+                      : undefined
+                  }
+                />
+              </div>
               <button
-                type="button"
-                onClick={handleSubmit}
-                className="btn-primary flex-1"
-                disabled={loading || !form.paymentMethod || methodsLoading}
+                onClick={() => setStep(2)}
+                className="btn-primary"
+                disabled={!form.firstName || !form.email || !form.phone || (isDiscoveryRdv && !form.objective.trim())}
               >
-                {loading ? "Traitement..." : getPaymentButtonLabel(form.paymentMethod, paymentMethods)}
+                {copy.continueLabel}
               </button>
             </div>
-          </div>
-        )}
+          )}
+
+          {step === 2 && (
+            <div className="space-y-6">
+              <div>
+                <label className="label-field flex items-center gap-2">
+                  <Calendar className="w-4 h-4" /> Date souhaitée *
+                </label>
+                <input type="date" className="input-field" min={minDateStr} value={form.date} onChange={(e) => updateForm("date", e.target.value)} required />
+              </div>
+              <div>
+                <label className="label-field flex items-center gap-2">
+                  <Clock className="w-4 h-4" /> Créneau horaire *
+                </label>
+                <div className="grid grid-cols-4 gap-3">
+                  {TIME_SLOTS.map((time) => (
+                    <button
+                      key={time}
+                      type="button"
+                      onClick={() => updateForm("time", time)}
+                      className={`py-3 text-sm border transition-all ${
+                        form.time === time ? "border-brand-950 bg-brand-50" : "border-brand-200 hover:border-brand-400"
+                      }`}
+                    >
+                      {time.replace(":", "h")}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {isDiscoveryRdv && (
+                <div className="p-5 bg-brand-50 border border-brand-100 text-sm text-brand-600 space-y-2">
+                  <p className="font-medium text-brand-950">Récapitulatif</p>
+                  <p>{form.firstName} {form.lastName} — {form.email}</p>
+                  <p>{form.date} à {form.time?.replace(":", "h")} — {modeLabel}</p>
+                  <p className="italic">&ldquo;{form.objective}&rdquo;</p>
+                </div>
+              )}
+
+              <div className="flex gap-4">
+                <button type="button" onClick={() => setStep(1)} className="btn-secondary">Retour</button>
+                {isDiscoveryRdv ? (
+                  <button
+                    type="button"
+                    onClick={handleDiscoverySubmit}
+                    className="btn-primary flex-1"
+                    disabled={loading || !form.date || !form.time}
+                  >
+                    {loading ? "Envoi..." : copy.submitDiscovery}
+                  </button>
+                ) : (
+                  <button type="button" onClick={() => setStep(3)} className="btn-primary" disabled={!form.date || !form.time}>
+                    {copy.continueLabel}
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {!isDiscoveryRdv && step === 3 && (
+            <div className="space-y-6">
+              <div className="p-6 bg-brand-50 border border-brand-100 mb-6">
+                <h3 className="font-display text-lg mb-4">{copy.recapTitle}</h3>
+                {hasCartItems ? (
+                  items.map((item) => (
+                    <div key={item.productId} className="flex justify-between text-sm mb-2">
+                      <span>{item.name} × {item.quantity}</span>
+                      <span>{formatPrice(item.price * item.quantity)}</span>
+                    </div>
+                  ))
+                ) : directProduct ? (
+                  <div className="flex justify-between text-sm mb-2">
+                    <span>{directProduct.name}</span>
+                    <span>{formatPrice(directProduct.price)}</span>
+                  </div>
+                ) : (
+                  <p className="text-sm text-brand-600">Formule : {productSlug}</p>
+                )}
+                <div className="flex justify-between font-medium mt-4 pt-4 border-t border-brand-200">
+                  <span>Total</span>
+                  <span>{formatPrice(cartTotal)}</span>
+                </div>
+                <p className="text-xs text-brand-500 mt-2">
+                  Rendez-vous : {form.date} à {form.time?.replace(":", "h")} — {modeLabel}
+                </p>
+              </div>
+
+              <div>
+                <label className="label-field">Mode de paiement *</label>
+                <PaymentMethodSelector
+                  methods={paymentMethods}
+                  value={form.paymentMethod}
+                  onChange={(code) => updateForm("paymentMethod", code)}
+                  loading={methodsLoading}
+                  context="appointment"
+                />
+              </div>
+
+              <div className="flex gap-4">
+                <button type="button" onClick={() => setStep(2)} className="btn-secondary">Retour</button>
+                <button
+                  type="button"
+                  onClick={handlePurchaseSubmit}
+                  className="btn-primary flex-1"
+                  disabled={loading || !form.paymentMethod || methodsLoading}
+                >
+                  {loading ? "Traitement..." : getPaymentButtonLabel(form.paymentMethod, paymentMethods, "appointment")}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
     </>
   );
 }

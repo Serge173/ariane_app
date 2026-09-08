@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Instagram, Facebook, Linkedin, ExternalLink, type LucideIcon } from "lucide-react";
 import type { SiteSettings, SiteSocialLink } from "@/lib/site-settings";
+import { APPOINTMENT_REQUEST_PATH } from "@/lib/booking-copy";
 import { FooterAccordionSection } from "@/components/layout/FooterAccordionSection";
 
 const socialIconMap: Record<string, LucideIcon | null> = {
@@ -39,7 +40,7 @@ interface FooterProps {
 }
 
 export function Footer({ siteSettings }: FooterProps) {
-  const { brand, footer } = siteSettings;
+  const { footer } = siteSettings;
 
   return (
     <footer className="bg-brand-950 text-brand-200 mt-auto">
@@ -48,15 +49,18 @@ export function Footer({ siteSettings }: FooterProps) {
           <div className="pb-6 lg:pb-0 border-b border-brand-800 lg:border-0 lg:w-[30%] lg:max-w-sm lg:flex-shrink-0">
             <Link href="/" className="inline-block mb-3 lg:mb-4">
               <span className="font-display text-xl sm:text-2xl font-light text-white tracking-wide">
-                {brand.title}
+                {footer.title}
               </span>
               <span className="block text-[10px] uppercase tracking-ultra text-brand-400 -mt-0.5">
-                {brand.subtitle}
+                {footer.subtitle}
               </span>
             </Link>
-            <p className="text-sm text-brand-400 leading-relaxed">
+            <p className="text-sm text-brand-400 leading-relaxed mb-5">
               {footer.description}
             </p>
+            <Link href={APPOINTMENT_REQUEST_PATH} className="btn-primary text-[10px] sm:text-[11px] px-5 py-2.5 sm:px-6 sm:py-3">
+              {footer.ctaLabel}
+            </Link>
           </div>
 
           <div className="lg:flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 sm:gap-8 lg:gap-6 xl:gap-10 min-w-0">
@@ -129,7 +133,7 @@ export function Footer({ siteSettings }: FooterProps) {
 
         <div className="mt-8 lg:mt-12 pt-5 lg:pt-6 border-t border-brand-800">
           <p className="text-xs text-brand-500">
-            © {new Date().getFullYear()} {brand.title} {brand.subtitle}. Tous droits réservés.
+            ©️ {new Date().getFullYear()} Ariane DAGO - Conseil en image. Tous droits réservés.
           </p>
         </div>
       </div>

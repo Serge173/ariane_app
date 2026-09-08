@@ -2,7 +2,6 @@ import { HeroSlider } from "@/components/home/HeroSlider";
 import { JourneySection } from "@/components/home/JourneySection";
 import { OffersGrid } from "@/components/home/OffersGrid";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
-import { BoutiquePreviewSection } from "@/components/home/BoutiquePreviewSection";
 import { CTASection } from "@/components/home/CTASection";
 import { OffersSection } from "@/components/home/HomeSections";
 import { getHomepageSettings } from "@/lib/homepage-settings";
@@ -12,7 +11,11 @@ export default async function HomePage() {
 
   return (
     <>
-      <HeroSlider slides={homepage.hero.slides} primaryCta={homepage.hero.primaryCta} />
+      <HeroSlider
+        slides={homepage.hero.slides}
+        primaryCta={homepage.hero.primaryCta}
+        scarcityLabel={homepage.hero.scarcityLabel}
+      />
 
       <JourneySection journey={homepage.journey} />
 
@@ -21,8 +24,6 @@ export default async function HomePage() {
       </OffersSection>
 
       <TestimonialsSection testimonials={homepage.testimonials} />
-
-      <BoutiquePreviewSection preview={homepage.boutiquePreview} />
 
       <CTASection cta={homepage.cta} />
     </>

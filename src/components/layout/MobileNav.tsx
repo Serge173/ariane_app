@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect } from "react";
-import { ArrowUpRight, ShoppingBag } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ShoppingBag } from "lucide-react";
 import type { SiteNavLink } from "@/lib/site-settings";
+import { PersonalShoppingAccordion } from "@/components/layout/PersonalShoppingAccordion";
 import { ProfileAvatar } from "@/components/ui/ProfileAvatar";
 
 interface MobileNavProps {
@@ -38,29 +39,31 @@ export function MobileNav({
     };
   }, [open]);
 
+  const [shoppingReset, setShoppingReset] = useState(0);
+
+  useEffect(() => {
+    if (!open) setShoppingReset((value) => value + 1);
+  }, [open]);
+
   if (!open) return null;
 
   const mainLinks = navLinks.filter((item) => !item.highlight);
-  const boutiqueLink = navLinks.find((item) => item.highlight);
+  const shoppingLink = navLinks.find((item) => item.highlight);
 
   return (
-    <div className="lg:hidden fixed inset-0 z-40" role="dialog" aria-modal="true" aria-label="Menu">
+    <div className="lg:hidden fixed inset-0 z-[45]" role="dialog" aria-modal="true" aria-label="Menu">
       <button
         type="button"
-        className="absolute inset-0 bg-brand-950/20 mobile-nav-backdrop"
+        className="absolute inset-0 bg-brand-950/55 mobile-nav-backdrop"
         onClick={onClose}
         aria-label="Fermer le menu"
       />
 
       <aside
-        className="absolute top-14 sm:top-16 right-0 bottom-0 w-1/2 min-w-[10.5rem] max-w-[19rem] sm:max-w-[21rem] bg-white border-l border-brand-100 shadow-[-12px_0_40px_-8px_rgba(40,36,31,0.12)] mobile-nav-panel overflow-y-auto overscroll-contain rounded-tl-2xl"
+        className="absolute top-14 sm:top-16 right-0 z-10 h-[50vh] w-[50vw] max-w-[50vw] bg-white border border-brand-100 shadow-[-16px_0_48px_-8px_rgba(40,36,31,0.22)] mobile-nav-panel overflow-y-auto overscroll-contain rounded-tl-2xl rounded-b-2xl"
         aria-label="Navigation principale"
       >
-        <div className="flex flex-col px-4 sm:px-5 pt-5 pb-6 min-h-full">
-          <p className="font-sans text-[9px] uppercase tracking-[0.35em] text-brand-500 mb-4">
-            Menu
-          </p>
-
+        <div className="flex flex-col px-4 sm:px-5 pt-4 pb-6 min-h-full">
           <nav className="flex-1">
             <ul>
               {mainLinks.map((item, index) => (
@@ -85,30 +88,18 @@ export function MobileNav({
               ))}
             </ul>
 
-            {boutiqueLink && (
-              <Link
-                href={boutiqueLink.href}
-                onClick={onClose}
-                className="mobile-nav-item group mt-4 block rounded-xl border border-accent text-accent px-3.5 py-3 hover:bg-accent hover:text-white transition-colors duration-[var(--duration-micro)]"
+            {shoppingLink && (
+              <div
+                className="mobile-nav-item"
                 style={{ animationDelay: `${mainLinks.length * 55}ms` }}
               >
-                <span className="flex items-center justify-between gap-2">
-                  <span className="min-w-0">
-                    <span className="block font-sans text-[8px] sm:text-[9px] uppercase tracking-[0.28em] text-brand-500 mb-0.5 group-hover:text-white/80">
-                      Collection
-                    </span>
-                    <span className="font-display text-base font-light tracking-tight">
-                      {boutiqueLink.name}
-                    </span>
-                  </span>
-                  <ArrowUpRight className="w-3.5 h-3.5 shrink-0" strokeWidth={1.25} />
-                </span>
-              </Link>
+                <PersonalShoppingAccordion key={shoppingReset} item={shoppingLink} onNavigate={onClose} />
+              </div>
             )}
           </nav>
 
           <div
-            className="mobile-nav-item mt-4 pt-4 border-t border-brand-200/70 space-y-3"
+            className="mobile-nav-item mt-auto pt-4 border-t border-brand-200/70 space-y-3"
             style={{ animationDelay: `${(mainLinks.length + 1) * 55}ms` }}
           >
             <Link

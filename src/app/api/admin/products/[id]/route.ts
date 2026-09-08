@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { requireAdmin, jsonError } from "@/lib/admin-api";
 import { slugify } from "@/lib/utils";
 import { buildKeywordsFromProduct, parseKeywordsInput, parseLinesInput } from "@/lib/catalogue";
+import { syncProductVariants } from "@/lib/shop/sync-variants";
 
 interface Ctx {
   params: Promise<{ id: string }>;
@@ -15,7 +16,7 @@ export async function GET(_req: NextRequest, ctx: Ctx) {
   const { id } = await ctx.params;
   const product = await prisma.product.findUnique({
     where: { id },
-    include: { category: { include: { parent: true } }, brandRef: true },
+    include: { category: { include: { parent: true } }, brandRef: true, variants: { orderBy: { sortOrder: "asc" } } },
   });
   if (!product) return jsonError("Produit introuvable", 404);
   return NextResponse.json(product);
@@ -102,10 +103,19 @@ export async function PATCH(req: NextRequest, ctx: Ctx) {
       ...(body.isFeatured !== undefined && { isFeatured: body.isFeatured }),
       ...(body.sortOrder !== undefined && { sortOrder: Number(body.sortOrder) || 0 }),
     },
-    include: { category: { include: { parent: true } }, brandRef: true },
+    include: { category: { include: { parent: true } }, brandRef: true, variants: { orderBy: { sortOrder: "asc" } } },
   });
 
-  return NextResponse.json(product);
+  if (Array.isArray(body.variants)) {
+    await syncProductVariants(prisma, id, body.variants);
+  }
+
+  const withVariants = await prisma.product.findUnique({
+    where: { id },
+    include: { category: { include: { parent: true } }, brandRef: true, variants: { orderBy: { sortOrder: "asc" } } },
+  });
+
+  return NextResponse.json(withVariants ?? product);
 }
 
 export async function DELETE(_req: NextRequest, ctx: Ctx) {

@@ -14,12 +14,14 @@ import {
   STAGGER_HERO_TEXT,
 } from "@/lib/motion";
 import type { HeroSlideSettings } from "@/lib/homepage-settings";
+import { FlashInfoTicker } from "@/components/home/FlashInfoTicker";
 
 const AUTOPLAY_MS = 7000;
 
 interface HeroSliderProps {
   slides: HeroSlideSettings[];
   primaryCta: { href: string; label: string };
+  scarcityLabel?: string;
 }
 
 function HeroSlideText({
@@ -100,7 +102,7 @@ function HeroSlideText({
   );
 }
 
-export function HeroSlider({ slides, primaryCta }: HeroSliderProps) {
+export function HeroSlider({ slides, primaryCta, scarcityLabel }: HeroSliderProps) {
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
   const [useHeroDuration, setUseHeroDuration] = useState(true);
@@ -187,8 +189,19 @@ export function HeroSlider({ slides, primaryCta }: HeroSliderProps) {
         );
       })}
 
+      {scarcityLabel && (
+        <div className="absolute top-[4.75rem] sm:top-24 left-0 right-0 z-20 pointer-events-none">
+          <FlashInfoTicker label={scarcityLabel} />
+        </div>
+      )}
+
       <div className="relative z-10 flex h-full items-end sm:items-center">
-        <div className="container-premium w-full pt-[4.75rem] pb-9 sm:pt-32 sm:pb-20">
+        <div
+          className={cn(
+            "container-premium w-full pb-9 sm:pb-20",
+            scarcityLabel ? "pt-[7.5rem] sm:pt-[11.5rem]" : "pt-[4.75rem] sm:pt-32"
+          )}
+        >
           <HeroSlideText slide={current} primaryCta={primaryCta} isFirstLoad={useHeroDuration} />
         </div>
       </div>

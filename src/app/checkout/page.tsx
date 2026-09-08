@@ -12,8 +12,9 @@ import {
   getPaymentButtonLabel,
   isCodPayment,
 } from "@/components/checkout/PaymentMethodSelector";
-import { MapPin, Truck } from "lucide-react";
+import { MapPin, Truck, ShoppingBag } from "lucide-react";
 import { useFeedbackModal } from "@/hooks/useFeedbackModal";
+import { BOOKING_COPY } from "@/lib/booking-copy";
 
 function CheckoutForm() {
   const router = useRouter();
@@ -95,8 +96,8 @@ function CheckoutForm() {
           orderKind: "LUXE",
           items: items.map((i) => ({
             productId: i.productId,
+            variantId: i.variantId,
             quantity: i.quantity,
-            price: i.price,
           })),
           ...form,
         }),
@@ -122,6 +123,8 @@ function CheckoutForm() {
     }
   };
 
+  const copy = BOOKING_COPY.boutique;
+
   if (items.length === 0 || cartKind !== "LUXE") {
     return null;
   }
@@ -131,9 +134,13 @@ function CheckoutForm() {
       {FeedbackModal}
       <div className="min-h-screen pt-24 pb-20">
       <div className="container-premium max-w-3xl">
-        <h1 className="heading-section mb-4">Finaliser ma commande</h1>
+        <p className="text-overline mb-2 flex items-center gap-2">
+          <ShoppingBag className="w-3.5 h-3.5" strokeWidth={1.5} />
+          Boutique
+        </p>
+        <h1 className="heading-section mb-4">{copy.pageTitle}</h1>
         <p className="text-brand-600 mb-12">
-          Étape {step} sur 2 — {step === 1 ? "Coordonnées et livraison" : "Paiement"}
+          Étape {step} sur 2 — {copy.stepLabel(step)}
         </p>
 
         <div className="h-1 bg-brand-100 mb-12">
@@ -197,7 +204,7 @@ function CheckoutForm() {
               className="btn-primary"
               disabled={!form.firstName || !form.email || !form.phone || !form.address}
             >
-              Continuer vers le paiement
+              {copy.continueLabel}
             </button>
           </div>
         )}
@@ -205,7 +212,7 @@ function CheckoutForm() {
         {step === 2 && (
           <div className="space-y-6">
             <div className="p-6 bg-brand-50 border border-brand-100">
-              <h3 className="font-display text-lg mb-4">Récapitulatif boutique</h3>
+              <h3 className="font-display text-lg mb-4">{copy.recapTitle}</h3>
               {items.map((item) => (
                 <div key={item.productId} className="flex justify-between text-sm mb-2">
                   <span>{item.name} × {item.quantity}</span>
@@ -228,6 +235,7 @@ function CheckoutForm() {
                 value={form.paymentMethod}
                 onChange={(code) => updateForm("paymentMethod", code)}
                 loading={methodsLoading}
+                context="boutique"
               />
             </div>
 
@@ -239,7 +247,7 @@ function CheckoutForm() {
                 className="btn-primary flex-1"
                 disabled={loading || !form.paymentMethod || methodsLoading}
               >
-                {loading ? "Traitement..." : getPaymentButtonLabel(form.paymentMethod, paymentMethods)}
+                {loading ? "Traitement..." : getPaymentButtonLabel(form.paymentMethod, paymentMethods, "boutique")}
               </button>
             </div>
           </div>

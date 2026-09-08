@@ -1,22 +1,28 @@
 import { Prisma, ProductType } from "@prisma/client";
 import { slugify } from "@/lib/utils";
 import { buildCategorySlugProductFilter } from "@/lib/categories";
+import { isShoppingLine, type ShoppingLine } from "@/lib/shopping";
 
 export interface BoutiqueSearchParams {
   q?: string;
   category?: string;
   brand?: string;
   type?: ProductType;
+  line?: ShoppingLine;
 }
 
 export function buildProductSearchWhere(params: BoutiqueSearchParams): Prisma.ProductWhereInput {
-  const { q, category, brand, type = "LUXE" } = params;
+  const { q, category, brand, type = "LUXE", line } = params;
   const terms = q?.trim().split(/\s+/).filter(Boolean) ?? [];
 
   const andClauses: Prisma.ProductWhereInput[] = [
     { isActive: true },
     { productType: type },
   ];
+
+  if (line && isShoppingLine(line)) {
+    andClauses.push({ keywords: { has: line } });
+  }
 
   if (category && category !== "all") {
     andClauses.push(buildCategorySlugProductFilter(category));

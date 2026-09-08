@@ -4,12 +4,15 @@ import prisma from "@/lib/prisma";
 import {
   formatPrice,
   ORDER_STATUS_LABELS,
+  FULFILLMENT_STATUS_LABELS,
   PAYMENT_METHOD_LABELS,
   formatDate,
 } from "@/lib/utils";
 import { PageHeader } from "@/components/admin/ui/PageHeader";
 import { StatusDot } from "@/components/admin/ui/StatusDot";
-import { orderStatusTone, paymentStatusTone } from "@/lib/admin-status";
+import { orderStatusTone, paymentStatusTone, fulfillmentStatusTone } from "@/lib/admin-status";
+import { OrderFulfillmentPanel } from "@/components/admin/orders/OrderFulfillmentPanel";
+import { isShopOrder } from "@/lib/shop/notifications";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -41,6 +44,14 @@ export default async function AdminOrderDetailPage({ params }: PageProps) {
   const clientName = order.user
     ? `${order.user.firstName} ${order.user.lastName}`
     : [order.guestFirstName, order.guestLastName].filter(Boolean).join(" ") || "Invité";
+  const shopOrder = isShopOrder(order.billingInfo);
+  const shipping =
+    shopOrder &&
+    order.billingInfo &&
+    typeof order.billingInfo === "object" &&
+    "shipping" in order.billingInfo
+      ? (order.billingInfo as { shipping?: { address?: string; city?: string; notes?: string | null } }).shipping
+      : null;
 
   return (
     <div>
@@ -98,7 +109,12 @@ export default async function AdminOrderDetailPage({ params }: PageProps) {
                 <tbody>
                   {order.items.map((item) => (
                     <tr key={item.id} className="admin-table-row">
-                      <td>{item.product.name}</td>
+                      <td>
+                        <div>{item.product.name}</div>
+                        {item.variantLabel && (
+                          <p className="text-xs text-admin-muted mt-0.5">{item.variantLabel}</p>
+                        )}
+                      </td>
                       <td>{item.quantity}</td>
                       <td className="text-right">{formatPrice(item.total)}</td>
                     </tr>
@@ -114,6 +130,24 @@ export default async function AdminOrderDetailPage({ params }: PageProps) {
         </div>
 
         <div className="space-y-4">
+          {shopOrder && order.fulfillmentStatus && (
+            <section className="admin-detail-card">
+              <h2 className="admin-detail-card-title">Statut boutique</h2>
+              <StatusDot
+                label={FULFILLMENT_STATUS_LABELS[order.fulfillmentStatus] ?? order.fulfillmentStatus}
+                tone={fulfillmentStatusTone(order.fulfillmentStatus)}
+              />
+            </section>
+          )}
+
+          <OrderFulfillmentPanel
+            orderId={order.id}
+            initialStatus={order.fulfillmentStatus}
+            initialTrackingNumber={order.trackingNumber}
+            initialShippingCarrier={order.shippingCarrier}
+            isShopOrder={shopOrder}
+          />
+
           <section className="admin-detail-card">
             <h2 className="admin-detail-card-title">Client</h2>
             <dl className="space-y-3 text-sm">
@@ -140,6 +174,28 @@ export default async function AdminOrderDetailPage({ params }: PageProps) {
               )}
             </dl>
           </section>
+
+          {shipping && (
+            <section className="admin-detail-card">
+              <h2 className="admin-detail-card-title">Livraison</h2>
+              <dl className="space-y-3 text-sm">
+                <div>
+                  <dt className="text-admin-muted text-xs">Adresse</dt>
+                  <dd className="text-admin-ink whitespace-pre-wrap">{shipping.address}</dd>
+                </div>
+                <div>
+                  <dt className="text-admin-muted text-xs">Ville</dt>
+                  <dd className="text-admin-ink">{shipping.city}</dd>
+                </div>
+                {shipping.notes && (
+                  <div>
+                    <dt className="text-admin-muted text-xs">Indications</dt>
+                    <dd className="text-admin-ink whitespace-pre-wrap">{shipping.notes}</dd>
+                  </div>
+                )}
+              </dl>
+            </section>
+          )}
 
           <section className="admin-detail-card">
             <h2 className="admin-detail-card-title">Paiements</h2>
@@ -195,7 +251,7 @@ async function getOrder(id: string) {
       where: { id },
       include: {
         user: true,
-        items: { include: { product: true } },
+        items: { include: { product: true, variant: true } },
         payments: true,
         appointment: true,
       },

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { PaymentMethod } from "@prisma/client";
+import { FulfillmentStatus, PaymentMethod } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
 import { generateOrderNumber } from "@/lib/utils";
@@ -12,6 +12,9 @@ import {
   isValidPaymentMethodCode,
   paymentMethodMatchesContext,
 } from "@/lib/payment-methods";
+import { resolveOrderLines, OrderPricingError } from "@/lib/shop/pricing";
+import { decrementStockForOrder } from "@/lib/shop/inventory";
+import { notifyOrderCreated } from "@/lib/shop/notifications";
 
 type OrderKind = "LUXE" | "SERVICE";
 
@@ -45,47 +48,21 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Aucun article dans la commande" }, { status: 400 });
     }
 
-    const resolvedItems: {
-      productId: string;
-      quantity: number;
-      unitPrice: number;
-      total: number;
-      mode?: string;
-      productType: string;
-    }[] = [];
+    let resolvedLines;
+    let subtotal: number;
 
-    let subtotal = 0;
-
-    for (const item of items) {
-      let product;
-      if (item.productId) {
-        product = await prisma.product.findUnique({ where: { id: item.productId } });
-      } else if (item.productSlug) {
-        product = await prisma.product.findUnique({ where: { slug: item.productSlug } });
+    try {
+      const resolved = await resolveOrderLines(prisma, items);
+      resolvedLines = resolved.lines;
+      subtotal = resolved.subtotal;
+    } catch (err) {
+      if (err instanceof OrderPricingError) {
+        return NextResponse.json({ error: err.message }, { status: err.status });
       }
-
-      if (!product || !product.isActive) continue;
-
-      const unitPrice = item.price || product.price;
-      const quantity = item.quantity || 1;
-      const lineTotal = unitPrice * quantity;
-      subtotal += lineTotal;
-
-      resolvedItems.push({
-        productId: product.id,
-        quantity,
-        unitPrice,
-        total: lineTotal,
-        mode: mode || product.mode,
-        productType: product.productType,
-      });
+      throw err;
     }
 
-    if (resolvedItems.length === 0) {
-      return NextResponse.json({ error: "Aucun produit valide" }, { status: 400 });
-    }
-
-    const productTypes = new Set(resolvedItems.map((i) => i.productType));
+    const productTypes = new Set(resolvedLines.map((i) => i.productType));
     if (productTypes.size > 1) {
       return NextResponse.json(
         { error: "Impossible de mélanger articles boutique et accompagnements dans une même commande" },
@@ -96,9 +73,9 @@ export async function POST(req: NextRequest) {
     const orderKind: OrderKind =
       requestedKind === "LUXE" || requestedKind === "SERVICE"
         ? requestedKind
-        : (resolvedItems[0].productType as OrderKind);
+        : (resolvedLines[0].productType as OrderKind);
 
-    if (orderKind !== resolvedItems[0].productType) {
+    if (orderKind !== resolvedLines[0].productType) {
       return NextResponse.json({ error: "Type de commande incohérent" }, { status: 400 });
     }
 
@@ -165,45 +142,52 @@ export async function POST(req: NextRequest) {
       }),
     };
 
-    const order = await prisma.order.create({
-      data: {
-        orderNumber,
-        userId: session?.user?.id || null,
-        guestEmail: session ? undefined : email,
-        guestPhone: session ? undefined : phone,
-        guestFirstName: session ? undefined : firstName,
-        guestLastName: session ? undefined : lastName,
-        status: "PENDING_PAYMENT",
-        subtotal,
-        total: subtotal,
-        notes: orderKind === "SERVICE" ? notes : deliveryNotes,
-        billingInfo,
-        items: {
-          create: resolvedItems.map((item) => ({
-            productId: item.productId,
-            quantity: item.quantity,
-            unitPrice: item.unitPrice,
-            total: item.total,
-            mode:
-              orderKind === "SERVICE"
-                ? (item.mode as "IN_PERSON" | "DIGITAL" | "HYBRID" | undefined)
-                : undefined,
-          })),
-        },
-        ...(orderKind === "SERVICE" && {
-          appointment: {
-            create: {
-              userId: session?.user?.id || null,
-              date: new Date(date),
-              startTime: time,
-              endTime: getEndTime(time),
-              mode: (mode || "IN_PERSON") as "IN_PERSON" | "DIGITAL" | "HYBRID",
-              status: "SCHEDULED",
-            },
+    const order = await prisma.$transaction(async (tx) => {
+      await decrementStockForOrder(tx, resolvedLines);
+
+      return tx.order.create({
+        data: {
+          orderNumber,
+          userId: session?.user?.id || null,
+          guestEmail: session ? undefined : email,
+          guestPhone: session ? undefined : phone,
+          guestFirstName: session ? undefined : firstName,
+          guestLastName: session ? undefined : lastName,
+          status: "PENDING_PAYMENT",
+          fulfillmentStatus: orderKind === "LUXE" ? FulfillmentStatus.PENDING : null,
+          subtotal,
+          total: subtotal,
+          notes: orderKind === "SERVICE" ? notes : deliveryNotes,
+          billingInfo,
+          items: {
+            create: resolvedLines.map((item) => ({
+              productId: item.productId,
+              quantity: item.quantity,
+              unitPrice: item.unitPrice,
+              total: item.total,
+              variantId: item.variantId,
+              variantLabel: item.variantLabel,
+              mode:
+                orderKind === "SERVICE"
+                  ? (item.mode as "IN_PERSON" | "DIGITAL" | "HYBRID" | undefined)
+                  : undefined,
+            })),
           },
-        }),
-      },
-      include: { items: true, appointment: true },
+          ...(orderKind === "SERVICE" && {
+            appointment: {
+              create: {
+                userId: session?.user?.id || null,
+                date: new Date(date),
+                startTime: time,
+                endTime: getEndTime(time),
+                mode: (mode || "IN_PERSON") as "IN_PERSON" | "DIGITAL" | "HYBRID",
+                status: "SCHEDULED",
+              },
+            },
+          }),
+        },
+        include: { items: true, appointment: true },
+      });
     });
 
     const useOnlinePayment = isOnlinePaymentProvider(paymentConfig.provider);
@@ -240,6 +224,16 @@ export async function POST(req: NextRequest) {
       paymentUrl = paymentResult.paymentUrl;
     }
 
+    await notifyOrderCreated({
+      orderId: order.id,
+      orderNumber,
+      userId: session?.user?.id,
+      guestPhone: phone,
+      guestEmail: email,
+      total: subtotal,
+      orderKind,
+    });
+
     await prisma.analyticsEvent
       .create({
         data: {
@@ -259,7 +253,11 @@ export async function POST(req: NextRequest) {
     });
   } catch (error) {
     console.error("Order creation error:", error);
-    return NextResponse.json({ error: "Erreur lors de la création de la commande" }, { status: 500 });
+    const message =
+      error instanceof Error && error.message.includes("Stock insuffisant")
+        ? error.message
+        : "Erreur lors de la création de la commande";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
@@ -278,7 +276,7 @@ export async function GET(req: NextRequest) {
   const orders = await prisma.order.findMany({
     where: { userId: session.user.id },
     include: {
-      items: { include: { product: true } },
+      items: { include: { product: true, variant: true } },
       appointment: true,
       payments: true,
     },

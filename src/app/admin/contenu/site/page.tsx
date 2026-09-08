@@ -15,7 +15,7 @@ export default async function AdminSiteContentPage() {
       <div className="mb-8">
         <h1 className="heading-section mb-2">Navigation & footer</h1>
         <p className="text-brand-600">
-          Marque, menu principal, liens et coordonnées du pied de page
+          Marque (header), menu Shopping Luxe/Premium, footer Conseil en image et bouton « Prendre rdv ! »
         </p>
       </div>
 

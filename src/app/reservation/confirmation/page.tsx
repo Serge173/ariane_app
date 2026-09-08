@@ -8,6 +8,7 @@ import { Check, ArrowRight } from "lucide-react";
 function ConfirmationContent() {
   const searchParams = useSearchParams();
   const orderNumber = searchParams.get("order");
+  const isDiscoveryRdv = searchParams.get("type") === "rdv";
 
   return (
     <div className="min-h-screen pt-24 pb-20">
@@ -16,9 +17,13 @@ function ConfirmationContent() {
           <Check className="w-10 h-10" />
         </div>
 
-        <h1 className="heading-section mb-4">Réservation confirmée</h1>
+        <h1 className="heading-section mb-4">
+          {isDiscoveryRdv ? "Demande de RDV envoyée" : "Réservation confirmée"}
+        </h1>
         <p className="text-brand-600 mb-2">
-          Merci pour votre confiance. Votre accompagnement est en cours de confirmation.
+          {isDiscoveryRdv
+            ? "Merci pour votre confiance. Ariane DAGO reviendra vers vous pour confirmer votre créneau."
+            : "Merci pour votre confiance. Votre accompagnement est en cours de confirmation."}
         </p>
         {orderNumber && (
           <p className="text-sm text-brand-500 mb-8">
@@ -29,19 +34,32 @@ function ConfirmationContent() {
         <div className="p-6 bg-brand-50 border border-brand-100 text-left mb-10 max-w-md mx-auto">
           <h3 className="font-medium mb-4">Prochaines étapes</h3>
           <ol className="space-y-3 text-sm text-brand-600">
-            <li>1. Vous recevrez un email de confirmation</li>
-            <li>2. Complétez le questionnaire pré-coaching</li>
-            <li>3. Retrouvez votre accompagnement et vos commandes dans votre espace client</li>
+            {isDiscoveryRdv ? (
+              <>
+                <li>1. Confirmation de votre créneau par email ou WhatsApp</li>
+                <li>2. Échange personnalisé avec Ariane DAGO</li>
+                <li>3. Orientation vers l&apos;accompagnement adapté à vos objectifs</li>
+              </>
+            ) : (
+              <>
+                <li>1. Vous recevrez un email de confirmation</li>
+                <li>2. Complétez le questionnaire pré-coaching</li>
+                <li>3. Retrouvez votre accompagnement dans votre espace client</li>
+              </>
+            )}
           </ol>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link href="/mon-espace" className="btn-primary inline-flex items-center gap-2">
-            Accéder à mon espace
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-          <Link href="/" className="btn-secondary">
+          {!isDiscoveryRdv && (
+            <Link href="/mon-espace" className="btn-primary inline-flex items-center gap-2">
+              Accéder à mon espace
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          )}
+          <Link href="/" className={isDiscoveryRdv ? "btn-primary inline-flex items-center gap-2" : "btn-secondary"}>
             Retour à l&apos;accueil
+            {isDiscoveryRdv && <ArrowRight className="w-4 h-4" />}
           </Link>
         </div>
       </div>

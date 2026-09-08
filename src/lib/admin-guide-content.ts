@@ -1,3 +1,5 @@
+import { BRAND_FULL_NAME } from "@/lib/brand";
+
 export type GuideBlock =
   | { type: "p"; text: string }
   | { type: "h3"; text: string }
@@ -29,7 +31,7 @@ export const adminGuideSections: GuideSection[] = [
     blocks: [
       {
         type: "p",
-        text: "Ce guide décrit l'utilisation complète du back-office de la plateforme Bienvenue à la mode avec Ariane. Il couvre chaque menu, chaque écran et les actions disponibles au quotidien.",
+        text: `Ce guide décrit l'utilisation complète du back-office de la plateforme ${BRAND_FULL_NAME}. Il couvre chaque menu, chaque écran et les actions disponibles au quotidien.`,
       },
       { type: "h3", text: "Accéder à l'administration" },
       {

@@ -11,16 +11,19 @@ function Field({
   onChange,
   disabled,
   multiline,
+  hint,
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
   disabled?: boolean;
   multiline?: boolean;
+  hint?: string;
 }) {
   return (
     <div>
       <label className="label-field">{label}</label>
+      {hint && <p className="text-xs text-brand-500 mb-1.5">{hint}</p>}
       {multiline ? (
         <textarea
           value={value}
@@ -42,10 +45,13 @@ function Field({
   );
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Section({ title, description, children }: { title: string; description?: string; children: React.ReactNode }) {
   return (
     <section className="bg-white border border-brand-100 p-6 space-y-5">
-      <h2 className="font-display text-xl">{title}</h2>
+      <div>
+        <h2 className="font-display text-xl">{title}</h2>
+        {description && <p className="text-sm text-brand-500 mt-1">{description}</p>}
+      </div>
       {children}
     </section>
   );
@@ -150,6 +156,13 @@ export function HomepageSettingsForm({
             value={form.hero.primaryCta.href}
             onChange={(href) => setForm((f) => ({ ...f, hero: { ...f.hero, primaryCta: { ...f.hero.primaryCta, href } } }))}
             disabled={!canEdit}
+            hint="Recommandé : /reservation?intent=rdv pour une demande de rendez-vous conseil en image."
+          />
+          <Field
+            label="Urgence / rareté (hero)"
+            value={form.hero.scarcityLabel}
+            onChange={(scarcityLabel) => setForm((f) => ({ ...f, hero: { ...f.hero, scarcityLabel } }))}
+            disabled={!canEdit}
           />
           {form.hero.slides.map((slide, index) => (
             <div key={slide.id} className="border border-brand-100 p-4 space-y-3">
@@ -198,30 +211,16 @@ export function HomepageSettingsForm({
           <p className="text-sm text-brand-500">Les cartes forfaits viennent du catalogue Accompagnements.</p>
         </Section>
 
-        <Section title="Aperçu boutique">
-          <Field label="Surtitre" value={form.boutiquePreview.overline} onChange={(v) => setForm((f) => ({ ...f, boutiquePreview: { ...f.boutiquePreview, overline: v } }))} disabled={!canEdit} />
-          <Field label="Titre" value={form.boutiquePreview.title} onChange={(v) => setForm((f) => ({ ...f, boutiquePreview: { ...f.boutiquePreview, title: v } }))} disabled={!canEdit} />
-          <Field label="Texte" value={form.boutiquePreview.intro} onChange={(v) => setForm((f) => ({ ...f, boutiquePreview: { ...f.boutiquePreview, intro: v } }))} disabled={!canEdit} multiline />
-          <Field label="Lien — texte" value={form.boutiquePreview.linkLabel} onChange={(v) => setForm((f) => ({ ...f, boutiquePreview: { ...f.boutiquePreview, linkLabel: v } }))} disabled={!canEdit} />
-          <Field label="Lien — URL" value={form.boutiquePreview.linkHref} onChange={(v) => setForm((f) => ({ ...f, boutiquePreview: { ...f.boutiquePreview, linkHref: v } }))} disabled={!canEdit} />
-          <Field
-            label="Nombre de produits affichés"
-            value={String(form.boutiquePreview.productCount)}
-            onChange={(v) => {
-              const n = parseInt(v, 10);
-              if (!Number.isNaN(n)) {
-                setForm((f) => ({
-                  ...f,
-                  boutiquePreview: { ...f.boutiquePreview, productCount: Math.min(8, Math.max(1, n)) },
-                }));
-              }
-            }}
-            disabled={!canEdit}
-          />
-          <p className="text-sm text-brand-500">Les produits viennent du catalogue Luxe (mis en avant en priorité).</p>
+        <Section title="Aperçu boutique (désactivé)">
+          <p className="text-sm text-brand-600 leading-relaxed">
+            Cette section n&apos;est plus affichée sur la page d&apos;accueil. La boutique est accessible via le menu Shopping (Luxe / Premium). Gérez les produits dans Admin → Catalogue boutique.
+          </p>
         </Section>
 
-        <Section title="Témoignages">
+        <Section
+          title="Témoignages Avant / Après"
+          description="4 cadres compacts avec images avant et après. Les champs « Avant » et « Après » remplacent la citation simple."
+        >
           <Field label="Surtitre" value={form.testimonials.overline} onChange={(v) => setForm((f) => ({ ...f, testimonials: { ...f.testimonials, overline: v } }))} disabled={!canEdit} />
           <Field label="Titre" value={form.testimonials.title} onChange={(v) => setForm((f) => ({ ...f, testimonials: { ...f.testimonials, title: v } }))} disabled={!canEdit} />
           {form.testimonials.items.map((t, index) => (
@@ -229,7 +228,11 @@ export function HomepageSettingsForm({
               <p className="text-xs uppercase tracking-widest text-brand-500">Témoignage {index + 1}</p>
               <Field label="Nom" value={t.name} onChange={(v) => updateTestimonial(index, { name: v })} disabled={!canEdit} />
               <Field label="Rôle" value={t.role} onChange={(v) => updateTestimonial(index, { role: v })} disabled={!canEdit} />
-              <Field label="Citation" value={t.content} onChange={(v) => updateTestimonial(index, { content: v })} disabled={!canEdit} multiline />
+              <Field label="Avant l'accompagnement" value={t.before ?? ""} onChange={(v) => updateTestimonial(index, { before: v })} disabled={!canEdit} multiline />
+              <Field label="Après" value={t.after ?? ""} onChange={(v) => updateTestimonial(index, { after: v })} disabled={!canEdit} multiline />
+              <Field label="Image avant — URL" value={t.beforeImage ?? ""} onChange={(v) => updateTestimonial(index, { beforeImage: v })} disabled={!canEdit} />
+              <Field label="Image après — URL" value={t.afterImage ?? ""} onChange={(v) => updateTestimonial(index, { afterImage: v })} disabled={!canEdit} />
+              <Field label="Citation (format simple, optionnel)" value={t.content} onChange={(v) => updateTestimonial(index, { content: v })} disabled={!canEdit} multiline />
             </div>
           ))}
         </Section>
@@ -239,7 +242,13 @@ export function HomepageSettingsForm({
           <Field label="Titre" value={form.cta.title} onChange={(v) => setForm((f) => ({ ...f, cta: { ...f.cta, title: v } }))} disabled={!canEdit} />
           <Field label="Texte" value={form.cta.intro} onChange={(v) => setForm((f) => ({ ...f, cta: { ...f.cta, intro: v } }))} disabled={!canEdit} multiline />
           <Field label="Lien — texte" value={form.cta.linkLabel} onChange={(v) => setForm((f) => ({ ...f, cta: { ...f.cta, linkLabel: v } }))} disabled={!canEdit} />
-          <Field label="Lien — URL" value={form.cta.linkHref} onChange={(v) => setForm((f) => ({ ...f, cta: { ...f.cta, linkHref: v } }))} disabled={!canEdit} />
+          <Field
+            label="Lien — URL"
+            value={form.cta.linkHref}
+            onChange={(v) => setForm((f) => ({ ...f, cta: { ...f.cta, linkHref: v } }))}
+            disabled={!canEdit}
+            hint="Pour une prise de RDV conseil en image, utilisez /reservation?intent=rdv (distinct du checkout boutique)."
+          />
         </Section>
 
         {canEdit && (

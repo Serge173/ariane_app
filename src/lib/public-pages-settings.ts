@@ -212,7 +212,7 @@ export const DEFAULT_PUBLIC_PAGES_SETTINGS: PublicPagesSettings = {
     overline: "À propos",
     title: "Ariane DAGO",
     paragraphs: [
-      "Fondatrice de la marque Bienvenue à la mode avec Ariane, je accompagne hommes et femmes ambitieux dans l'alignement de leur image avec leur personnalité, leur fonction et leurs ambitions.",
+      `Fondatrice de la marque ${BRAND_FULL_NAME}, je accompagne hommes et femmes ambitieux dans l'alignement de leur image avec leur personnalité, leur fonction et leurs ambitions.`,
       "Basée à Abidjan, je propose des accompagnements en présentiel et à distance pour une clientèle en Côte d'Ivoire, en Afrique et dans la diaspora.",
       "Mon approche allie expertise technique, sensibilité esthétique et compréhension des enjeux professionnels pour une transformation authentique et durable.",
     ],
@@ -231,7 +231,7 @@ export const DEFAULT_PUBLIC_PAGES_SETTINGS: PublicPagesSettings = {
     title: "Nos formules",
     intro:
       "Quatre niveaux d'accompagnement pensés pour répondre à chaque ambition. Chaque formule inclut un suivi personnalisé dans votre espace client.",
-    helpLinkLabel: "Aide au choix",
+    helpLinkLabel: "Découvrir mon accompagnement adapté",
     helpLinkHref: "/orientation",
     enterpriseTitle: "Entreprises & Sur-mesure",
     enterpriseIntro:
@@ -362,6 +362,13 @@ export const DEFAULT_PUBLIC_PAGES_SETTINGS: PublicPagesSettings = {
     recommendations: DEFAULT_ORIENTATION_RECOMMENDATIONS,
   },
 };
+
+function migrateHelpLinkLabel(label: string): string {
+  if (label === "Aide au choix") {
+    return DEFAULT_PUBLIC_PAGES_SETTINGS.offers.helpLinkLabel;
+  }
+  return label;
+}
 
 function parseStringArray(raw: unknown, fallback: string[]): string[] {
   if (!Array.isArray(raw)) return fallback;
@@ -525,7 +532,9 @@ export async function getPublicPagesSettings(): Promise<PublicPagesSettings> {
         overline: str(offersRaw.overline, DEFAULT_PUBLIC_PAGES_SETTINGS.offers.overline),
         title: str(offersRaw.title, DEFAULT_PUBLIC_PAGES_SETTINGS.offers.title),
         intro: str(offersRaw.intro, DEFAULT_PUBLIC_PAGES_SETTINGS.offers.intro),
-        helpLinkLabel: str(offersRaw.helpLinkLabel, DEFAULT_PUBLIC_PAGES_SETTINGS.offers.helpLinkLabel),
+        helpLinkLabel: migrateHelpLinkLabel(
+          str(offersRaw.helpLinkLabel, DEFAULT_PUBLIC_PAGES_SETTINGS.offers.helpLinkLabel)
+        ),
         helpLinkHref: str(offersRaw.helpLinkHref, DEFAULT_PUBLIC_PAGES_SETTINGS.offers.helpLinkHref),
         enterpriseTitle: str(offersRaw.enterpriseTitle, DEFAULT_PUBLIC_PAGES_SETTINGS.offers.enterpriseTitle),
         enterpriseIntro: str(offersRaw.enterpriseIntro, DEFAULT_PUBLIC_PAGES_SETTINGS.offers.enterpriseIntro),

@@ -20,6 +20,17 @@ export const IMAGES = {
     surMesure: unsplash("photo-1509631179647-0177331693ae", 800),
   },
 
+  testimonials: {
+    personalBefore: unsplash("photo-1483985988354-762723c945e0", 400),
+    personalAfter: unsplash("photo-1534528741775-53994a69daeb", 400),
+    proBefore: unsplash("photo-1573496359142-b8d87734a5a2", 400),
+    proAfter: unsplash("photo-1580489944761-15a19d654956", 400),
+    eventBefore: unsplash("photo-1515372039744-b8f02a3ae446", 400),
+    eventAfter: unsplash("photo-1524504388940-b1c1722653e1", 400),
+    colorsBefore: unsplash("photo-1529626455594-4ff0802cfb7e", 400),
+    colorsAfter: unsplash("photo-1487412720507-e7ab37603c6f", 400),
+  },
+
   luxe: {
     "sac-cabas-cuir": unsplash("photo-1584917865442-de89df76afd3", 800),
     "sac-bandouliere-iconique": unsplash("photo-1548036328-c9fa89d128fa", 800),

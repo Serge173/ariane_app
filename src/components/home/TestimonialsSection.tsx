@@ -3,10 +3,95 @@
 import { cn } from "@/lib/utils";
 import { Reveal } from "@/components/motion/Reveal";
 import { StaggerReveal } from "@/components/motion/StaggerReveal";
-import type { HomepageSettings } from "@/lib/homepage-settings";
+import { ProductImage } from "@/components/ui/ProductImage";
+import { IMAGES } from "@/lib/images";
+import type { HomepageSettings, TestimonialSettings } from "@/lib/homepage-settings";
 
 interface TestimonialsSectionProps {
   testimonials: HomepageSettings["testimonials"];
+}
+
+function BeforeAfterFrame({
+  label,
+  quote,
+  image,
+  imageAlt,
+  tone,
+}: {
+  label: string;
+  quote: string;
+  image?: string;
+  imageAlt: string;
+  tone: "before" | "after";
+}) {
+  return (
+    <div className="min-w-0 flex-1">
+      <div className="relative aspect-[3/4] overflow-hidden border border-brand-800 bg-brand-900">
+        <ProductImage
+          src={image}
+          fallback={IMAGES.productFallback}
+          alt={imageAlt}
+          fill
+          className="object-cover object-top"
+          sizes="(max-width: 640px) 28vw, 140px"
+        />
+        <span
+          className={cn(
+            "absolute bottom-0 inset-x-0 px-1.5 py-1 text-[8px] sm:text-[9px] uppercase tracking-[0.18em] text-center",
+            tone === "before" ? "bg-brand-950/85 text-brand-400" : "bg-accent/90 text-brand-950"
+          )}
+        >
+          {label}
+        </span>
+      </div>
+      <p
+        className={cn(
+          "mt-2 text-[10px] sm:text-[11px] leading-snug line-clamp-4",
+          tone === "before" ? "text-brand-400 italic" : "text-brand-100"
+        )}
+      >
+        &ldquo;{quote}&rdquo;
+      </p>
+    </div>
+  );
+}
+
+function TestimonialCard({ testimonial }: { testimonial: TestimonialSettings }) {
+  const hasBeforeAfter = Boolean(testimonial.before && testimonial.after);
+
+  return (
+    <article className="border border-brand-800 bg-brand-900/40 p-2 sm:p-2.5 w-full min-w-0 h-full">
+      {hasBeforeAfter ? (
+        <>
+          <div className="flex gap-2">
+            <BeforeAfterFrame
+              label="Avant"
+              quote={testimonial.before!}
+              image={testimonial.beforeImage}
+              imageAlt={testimonial.beforeImageAlt ?? "Avant l'accompagnement"}
+              tone="before"
+            />
+            <BeforeAfterFrame
+              label="Après"
+              quote={testimonial.after!}
+              image={testimonial.afterImage}
+              imageAlt={testimonial.afterImageAlt ?? "Après l'accompagnement"}
+              tone="after"
+            />
+          </div>
+          {testimonial.role && (
+            <p className="mt-2.5 pt-2 border-t border-brand-800 text-[9px] sm:text-[10px] uppercase tracking-[0.16em] text-brand-400 text-center truncate">
+              {testimonial.role}
+            </p>
+          )}
+        </>
+      ) : (
+        <p className="text-[11px] sm:text-xs text-brand-200 leading-relaxed line-clamp-5">
+          &ldquo;{testimonial.content}&rdquo;
+        </p>
+      )}
+    </article>
+  );
 }
 
 export function TestimonialsSection({ testimonials }: TestimonialsSectionProps) {
@@ -18,27 +103,10 @@ export function TestimonialsSection({ testimonials }: TestimonialsSectionProps) 
           <h2 className="heading-section text-white mb-0 sm:mb-2">{testimonials.title}</h2>
         </Reveal>
 
-        <StaggerReveal className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-8 w-full min-w-0">
+        <StaggerReveal className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 lg:gap-5 w-full min-w-0">
           {testimonials.items.map((t, index) => (
-            <div
-              key={`${t.name}-${index}`}
-              className={cn(
-                "border border-brand-800 p-3.5 sm:p-5 lg:p-8 min-w-0 w-full",
-                index === 2 && "sm:col-span-2 lg:col-span-1 sm:max-w-md sm:mx-auto lg:max-w-none lg:mx-0"
-              )}
-            >
-              <div className="flex gap-0.5 mb-2.5 sm:mb-4 lg:mb-6">
-                {Array.from({ length: t.rating }).map((_, i) => (
-                  <span key={i} className="text-accent text-xs sm:text-sm">★</span>
-                ))}
-              </div>
-              <p className="text-xs sm:text-sm lg:text-base text-brand-200 leading-relaxed mb-3 sm:mb-5 lg:mb-8 line-clamp-4 sm:line-clamp-none">
-                &ldquo;{t.content}&rdquo;
-              </p>
-              <div className="min-w-0">
-                <p className="text-xs sm:text-sm font-medium truncate">{t.name}</p>
-                <p className="text-[10px] sm:text-xs lg:text-sm text-brand-400 truncate">{t.role}</p>
-              </div>
+            <div key={`${t.name}-${t.role}-${index}`} className="min-w-0 w-full">
+              <TestimonialCard testimonial={t} />
             </div>
           ))}
         </StaggerReveal>

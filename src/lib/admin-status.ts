@@ -9,6 +9,14 @@ export function orderStatusTone(status: string): AdminStatusTone {
   return "neutral";
 }
 
+export function fulfillmentStatusTone(status: string): AdminStatusTone {
+  if (status === "PENDING" || status === "PREPARING") return "attention";
+  if (status === "SHIPPED") return "neutral";
+  if (status === "DELIVERED") return "ink";
+  if (status === "CANCELLED") return "muted";
+  return "neutral";
+}
+
 export function paymentStatusTone(status: string): AdminStatusTone {
   if (status === "PENDING" || status === "PROCESSING") return "attention";
   if (status === "FAILED" || status === "REFUNDED") return "muted";
