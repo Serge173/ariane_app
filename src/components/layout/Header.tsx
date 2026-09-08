@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Menu, X, ShoppingBag } from "lucide-react";
@@ -91,7 +91,18 @@ export function Header({ siteSettings }: HeaderProps) {
                     : pathname === item.href || pathname.startsWith(`${item.href.split("?")[0]}/`);
 
                 if (item.highlight && item.children?.length) {
-                  return <ShoppingNavDropdown key={item.name} item={item} pathname={pathname} />;
+                  return (
+                    <Suspense
+                      key={item.name}
+                      fallback={
+                        <Link href={item.href} className="nav-link-highlight shrink-0">
+                          {item.name}
+                        </Link>
+                      }
+                    >
+                      <ShoppingNavDropdown item={item} pathname={pathname} />
+                    </Suspense>
+                  );
                 }
 
                 return (
