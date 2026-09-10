@@ -3,10 +3,5 @@
   "framework": "nextjs",
   "buildCommand": "npm run vercel-build",
   "installCommand": "npm install",
-  "regions": ["cdg1"],
-  "build": {
-    "env": {
-      "RUN_DB_SEED": "1"
-    }
-  }
+  "regions": ["cdg1"]
 }
