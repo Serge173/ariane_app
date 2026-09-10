@@ -1,51 +1,59 @@
-import { withAuth } from "next-auth/middleware";
+import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
-import { isAdmin, isClient } from "@/lib/auth";
+import type { NextRequest } from "next/server";
+import { isAdmin, isClient } from "@/lib/roles";
 
-export default withAuth(
-  function middleware(req) {
-    const token = req.nextauth.token;
-    const role = token?.role as string | undefined;
-    const path = req.nextUrl.pathname;
+async function readToken(req: NextRequest) {
+  return getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+}
 
-    if (path.startsWith("/admin/admin/")) {
-      const fixed = path.replace(/^\/admin\/admin/, "/admin");
-      return NextResponse.redirect(new URL(fixed, req.url));
-    }
+function signInUrl(req: NextRequest, path: string) {
+  const target = path.startsWith("/admin") ? "/admin/connexion" : "/connexion";
+  const url = new URL(target, req.url);
+  url.searchParams.set("callbackUrl", req.nextUrl.pathname + req.nextUrl.search);
+  return url;
+}
 
-    if (path.startsWith("/admin")) {
-      if (path === "/admin/connexion") {
-        if (token && isAdmin(role)) {
-          return NextResponse.redirect(new URL("/admin", req.url));
-        }
-        return NextResponse.next();
-      }
-      if (!isAdmin(role)) {
-        return NextResponse.redirect(new URL("/mon-espace", req.url));
-      }
-    }
+export async function middleware(req: NextRequest) {
+  const path = req.nextUrl.pathname;
 
-    if (path.startsWith("/mon-espace")) {
-      if (isAdmin(role)) {
-        return NextResponse.redirect(new URL("/admin", req.url));
-      }
-      if (!isClient(role) && role) {
-        return NextResponse.redirect(new URL("/admin", req.url));
-      }
-    }
-
-    return NextResponse.next();
-  },
-  {
-    callbacks: {
-      authorized: ({ token, req }) => {
-        const path = req.nextUrl.pathname;
-        if (path === "/admin/connexion") return true;
-        return !!token;
-      },
-    },
+  if (path.startsWith("/admin/admin/")) {
+    const fixed = path.replace(/^\/admin\/admin/, "/admin");
+    return NextResponse.redirect(new URL(fixed, req.url));
   }
-);
+
+  if (path === "/admin/connexion") {
+    const token = await readToken(req);
+    if (token && isAdmin(token.role as string | undefined)) {
+      return NextResponse.redirect(new URL("/admin", req.url));
+    }
+    return NextResponse.next();
+  }
+
+  const token = await readToken(req);
+  if (!token) {
+    return NextResponse.redirect(signInUrl(req, path));
+  }
+
+  const role = token.role as string | undefined;
+
+  if (path.startsWith("/admin")) {
+    if (!isAdmin(role)) {
+      return NextResponse.redirect(new URL("/mon-espace", req.url));
+    }
+  }
+
+  if (path.startsWith("/mon-espace")) {
+    if (isAdmin(role)) {
+      return NextResponse.redirect(new URL("/admin", req.url));
+    }
+    if (!isClient(role) && role) {
+      return NextResponse.redirect(new URL("/admin", req.url));
+    }
+  }
+
+  return NextResponse.next();
+}
 
 export const config = {
   matcher: ["/admin/:path*", "/mon-espace/:path*"],
