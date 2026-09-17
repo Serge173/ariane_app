@@ -39,6 +39,7 @@ function ContactFormInner({
     company: "",
     message: "",
     type,
+    consent: false,
   });
 
   const titles = contact.types;
@@ -114,6 +115,22 @@ function ContactFormInner({
           <label className="label-field">Message *</label>
           <textarea className="input-field min-h-[150px]" required value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} />
         </div>
+        <label className="flex items-start gap-3 text-sm text-brand-700 cursor-pointer">
+          <input
+            type="checkbox"
+            required
+            checked={form.consent}
+            onChange={(e) => setForm({ ...form, consent: e.target.checked })}
+            className="mt-1 shrink-0"
+          />
+          <span>
+            J&apos;accepte que mes données soient traitées pour répondre à ma demande, conformément à la{" "}
+            <Link href="/confidentialite" className="underline text-brand-950">
+              politique de confidentialité
+            </Link>
+            .
+          </span>
+        </label>
         <button type="submit" className="btn-primary inline-flex items-center gap-2" disabled={loading}>
           <Send className="w-4 h-4" />
           {loading ? "Envoi..." : "Envoyer"}

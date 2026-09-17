@@ -87,7 +87,7 @@ export default async function OffresPage({ searchParams }: PageProps) {
         <div className="text-center max-w-2xl mx-auto mb-12">
           <p className="text-overline mb-4">{content.overline}</p>
           <h1 className="heading-display mb-6">{content.title}</h1>
-          <p className="text-brand-600 leading-relaxed mb-8">{content.intro}</p>
+          <p className="leading-relaxed mb-8">{content.intro}</p>
           <Link href={content.helpLinkHref} className="btn-secondary inline-flex items-center gap-2">
             {content.helpLinkLabel}
           </Link>
@@ -105,13 +105,14 @@ export default async function OffresPage({ searchParams }: PageProps) {
           roots={categoryRoots}
           activeSlug={params.category}
           basePath="/offres"
+          whiteSurface
         />
 
         <OffersCatalog products={products} />
 
         <div className="mt-20 text-center max-w-xl mx-auto">
           <h2 className="font-display text-2xl mb-4">{content.enterpriseTitle}</h2>
-          <p className="text-brand-600 mb-6">{content.enterpriseIntro}</p>
+          <p className="mb-6">{content.enterpriseIntro}</p>
           <Link href={content.enterpriseCtaHref} className="btn-primary">
             {content.enterpriseCtaLabel}
           </Link>

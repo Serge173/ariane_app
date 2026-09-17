@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import { getPlatformSettings } from "@/lib/platform-settings";
+import { notifyAdminOrder } from "@/lib/email";
 
 interface OrderNotificationInput {
   orderId: string;
@@ -36,7 +37,14 @@ export async function notifyOrderCreated(input: OrderNotificationInput): Promise
       .catch(() => {});
   }
 
-  // WhatsApp admin alert (platform number) — metadata only, no external API yet
+  void notifyAdminOrder({
+    orderNumber: input.orderNumber,
+    total: input.total,
+    orderKind: input.orderKind,
+    guestEmail: input.guestEmail,
+    guestPhone: input.guestPhone,
+  });
+
   const settings = await getPlatformSettings();
   if (settings.whatsappNumber) {
     await prisma.analyticsEvent

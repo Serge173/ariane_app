@@ -2,34 +2,16 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { ShoppingBag } from "lucide-react";
 import type { SiteNavLink } from "@/lib/site-settings";
 import { PersonalShoppingAccordion } from "@/components/layout/PersonalShoppingAccordion";
-import { ProfileAvatar } from "@/components/ui/ProfileAvatar";
 
 interface MobileNavProps {
   open: boolean;
   onClose: () => void;
-  session: {
-    user: { name?: string | null; image?: string | null };
-  } | null;
-  dashboardHref: string;
-  accountLabel: string;
-  itemCount: number;
-  mounted: boolean;
   navLinks: SiteNavLink[];
 }
 
-export function MobileNav({
-  open,
-  onClose,
-  session,
-  dashboardHref,
-  accountLabel,
-  itemCount,
-  mounted,
-  navLinks,
-}: MobileNavProps) {
+export function MobileNav({ open, onClose, navLinks }: MobileNavProps) {
   useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;
@@ -60,7 +42,7 @@ export function MobileNav({
       />
 
       <aside
-        className="absolute top-14 sm:top-16 right-0 z-10 h-[50vh] w-[50vw] max-w-[50vw] bg-white border border-brand-100 shadow-[-16px_0_48px_-8px_rgba(40,36,31,0.22)] mobile-nav-panel overflow-y-auto overscroll-contain rounded-tl-2xl rounded-b-2xl"
+        className="absolute top-14 sm:top-16 left-0 z-10 h-[50vh] w-[50vw] max-w-[50vw] bg-white border border-brand-100 shadow-[16px_0_48px_-8px_rgba(40,36,31,0.22)] mobile-nav-panel overflow-y-auto overscroll-contain rounded-tr-2xl rounded-br-2xl"
         aria-label="Navigation principale"
       >
         <div className="flex flex-col px-4 sm:px-5 pt-4 pb-6 min-h-full">
@@ -97,46 +79,6 @@ export function MobileNav({
               </div>
             )}
           </nav>
-
-          <div
-            className="mobile-nav-item mt-auto pt-4 border-t border-brand-200/70 space-y-3"
-            style={{ animationDelay: `${(mainLinks.length + 1) * 55}ms` }}
-          >
-            <Link
-              href="/panier"
-              onClick={onClose}
-              className="flex items-center justify-between font-sans text-xs text-brand-800"
-            >
-              <span className="flex items-center gap-2">
-                <ShoppingBag className="w-3.5 h-3.5" strokeWidth={1.5} />
-                Panier
-              </span>
-              {mounted && itemCount > 0 && (
-                <span className="text-[9px] uppercase tracking-widest text-accent font-medium">
-                  {itemCount} article{itemCount > 1 ? "s" : ""}
-                </span>
-              )}
-            </Link>
-
-            {session ? (
-              <Link
-                href={dashboardHref}
-                onClick={onClose}
-                className="flex items-center gap-2 font-sans text-xs text-brand-800"
-              >
-                <ProfileAvatar src={session.user.image} name={session.user.name} size="sm" />
-                <span className="truncate">{accountLabel}</span>
-              </Link>
-            ) : (
-              <Link
-                href="/connexion"
-                onClick={onClose}
-                className="block font-sans text-xs text-brand-800"
-              >
-                Connexion client
-              </Link>
-            )}
-          </div>
         </div>
       </aside>
     </div>

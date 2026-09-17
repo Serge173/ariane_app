@@ -1,10 +1,11 @@
-import type { Metadata } from "next";
 import { Inter, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers/Providers";
 import { AppShell } from "@/components/layout/AppShell";
+import { SiteExtras } from "@/components/layout/SiteExtras";
+import { SiteJsonLd } from "@/components/seo/SiteJsonLd";
 import { getSiteSettings } from "@/lib/site-settings";
-import { BRAND_FULL_NAME } from "@/lib/brand";
+import { getRootMetadata } from "@/lib/site-metadata";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -20,28 +21,7 @@ const cormorant = Cormorant_Garamond({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: `${BRAND_FULL_NAME} | Coaching Premium Abidjan`,
-    template: `%s | ${BRAND_FULL_NAME}`,
-  },
-  description:
-    "Plateforme premium de conseil en image, coaching personnel et professionnel à Abidjan. Découvrez votre accompagnement, réservez et suivez votre parcours de transformation.",
-  keywords: [
-    "conseil en image",
-    "coaching image",
-    "Abidjan",
-    "Côte d'Ivoire",
-    "colorimétrie",
-    "personal shopping",
-    "image professionnelle",
-  ],
-  openGraph: {
-    type: "website",
-    locale: "fr_FR",
-    siteName: BRAND_FULL_NAME,
-  },
-};
+export const metadata = getRootMetadata();
 
 export default async function RootLayout({
   children,
@@ -53,8 +33,10 @@ export default async function RootLayout({
   return (
     <html lang="fr" className={`${inter.variable} ${cormorant.variable}`}>
       <body className="min-h-screen flex flex-col">
+        <SiteJsonLd />
         <Providers>
           <AppShell siteSettings={siteSettings}>{children}</AppShell>
+          <SiteExtras />
         </Providers>
       </body>
     </html>

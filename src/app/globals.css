@@ -26,6 +26,7 @@
   }
 
   html {
+    @apply bg-white;
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -192,6 +193,75 @@
     @apply bg-white border border-brand-100;
   }
 
+  .offres-main-surface,
+  .offres-page,
+  .offres-forfait-page {
+    background-color: #ffffff !important;
+  }
+
+  .offres-page {
+    @apply min-h-screen w-full text-black;
+    background-color: #ffffff !important;
+  }
+
+  /* Remplace les fonds brand (dont #e8e4dc / brand-200) par du blanc pur sur /offres */
+  .offres-page .product-frame,
+  .offres-page .card-premium,
+  .offres-page .input-field,
+  .offres-page select,
+  .offres-page input,
+  .offres-page textarea,
+  .offres-page [class*="bg-brand-50"],
+  .offres-page [class*="bg-brand-100"],
+  .offres-page [class*="bg-brand-200"],
+  .offres-page [class*="bg-brand-300"],
+  .offres-forfait-page [class*="bg-brand-50"],
+  .offres-forfait-page [class*="bg-brand-100"],
+  .offres-forfait-page [class*="bg-brand-200"],
+  .offres-forfait-page [class*="bg-brand-300"] {
+    background-color: #ffffff !important;
+  }
+
+  .offres-page .hover\:bg-brand-50:hover,
+  .offres-page .hover\:bg-brand-50\/50:hover {
+    background-color: #ffffff !important;
+  }
+
+  .offres-page .text-overline,
+  .offres-page .product-description,
+  .offres-page .product-description-lg,
+  .offres-page .text-brand-600,
+  .offres-page .text-brand-500,
+  .offres-page .text-brand-400,
+  .offres-page .label-field {
+    @apply text-black;
+  }
+
+  .offres-page .heading-display,
+  .offres-page .heading-section,
+  .offres-page .product-title,
+  .offres-page h1,
+  .offres-page h2,
+  .offres-page h3 {
+    @apply text-black font-bold;
+  }
+
+  .offres-forfait-page {
+    @apply min-h-screen w-full text-black;
+  }
+
+  .offres-forfait-page p,
+  .offres-forfait-page li {
+    @apply text-black;
+  }
+
+  .offres-forfait-page h1,
+  .offres-forfait-page h2,
+  .offres-forfait-page h3,
+  .offres-forfait-page .heading-section {
+    @apply text-black font-bold;
+  }
+
   .input-field {
     @apply font-sans w-full px-4 py-3 border border-brand-200 bg-white text-brand-950 placeholder:text-brand-400 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/30 transition-colors duration-[var(--duration-micro)];
     transition-timing-function: var(--ease-couture);
@@ -254,7 +324,7 @@
 @keyframes mobile-panel-in {
   from {
     opacity: 0;
-    transform: translateX(100%);
+    transform: translateX(-100%);
   }
   to {
     opacity: 1;
@@ -563,4 +633,111 @@
   [data-admin] .heading-section {
     @apply font-sans text-[22px] font-medium tracking-normal;
   }
+}
+
+/* ── Pages /offres : blanc pur #ffffff (hors @layer, actif dès le HTML SSR via :has) ── */
+html:has(.offres-page),
+html:has(.offres-page) body,
+html:has(.offres-page) main,
+html[data-offres],
+html[data-offres] body,
+html[data-offres] main {
+  background-color: #ffffff !important;
+  background-image: none !important;
+}
+
+html:has(.offres-page) .offres-page,
+html:has(.offres-page) .offres-forfait-page,
+html:has(.offres-page) .offres-page .container-premium,
+html:has(.offres-page) .offres-page .max-w-3xl,
+html:has(.offres-page) .offres-page .max-w-sm,
+html:has(.offres-page) .offres-page .product-frame,
+html:has(.offres-page) .offres-page .card-premium,
+html:has(.offres-page) .offres-page .input-field,
+html:has(.offres-page) .offres-page select,
+html:has(.offres-page) .offres-page input,
+html:has(.offres-page) .offres-page textarea,
+html:has(.offres-page) .offres-page [class*="bg-brand"],
+html[data-offres] .offres-page,
+html[data-offres] .offres-forfait-page,
+html[data-offres] .offres-page .container-premium,
+html[data-offres] .offres-page .product-frame,
+html[data-offres] .offres-page .card-premium,
+html[data-offres] .offres-page .input-field,
+html[data-offres] .offres-page select,
+html[data-offres] .offres-page input,
+html[data-offres] .offres-page textarea,
+html[data-offres] .offres-page [class*="bg-brand"] {
+  background-color: #ffffff !important;
+  background-image: none !important;
+}
+
+/* Supprime la teinte #e8e4dc (border-brand-200 globale) sur toute la zone offres */
+html:has(.offres-page) .offres-page *,
+html:has(.offres-page) .offres-page *::before,
+html:has(.offres-page) .offres-page *::after,
+html[data-offres] .offres-page *,
+html[data-offres] .offres-page *::before,
+html[data-offres] .offres-page *::after {
+  border-color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+html:has(.offres-page) .offres-page .btn-secondary,
+html[data-offres] .offres-page .btn-secondary {
+  background-color: #ffffff !important;
+  border-color: #000000 !important;
+}
+
+html:has(.offres-page) .offres-page .btn-primary,
+html[data-offres] .offres-page .btn-primary {
+  border-color: transparent !important;
+}
+
+html:has(.offres-page) .offres-page .hover\:bg-brand-50:hover,
+html:has(.offres-page) .offres-page .hover\:bg-brand-50\/50:hover,
+html[data-offres] .offres-page .hover\:bg-brand-50:hover,
+html[data-offres] .offres-page .hover\:bg-brand-50\/50:hover {
+  background-color: #ffffff !important;
+}
+
+html:has(.offres-page) .offres-page .text-overline,
+html:has(.offres-page) .offres-page .product-description,
+html:has(.offres-page) .offres-page .product-description-lg,
+html:has(.offres-page) .offres-page .text-brand-600,
+html:has(.offres-page) .offres-page .text-brand-500,
+html:has(.offres-page) .offres-page .text-brand-400,
+html:has(.offres-page) .offres-forfait-page p,
+html:has(.offres-page) .offres-forfait-page li,
+html[data-offres] .offres-page .text-overline,
+html[data-offres] .offres-page .product-description,
+html[data-offres] .offres-page .product-description-lg,
+html[data-offres] .offres-page .text-brand-600,
+html[data-offres] .offres-page .text-brand-500,
+html[data-offres] .offres-page .text-brand-400,
+html[data-offres] .offres-forfait-page p,
+html[data-offres] .offres-forfait-page li {
+  color: #000000 !important;
+}
+
+html:has(.offres-page) .offres-page .heading-display,
+html:has(.offres-page) .offres-page .heading-section,
+html:has(.offres-page) .offres-page .product-title,
+html:has(.offres-page) .offres-page h1,
+html:has(.offres-page) .offres-page h2,
+html:has(.offres-page) .offres-page h3,
+html:has(.offres-page) .offres-forfait-page h1,
+html:has(.offres-page) .offres-forfait-page h2,
+html:has(.offres-page) .offres-forfait-page h3,
+html[data-offres] .offres-page .heading-display,
+html[data-offres] .offres-page .heading-section,
+html[data-offres] .offres-page .product-title,
+html[data-offres] .offres-page h1,
+html[data-offres] .offres-page h2,
+html[data-offres] .offres-page h3,
+html[data-offres] .offres-forfait-page h1,
+html[data-offres] .offres-forfait-page h2,
+html[data-offres] .offres-forfait-page h3 {
+  color: #000000 !important;
+  font-weight: 700 !important;
 }

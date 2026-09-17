@@ -7,12 +7,15 @@ interface CatalogCategoryGridProps {
   roots: PublicCategoryTreeNode[];
   activeSlug?: string;
   basePath?: string;
+  /** Fond blanc pur pour les pages /offres */
+  whiteSurface?: boolean;
 }
 
 export function CatalogCategoryGrid({
   roots,
   activeSlug,
   basePath = "/boutique",
+  whiteSurface = false,
 }: CatalogCategoryGridProps) {
   if (roots.length === 0) return null;
 
@@ -25,17 +28,21 @@ export function CatalogCategoryGrid({
         return (
           <div
             key={root.slug}
-            className={`group relative border bg-brand-50/50 transition-colors ${
-              root.children.length > 0 ? "mb-6" : ""
-            } ${
+            className={`group relative border transition-colors ${
+              whiteSurface ? "offres-category-card bg-white border-white" : "bg-brand-50/50"
+            } ${root.children.length > 0 ? "mb-6" : ""} ${
               isActive || hasActiveChild
                 ? "border-brand-950 ring-1 ring-brand-950"
-                : "border-brand-100"
+                : whiteSurface
+                  ? "border-white"
+                  : "border-brand-100"
             }`}
           >
             <Link
               href={`${basePath}?category=${root.slug}`}
-              className="block text-center p-5 hover:bg-brand-50 transition-colors"
+              className={`block text-center p-5 transition-colors ${
+                whiteSurface ? "bg-white hover:bg-white" : "hover:bg-brand-50"
+              }`}
             >
               <p className="text-overline mb-1">{root.name}</p>
               {root.description && (
@@ -66,7 +73,9 @@ export function CatalogCategoryGrid({
                         className={`text-[10px] uppercase tracking-wider px-2 py-1 border transition-colors ${
                           activeSlug === child.slug
                             ? "bg-brand-950 text-white border-brand-950"
-                            : "bg-white text-brand-600 border-brand-200 hover:border-brand-950 hover:bg-brand-50"
+                            : whiteSurface
+                              ? "bg-white text-black border-white hover:border-brand-950 hover:bg-white"
+                              : "bg-white text-brand-600 border-brand-200 hover:border-brand-950 hover:bg-brand-50"
                         }`}
                       >
                         {child.name}

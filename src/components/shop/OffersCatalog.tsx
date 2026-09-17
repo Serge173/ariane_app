@@ -23,7 +23,7 @@ interface OffersCatalogProps {
 export function OffersCatalog({ products }: OffersCatalogProps) {
   if (products.length === 0) {
     return (
-      <p className="text-center text-brand-500 py-16">
+      <p className="text-center py-16">
         Aucun accompagnement dans cette catégorie pour le moment.
       </p>
     );
@@ -35,9 +35,9 @@ export function OffersCatalog({ products }: OffersCatalogProps) {
         <Link
           key={product.id}
           href={product.slug === "sur-mesure" ? "/contact?type=diagnostic" : `/offres/${product.slug}`}
-          className="group card-premium overflow-hidden"
+          className="group card-premium overflow-hidden bg-white border-white"
         >
-          <div className="relative aspect-[3/4] product-frame">
+          <div className="relative aspect-[3/4] product-frame bg-white">
             <ProductImage
               src={product.images[0]}
               fallback={coachingImage(product.slug)}
@@ -66,7 +66,7 @@ export function OffersCatalog({ products }: OffersCatalogProps) {
                 {product.slug === "sur-mesure" ? "À partir de " : ""}
                 {formatPrice(product.price)}
               </span>
-              <ArrowRight className="w-4 h-4 text-brand-400" strokeWidth={1.5} />
+              <ArrowRight className="w-4 h-4" strokeWidth={1.5} />
             </div>
           </div>
         </Link>

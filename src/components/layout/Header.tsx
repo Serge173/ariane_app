@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Suspense, useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { Menu, X, ShoppingBag } from "lucide-react";
+import { Menu, X, ShoppingBag, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCartStore } from "@/lib/store/cart";
 import { isAdmin } from "@/lib/auth";
@@ -21,6 +21,7 @@ interface HeaderProps {
 export function Header({ siteSettings }: HeaderProps) {
   const pathname = usePathname();
   const isHome = pathname === "/";
+  const isOffers = pathname.startsWith("/offres");
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -57,8 +58,9 @@ export function Header({ siteSettings }: HeaderProps) {
   const isUserAdmin = session && isAdmin(session.user.role);
   const accountLabel = isUserAdmin ? "Administration" : "Mon espace";
 
-  const headerSurface =
-    isHome || scrolled || isOpen
+  const headerSurface = isOffers
+    ? "bg-[#ffffff] border-b border-[#ffffff] shadow-none"
+    : isHome || scrolled || isOpen
       ? "bg-white/95 backdrop-blur-sm border-b border-brand-100 shadow-sm"
       : "lg:bg-white/95 lg:backdrop-blur-sm lg:border-b lg:border-brand-100 lg:shadow-sm bg-transparent border-transparent";
 
@@ -72,7 +74,25 @@ export function Header({ siteSettings }: HeaderProps) {
       >
         <div className="container-premium">
           <div className="flex items-center h-14 sm:h-16 lg:h-[4.25rem] gap-2 lg:gap-0">
-            <Link href="/" className="group shrink-0 min-w-0" onClick={() => setIsOpen(false)}>
+            <button
+              type="button"
+              onClick={() => setIsOpen((v) => !v)}
+              className="lg:hidden p-2 -ml-2 text-brand-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded-sm"
+              aria-label={isOpen ? "Fermer le menu" : "Ouvrir le menu"}
+              aria-expanded={isOpen}
+            >
+              {isOpen ? (
+                <X className="w-5 h-5" strokeWidth={1.5} />
+              ) : (
+                <Menu className="w-5 h-5" strokeWidth={1.5} />
+              )}
+            </button>
+
+            <Link
+              href="/"
+              className="hidden lg:block group shrink-0 min-w-0"
+              onClick={() => setIsOpen(false)}
+            >
               <span className="font-display text-lg sm:text-xl lg:text-2xl font-light tracking-wide text-brand-950 leading-tight">
                 {siteSettings.brand.title}
               </span>
@@ -122,6 +142,37 @@ export function Header({ siteSettings }: HeaderProps) {
             </nav>
 
             <div className="flex items-center gap-1 sm:gap-3 shrink-0 ml-auto lg:ml-0">
+              {session ? (
+                <Link
+                  href={dashboardHref}
+                  className="p-0.5 rounded-full hover:ring-2 hover:ring-accent/30 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+                  aria-label={accountLabel}
+                  title={session.user.name ?? accountLabel}
+                >
+                  <ProfileAvatar
+                    src={session.user.image}
+                    name={session.user.name}
+                    size="md"
+                  />
+                </Link>
+              ) : (
+                <>
+                  <Link
+                    href="/connexion"
+                    className="lg:hidden p-2 text-brand-800 hover:text-brand-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded-sm"
+                    aria-label="Connexion"
+                  >
+                    <User className="w-5 h-5" strokeWidth={1.5} />
+                  </Link>
+                  <Link
+                    href="/connexion"
+                    className="hidden lg:inline-flex font-sans text-xs uppercase tracking-wide font-medium text-brand-800 hover:text-brand-950 px-3 py-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+                  >
+                    Connexion
+                  </Link>
+                </>
+              )}
+
               <Link
                 href="/panier"
                 className="relative p-2 text-brand-800 hover:text-brand-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded-sm"
@@ -139,42 +190,6 @@ export function Header({ siteSettings }: HeaderProps) {
                   </span>
                 )}
               </Link>
-
-              {session ? (
-                <Link
-                  href={dashboardHref}
-                  className="hidden sm:flex p-0.5 rounded-full hover:ring-2 hover:ring-accent/30 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
-                  aria-label={accountLabel}
-                  title={session.user.name ?? accountLabel}
-                >
-                  <ProfileAvatar
-                    src={session.user.image}
-                    name={session.user.name}
-                    size="md"
-                  />
-                </Link>
-              ) : (
-                <Link
-                  href="/connexion"
-                  className="hidden sm:inline-flex font-sans text-xs uppercase tracking-wide font-medium text-brand-800 hover:text-brand-950 px-3 py-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
-                >
-                  Connexion
-                </Link>
-              )}
-
-              <button
-                type="button"
-                onClick={() => setIsOpen((v) => !v)}
-                className="lg:hidden p-2 text-brand-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded-sm"
-                aria-label={isOpen ? "Fermer le menu" : "Ouvrir le menu"}
-                aria-expanded={isOpen}
-              >
-                {isOpen ? (
-                  <X className="w-5 h-5" strokeWidth={1.5} />
-                ) : (
-                  <Menu className="w-5 h-5" strokeWidth={1.5} />
-                )}
-              </button>
             </div>
           </div>
         </div>
@@ -183,11 +198,6 @@ export function Header({ siteSettings }: HeaderProps) {
       <MobileNav
         open={isOpen}
         onClose={() => setIsOpen(false)}
-        session={session}
-        dashboardHref={dashboardHref}
-        accountLabel={accountLabel}
-        itemCount={itemCount}
-        mounted={mounted}
         navLinks={navLinks}
       />
     </>

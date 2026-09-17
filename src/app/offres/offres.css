@@ -1,0 +1,80 @@
+/* Fond blanc pur — CSS plain, sans @layer Tailwind */
+html:has(.offres-page),
+html:has(.offres-page) body,
+.offres-app-shell,
+.offres-app-shell main {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  color-scheme: only light;
+}
+
+html:has(.offres-page) main {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+}
+
+.offres-page {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  color: #000000;
+  -webkit-font-smoothing: auto;
+  -moz-osx-font-smoothing: auto;
+}
+
+/* Calque blanc fixe derrière tout le contenu offres */
+.offres-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: #ffffff;
+  pointer-events: none;
+}
+
+.offres-page .offres-forfait-page,
+.offres-page .container-premium,
+.offres-page .max-w-3xl,
+.offres-page .max-w-sm,
+.offres-page .min-h-screen {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+}
+
+.offres-page .product-frame,
+.offres-page .card-premium,
+.offres-page .input-field,
+.offres-page select,
+.offres-page input,
+.offres-page textarea,
+.offres-page [class*="bg-brand"] {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+}
+
+.offres-page .heading-display,
+.offres-page .heading-section,
+.offres-page .product-title,
+.offres-page h1,
+.offres-page h2,
+.offres-page h3 {
+  color: #000000 !important;
+  font-weight: 600 !important;
+}
+
+.offres-page p,
+.offres-page li,
+.offres-page .product-description,
+.offres-page .product-description-lg,
+.offres-page .text-overline {
+  color: #000000 !important;
+}
+
+.offres-page .btn-secondary {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  border-color: #000000 !important;
+  color: #000000 !important;
+}

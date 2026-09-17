@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { notifyAdminAppointment } from "@/lib/email";
 
 export async function POST(req: NextRequest) {
   try {
@@ -37,6 +38,14 @@ export async function POST(req: NextRequest) {
         phone: phone.trim(),
         message,
       },
+    });
+
+    void notifyAdminAppointment({
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      email: email.trim(),
+      phone: phone.trim(),
+      message,
     });
 
     return NextResponse.json({ id: request.id, success: true });

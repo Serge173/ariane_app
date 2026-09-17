@@ -92,10 +92,65 @@ export default async function OfferDetailPage({ params }: Props) {
   const isSurMesure = slug === "sur-mesure";
 
   return (
-    <div className="min-h-screen pt-24 pb-20">
+    <div className="offres-forfait-page min-h-screen w-full pt-24 pb-20">
       <div className="container-premium">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20">
-          <div className="relative aspect-[4/5] bg-brand-100 overflow-hidden">
+        <div className="max-w-3xl">
+          <p className="text-xs uppercase tracking-[0.22em] font-medium text-black mb-4">
+            Accompagnement
+          </p>
+          <h1 className="heading-section mb-4 text-black">{product.name}</h1>
+          <p className="text-base leading-relaxed text-black mb-6">{product.shortDescription}</p>
+
+          <p className="text-2xl font-light text-black mb-8">
+            {isSurMesure ? "À partir de " : ""}
+            {formatPrice(product.price)}
+          </p>
+
+          {"duration" in product && product.duration && (
+            <p className="text-sm text-black mb-8">
+              Durée : {product.duration}
+            </p>
+          )}
+
+          <ul className="space-y-3 mb-10">
+            {product.features.map((feature) => (
+              <li key={feature} className="flex items-start gap-3 text-sm leading-relaxed text-black">
+                <Check className="w-4 h-4 text-black mt-0.5 flex-shrink-0" />
+                {feature}
+              </li>
+            ))}
+          </ul>
+
+          {isSurMesure ? (
+            <Link href="/contact?type=diagnostic" className="btn-primary inline-flex items-center gap-2 w-fit">
+              Demander mon diagnostic
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          ) : (
+            <div className="flex flex-col sm:flex-row gap-4">
+              <AddToCartButton
+                product={{
+                  productId: product.id,
+                  slug: product.slug,
+                  name: product.name,
+                  price: product.price,
+                  image: product.images[0],
+                }}
+                productType="SERVICE"
+              />
+              <Link
+                href={`/reservation?product=${product.slug}`}
+                className="btn-secondary inline-flex items-center gap-2"
+              >
+                <Calendar className="w-4 h-4" />
+                Réserver directement
+              </Link>
+            </div>
+          )}
+        </div>
+
+        <div className="mt-12 max-w-sm">
+          <div className="relative aspect-[4/5] overflow-hidden">
             <ProductImage
               src={product.images[0]}
               fallback={coachingImage(slug, 1200)}
@@ -103,67 +158,16 @@ export default async function OfferDetailPage({ params }: Props) {
               fill
               className="object-cover"
               priority
-              sizes="(max-width: 1024px) 100vw, 50vw"
+              sizes="(max-width: 768px) 384px, 384px"
             />
-          </div>
-
-          <div className="flex flex-col justify-center">
-            <p className="text-overline mb-4">Accompagnement</p>
-            <h1 className="heading-section mb-4">{product.name}</h1>
-            <p className="product-description-lg mb-6">{product.shortDescription}</p>
-
-            <p className="text-2xl font-light mb-8">
-              {isSurMesure ? "À partir de " : ""}
-              {formatPrice(product.price)}
-            </p>
-
-            {"duration" in product && product.duration && (
-              <p className="text-sm text-brand-500 mb-8">
-                Durée : {product.duration}
-              </p>
-            )}
-
-            <ul className="space-y-3 mb-10">
-              {product.features.map((feature) => (
-                <li key={feature} className="flex items-start gap-3 product-description">
-                  <Check className="w-4 h-4 text-accent mt-0.5 flex-shrink-0" />
-                  {feature}
-                </li>
-              ))}
-            </ul>
-
-            {isSurMesure ? (
-              <Link href="/contact?type=diagnostic" className="btn-primary inline-flex items-center gap-2 w-fit">
-                Demander mon diagnostic
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            ) : (
-              <div className="flex flex-col sm:flex-row gap-4">
-                <AddToCartButton
-                  product={{
-                    productId: product.id,
-                    slug: product.slug,
-                    name: product.name,
-                    price: product.price,
-                    image: product.images[0],
-                  }}
-                  productType="SERVICE"
-                />
-                <Link
-                  href={`/reservation?product=${product.slug}`}
-                  className="btn-secondary inline-flex items-center gap-2"
-                >
-                  <Calendar className="w-4 h-4" />
-                  Réserver directement
-                </Link>
-              </div>
-            )}
           </div>
         </div>
 
-        <div className="mt-20 max-w-3xl">
-          <h2 className="font-sans text-2xl font-semibold tracking-tight mb-6">Description</h2>
-          <div className="product-description-lg whitespace-pre-line">
+        <div className="mt-16 max-w-3xl">
+          <h2 className="font-sans text-2xl font-semibold tracking-tight text-black mb-6">
+            Description
+          </h2>
+          <div className="text-base leading-relaxed text-black whitespace-pre-line">
             {product.description}
           </div>
         </div>

@@ -15,6 +15,7 @@ export function AppShell({
   siteSettings: SiteSettings;
 }) {
   const pathname = usePathname();
+  const isOffers = pathname.startsWith("/offres");
   const hidePublicChrome =
     pathname.startsWith("/admin") ||
     pathname.startsWith("/mon-espace") ||
@@ -22,6 +23,22 @@ export function AppShell({
 
   if (hidePublicChrome) {
     return <>{children}</>;
+  }
+
+  if (isOffers) {
+    return (
+      <div
+        className="offres-app-shell flex min-h-screen flex-col"
+        style={{ backgroundColor: "#ffffff" }}
+      >
+        <Header siteSettings={siteSettings} />
+        <main className="flex-1" style={{ backgroundColor: "#ffffff" }}>
+          {children}
+        </main>
+        <WhatsAppButton />
+        <CartToast />
+      </div>
+    );
   }
 
   return (
