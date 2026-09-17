@@ -11,7 +11,7 @@ import {
   PaymentMethodSelector,
   getPaymentButtonLabel,
 } from "@/components/checkout/PaymentMethodSelector";
-import { Calendar, Clock, Sparkles } from "lucide-react";
+import { Calendar, Clock } from "lucide-react";
 import { useFeedbackModal } from "@/hooks/useFeedbackModal";
 import { BOOKING_COPY } from "@/lib/booking-copy";
 
@@ -220,8 +220,7 @@ function ReservationForm() {
       {FeedbackModal}
       <div className="min-h-screen pt-24 pb-20">
         <div className="container-premium max-w-3xl">
-          <p className="text-overline mb-2 flex items-center gap-2">
-            <Sparkles className="w-3.5 h-3.5" strokeWidth={1.5} />
+          <p className="text-overline mb-2">
             {isDiscoveryRdv ? "Demande de rendez-vous" : "Accompagnement"}
           </p>
           <h1 className="heading-section mb-4">{copy.pageTitle}</h1>
