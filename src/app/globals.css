@@ -6,9 +6,9 @@
   :root {
     --background: 0 0% 100%;
     --foreground: 30 10% 15%;
-    --muted: 0 0% 98%;
+    --muted: 0 0% 100%;
     --muted-foreground: 30 8% 45%;
-    --border: 40 8% 92%;
+    --border: 0 0% 100%;
     --ring: 350 70% 36%;
 
     /* Motion — couture */
@@ -131,7 +131,7 @@
   }
 
   .product-frame {
-    @apply relative overflow-hidden bg-brand-100;
+    @apply relative overflow-hidden bg-white;
   }
 
   .product-frame__image {
@@ -190,7 +190,7 @@
   }
 
   .card-premium {
-    @apply bg-white border border-brand-100;
+    @apply bg-white border border-white;
   }
 
   .offres-main-surface,
@@ -397,7 +397,7 @@
   [data-admin] {
     --admin-duration: 160ms;
     --admin-ease: cubic-bezier(0.22, 1, 0.36, 1);
-    --admin-bg: #fafafa;
+    --admin-bg: #ffffff;
     --admin-surface: #ffffff;
     --admin-ink: #1a1414;
     --admin-muted: #6f6863;

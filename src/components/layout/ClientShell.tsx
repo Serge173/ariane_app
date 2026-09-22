@@ -116,7 +116,7 @@ export function ClientShell({ children }: { children: React.ReactNode }) {
       </aside>
 
       <div className="lg:pl-72">
-        <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-brand-100">
+        <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-white">
           <div className="flex items-center justify-between h-14 px-4 lg:px-8">
             <div className="flex items-center gap-3 min-w-0">
               <button

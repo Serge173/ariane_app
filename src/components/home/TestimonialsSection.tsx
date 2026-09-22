@@ -86,7 +86,7 @@ function TestimonialCard({ testimonial }: { testimonial: TestimonialSettings }) 
           )}
         </>
       ) : (
-        <p className="text-[11px] sm:text-xs text-brand-200 leading-relaxed line-clamp-5">
+        <p className="text-[11px] sm:text-xs text-brand-400 leading-relaxed line-clamp-5">
           &ldquo;{testimonial.content}&rdquo;
         </p>
       )}

@@ -44,7 +44,7 @@ export function BoutiqueEditorialSpotlight({
             </div>
 
             <div
-              className={`relative z-10 w-full lg:w-[42%] bg-[#F7F5F0] p-8 lg:p-12 -mt-10 lg:mt-0 ${
+              className={`relative z-10 w-full lg:w-[42%] bg-white p-8 lg:p-12 -mt-10 lg:mt-0 ${
                 index % 2 === 0 ? "lg:-ml-16" : "lg:-mr-16"
               }`}
             >

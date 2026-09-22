@@ -51,7 +51,7 @@ export function BoutiqueSubNav({ roots }: BoutiqueSubNavProps) {
     slug === null ? !activeCategory && !activeQ && !activeBrand : activeCategory === slug;
 
   return (
-    <div className="sticky top-16 lg:top-[4.25rem] z-30 bg-[#F7F5F0]/95 backdrop-blur-sm border-b border-brand-200/60 mt-6">
+    <div className="sticky top-16 lg:top-[4.25rem] z-30 bg-white/95 backdrop-blur-sm border-b border-white mt-6">
       <div className="max-w-[1600px] mx-auto px-4 lg:px-8">
         <div className="flex items-center gap-4 py-2 border-b border-brand-200/50">
           {SHOPPING_LINE_OPTIONS.map(({ name, line }) => (

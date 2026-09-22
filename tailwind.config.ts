@@ -10,9 +10,9 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          50: "#faf9f7",
-          100: "#f5f3ef",
-          200: "#e8e4dc",
+          50: "#ffffff",
+          100: "#ffffff",
+          200: "#ffffff",
           300: "#d4cdc0",
           400: "#b8ad9a",
           500: "#9c8f7a",
@@ -29,11 +29,11 @@ const config: Config = {
           hover: "#7F1522",
         },
         admin: {
-          bg: "#FAFAFA",
+          bg: "#FFFFFF",
           surface: "#FFFFFF",
           ink: "#1A1414",
           muted: "#6F6863",
-          line: "#E8E4DF",
+          line: "#FFFFFF",
           attention: "#F8E8EA",
         },
         surface: {

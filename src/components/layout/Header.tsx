@@ -61,8 +61,8 @@ export function Header({ siteSettings }: HeaderProps) {
   const headerSurface = isOffers
     ? "bg-[#ffffff] border-b border-[#ffffff] shadow-none"
     : isHome || scrolled || isOpen
-      ? "bg-white/95 backdrop-blur-sm border-b border-brand-100 shadow-sm"
-      : "lg:bg-white/95 lg:backdrop-blur-sm lg:border-b lg:border-brand-100 lg:shadow-sm bg-transparent border-transparent";
+      ? "bg-white/95 backdrop-blur-sm border-b border-white shadow-sm"
+      : "lg:bg-white/95 lg:backdrop-blur-sm lg:border-b lg:border-white lg:shadow-sm bg-transparent border-transparent";
 
   return (
     <>
@@ -73,11 +73,11 @@ export function Header({ siteSettings }: HeaderProps) {
         )}
       >
         <div className="container-premium">
-          <div className="flex items-center h-14 sm:h-16 lg:h-[4.25rem] gap-2 lg:gap-0">
+          <div className="relative flex items-center h-14 sm:h-16 lg:h-[4.25rem] gap-2 lg:gap-0">
             <button
               type="button"
               onClick={() => setIsOpen((v) => !v)}
-              className="lg:hidden p-2 -ml-2 text-brand-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded-sm"
+              className="relative z-10 lg:hidden p-2 -ml-2 text-brand-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded-sm"
               aria-label={isOpen ? "Fermer le menu" : "Ouvrir le menu"}
               aria-expanded={isOpen}
             >
@@ -90,13 +90,13 @@ export function Header({ siteSettings }: HeaderProps) {
 
             <Link
               href="/"
-              className="hidden lg:block group shrink-0 min-w-0"
+              className="group absolute left-1/2 top-1/2 z-[1] w-[calc(100%-7.5rem)] max-w-[16rem] -translate-x-1/2 -translate-y-1/2 text-center sm:max-w-[18rem] lg:static lg:z-auto lg:w-auto lg:max-w-none lg:translate-x-0 lg:translate-y-0 lg:text-left lg:shrink-0 lg:min-w-0"
               onClick={() => setIsOpen(false)}
             >
-              <span className="font-display text-lg sm:text-xl lg:text-2xl font-light tracking-wide text-brand-950 leading-tight">
+              <span className="font-display text-base sm:text-lg lg:text-2xl font-light tracking-wide text-brand-950 leading-tight">
                 {siteSettings.brand.title}
               </span>
-              <span className="block text-[9px] sm:text-[10px] uppercase tracking-ultra text-brand-600 -mt-0.5">
+              <span className="block text-[8px] sm:text-[9px] lg:text-[10px] uppercase tracking-ultra text-brand-600 -mt-0.5">
                 {siteSettings.brand.subtitle}
               </span>
             </Link>
@@ -141,7 +141,7 @@ export function Header({ siteSettings }: HeaderProps) {
               })}
             </nav>
 
-            <div className="flex items-center gap-1 sm:gap-3 shrink-0 ml-auto lg:ml-0">
+            <div className="relative z-10 flex items-center gap-1 sm:gap-3 shrink-0 ml-auto lg:ml-0">
               {session ? (
                 <Link
                   href={dashboardHref}

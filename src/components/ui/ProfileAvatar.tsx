@@ -44,7 +44,7 @@ export function ProfileAvatar({
     return (
       <div
         className={cn(
-          "relative rounded-full overflow-hidden bg-brand-100 flex-shrink-0 ring-2 ring-brand-100",
+          "relative rounded-full overflow-hidden bg-white flex-shrink-0 ring-2 ring-brand-300",
           sizeClass,
           className
         )}
@@ -63,7 +63,7 @@ export function ProfileAvatar({
   return (
     <div
       className={cn(
-        "rounded-full bg-brand-200 text-brand-700 font-medium flex items-center justify-center flex-shrink-0 ring-2 ring-brand-100",
+        "rounded-full bg-white text-brand-700 font-medium flex items-center justify-center flex-shrink-0 ring-2 ring-brand-300",
         sizeClass,
         className
       )}

@@ -188,7 +188,7 @@ export default async function BoutiquePage({ searchParams }: PageProps) {
     : boutiqueSettings.catalogue.title;
 
   return (
-    <div className="min-h-screen bg-[#F7F5F0]">
+    <div className="min-h-screen bg-white">
       {!hasFilter ? (
         <>
           <BoutiquePromoBar text={boutiqueSettings.promoText} />

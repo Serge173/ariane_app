@@ -18,7 +18,7 @@ export function HeroSection() {
           className="object-cover"
           sizes="100vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-brand-950/35 via-white/55 to-white/30" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/25 via-transparent to-transparent" />
       </div>
 
       <div className="container-premium relative z-10 pt-32 pb-20">

@@ -89,11 +89,11 @@ export default function AdminConnexionPage() {
         </form>
 
         <p className="text-center mt-6">
-          <Link href="/connexion" className="text-xs text-brand-400 hover:text-brand-200">
+          <Link href="/connexion" className="text-xs text-brand-400 hover:text-brand-950">
             ← Espace client
           </Link>
           {" · "}
-          <Link href="/" className="text-xs text-brand-400 hover:text-brand-200">
+          <Link href="/" className="text-xs text-brand-400 hover:text-brand-950">
             Site public
           </Link>
         </p>

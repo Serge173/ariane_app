@@ -98,7 +98,7 @@ export function AdminGuideClient() {
                   <p
                     className={cn(
                       "text-xs mt-0.5 line-clamp-2",
-                      activeId === section.id ? "text-brand-200" : "text-brand-400"
+                      activeId === section.id ? "text-brand-300" : "text-brand-400"
                     )}
                   >
                     {section.summary}

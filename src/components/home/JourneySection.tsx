@@ -26,7 +26,7 @@ export function JourneySection({ journey }: JourneySectionProps) {
                 key={step.number}
                 className="card-premium bg-white border border-brand-100 p-2.5 sm:p-4 lg:p-5 min-w-0 w-full"
               >
-                <span className="block font-display text-lg sm:text-2xl lg:text-3xl font-light text-brand-200 leading-none mb-1.5 sm:mb-2">
+                <span className="block font-display text-lg sm:text-2xl lg:text-3xl font-light text-brand-300 leading-none mb-1.5 sm:mb-2">
                   {step.number}
                 </span>
                 <h3 className="font-display text-sm sm:text-lg lg:text-xl mb-1 sm:mb-2 text-brand-950 leading-tight">
