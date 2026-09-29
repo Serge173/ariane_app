@@ -19,7 +19,7 @@
     "dev": "next dev -p 3001",
     "dev:network": "next dev -H 0.0.0.0 -p 3001",
     "build": "prisma generate && next build",
-    "vercel-build": "prisma generate && prisma db push && node scripts/vercel-prebuild.mjs && next build",
+    "vercel-build": "prisma generate && prisma db push --accept-data-loss && node scripts/vercel-prebuild.mjs && next build",
     "db:seed:prod": "tsx prisma/seed.ts",
     "start": "next start",
     "lint": "next lint",
