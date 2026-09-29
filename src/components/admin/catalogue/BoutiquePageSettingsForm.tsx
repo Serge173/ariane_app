@@ -70,11 +70,11 @@ export function BoutiquePageSettingsForm({
     <>
       {FeedbackModal}
       <form onSubmit={handleSubmit} className="max-w-3xl space-y-6 pb-12">
-        <Section title="Bandeau promo">
+        <Section index={1} title="Bandeau promo">
           <Field label="Texte" value={form.promoText} onChange={(v) => setForm({ ...form, promoText: v })} disabled={!canEdit} />
         </Section>
 
-        <Section title="Hero">
+        <Section index={2} title="Hero">
           <Field label="Titre — ligne 1" value={form.hero.titleLine1} onChange={(v) => setForm({ ...form, hero: { ...form.hero, titleLine1: v } })} disabled={!canEdit} />
           <Field label="Titre — ligne 2" value={form.hero.titleLine2} onChange={(v) => setForm({ ...form, hero: { ...form.hero, titleLine2: v } })} disabled={!canEdit} />
           <Field label="Introduction" value={form.hero.intro} onChange={(v) => setForm({ ...form, hero: { ...form.hero, intro: v } })} disabled={!canEdit} multiline />
@@ -83,23 +83,23 @@ export function BoutiquePageSettingsForm({
           <Field label="Image — texte alternatif" value={form.hero.imageAlt} onChange={(v) => setForm({ ...form, hero: { ...form.hero, imageAlt: v } })} disabled={!canEdit} />
         </Section>
 
-        <Section title="Collections">
+        <Section index={3} title="Collections">
           <Field label="Titre" value={form.collections.title} onChange={(v) => setForm({ ...form, collections: { ...form.collections, title: v } })} disabled={!canEdit} />
           <Field label="Introduction" value={form.collections.intro} onChange={(v) => setForm({ ...form, collections: { ...form.collections, intro: v } })} disabled={!canEdit} multiline />
           <Field label="Libellé tuile" value={form.collections.tileLabel} onChange={(v) => setForm({ ...form, collections: { ...form.collections, tileLabel: v } })} disabled={!canEdit} />
         </Section>
 
-        <Section title="Catalogue">
+        <Section index={4} title="Catalogue">
           <Field label="Titre" value={form.catalogue.title} onChange={(v) => setForm({ ...form, catalogue: { ...form.catalogue, title: v } })} disabled={!canEdit} />
           <Field label="Sous-titre" value={form.catalogue.subtitle} onChange={(v) => setForm({ ...form, catalogue: { ...form.catalogue, subtitle: v } })} disabled={!canEdit} multiline />
         </Section>
 
-        <Section title="Notre histoire">
+        <Section index={5} title="Notre histoire">
           <Field label="Titre" value={form.story.title} onChange={(v) => setForm({ ...form, story: { ...form.story, title: v } })} disabled={!canEdit} />
           <Field label="Texte" value={form.story.body} onChange={(v) => setForm({ ...form, story: { ...form.story, body: v } })} disabled={!canEdit} multiline />
         </Section>
 
-        <Section title="Section « Les plus convoités »">
+        <Section index={6} title="Section « Les plus convoités »">
           <p className="text-sm text-brand-600 leading-relaxed">
             Les produits viennent de leurs{" "}
             <Link href="/admin/catalogue/produits?type=LUXE" className="underline">fiches produit</Link>.

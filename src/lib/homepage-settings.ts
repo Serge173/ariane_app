@@ -254,14 +254,15 @@ function parseSlides(raw: unknown): HeroSlideSettings[] {
       if (!item || typeof item !== "object") return null;
       const s = item as Partial<HeroSlideSettings>;
       const fallback = defaults[index] ?? template;
-      return {
+      const slide: HeroSlideSettings = {
         id: str(s.id, fallback.id ?? `slide-${index + 1}`),
         image: str(s.image, fallback.image),
         imageAlt: str(s.imageAlt, fallback.imageAlt),
         overline: migrateBrandText(str(s.overline, fallback.overline)),
         title: migrateHeroSlideTitle(str(s.title, fallback.title)),
-        suspended: Boolean(s.suspended),
       };
+      if (s.suspended) slide.suspended = true;
+      return slide;
     })
     .filter((s): s is HeroSlideSettings => s !== null);
   return slides.length > 0 ? slides.slice(0, MAX_HERO_SLIDES) : DEFAULT_HOMEPAGE_SETTINGS.hero.slides;
