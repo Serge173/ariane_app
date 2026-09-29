@@ -57,7 +57,7 @@ export function Section({
   children,
   tone,
 }: {
-  index: number;
+  index?: number;
   title: string;
   description?: string;
   children: React.ReactNode;

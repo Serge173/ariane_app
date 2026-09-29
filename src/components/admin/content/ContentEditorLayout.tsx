@@ -22,7 +22,7 @@ export function ContentEditorSection({
   children,
   tone = "default",
 }: {
-  index: number;
+  index?: number;
   title: string;
   description?: string;
   children: React.ReactNode;
@@ -36,7 +36,7 @@ export function ContentEditorSection({
       )}
     >
       <header className="content-editor-section-head">
-        <p className="content-editor-section-num">Section {index}</p>
+        {index != null && <p className="content-editor-section-num">Section {index}</p>}
         <h2 className="content-editor-section-title">{title}</h2>
         {description && <p className="content-editor-section-desc">{description}</p>}
       </header>
