@@ -251,6 +251,21 @@ export const adminGuideSections: GuideSection[] = [
       },
       {
         type: "howto",
+        title: "Envoyer une actu newsletter (réseaux sociaux)",
+        description:
+          "Les visiteurs s'inscrivent via le popup ou le footer (inscription immédiate + email de bienvenue). Depuis l'admin, vous pouvez leur envoyer vos liens YouTube, Facebook, TikTok ou Instagram.",
+        steps: [
+          "Menu latéral → Relation → Newsletter.",
+          "Vérifiez le nombre d'abonnés actifs en haut de page.",
+          "Remplissez le titre de l'email (obligatoire).",
+          "Ajoutez un message optionnel et au moins un lien réseau ou le message seul.",
+          "Cliquez sur « Envoyer aux abonnés ».",
+          "Le système envoie un email à chaque abonné actif et enregistre l'envoi dans « Derniers envois ».",
+          "Si l'abonné a aussi un compte client avec la même adresse email, une notification apparaît dans Mon espace → Actus & réseaux sociaux.",
+        ],
+      },
+      {
+        type: "howto",
         title: "Créer et publier un article de blog",
         description:
           "Le blog alimente la page publique /blog. Vous pouvez préparer un article en brouillon avant de le rendre visible.",
@@ -404,6 +419,7 @@ export const adminGuideSections: GuideSection[] = [
           ["Prestations & Produits", "/admin/offres", "Vue synthétique coaching et luxe"],
           ["Paiements", "/admin/paiements", "Modes de paiement et transactions"],
           ["Messages", "/admin/messages", "Demandes reçues via le formulaire contact"],
+          ["Newsletter", "/admin/newsletter", "Abonnés, envoi d'actus et historique"],
           ["Avis clients", "/admin/avis", "Témoignages laissés par les clients"],
           ["Blog", "/admin/blog", "Articles du blog public"],
           ["Statistiques", "/admin/statistiques", "Chiffres et analyses"],
@@ -915,6 +931,48 @@ export const adminGuideSections: GuideSection[] = [
       {
         type: "tip",
         text: "Répondez aux messages via votre client email habituel en utilisant l'adresse indiquée. L'email de contact affiché sur le site se configure dans Paramètres → Plateforme.",
+      },
+    ],
+  },
+  {
+    id: "newsletter",
+    title: "Newsletter",
+    summary: "Abonnés du site, email de bienvenue et envoi d'actus.",
+    blocks: [
+      {
+        type: "p",
+        text: "La newsletter est alimentée par les inscriptions sur le site public : popup après quelques secondes et bloc Newsletter dans le pied de page. L'inscription est immédiate (sans validation par email) : l'abonné reçoit tout de suite un email de félicitations et figure comme « Actif » dans la liste.",
+      },
+      {
+        type: "link",
+        href: "/admin/newsletter",
+        label: "Ouvrir la newsletter",
+      },
+      { type: "h3", text: "Indicateurs" },
+      {
+        type: "ul",
+        items: [
+          "Abonnés actifs : reçoivent vos envois et les emails de campagne",
+          "Inactifs : personnes désinscrites via le lien dans les emails (peuvent se réinscrire sur le site)",
+          "Source : popup, footer ou autre origine enregistrée à l'inscription",
+        ],
+      },
+      { type: "h3", text: "Envoyer une actu" },
+      {
+        type: "p",
+        text: "Utilisez le formulaire « Envoyer une actu réseaux » : titre obligatoire, message et liens optionnels. Tous les abonnés actifs reçoivent l'email. Les comptes clients dont l'email correspond reçoivent en plus une notification dans Mon espace.",
+      },
+      {
+        type: "tip",
+        text: "L'envoi d'emails nécessite une clé Resend valide (RESEND_API_KEY) et un expéditeur vérifié (EMAIL_FROM) dans les variables d'environnement du serveur.",
+      },
+      { type: "h3", text: "Côté site public" },
+      {
+        type: "ul",
+        items: [
+          "Message de succès : « Abonnement confirmé » avec icône verte",
+          "Désinscription : lien en bas de chaque email newsletter",
+        ],
       },
     ],
   },

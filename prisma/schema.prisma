@@ -469,13 +469,30 @@ model BlogPost {
 }
 
 model NewsletterSubscriber {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  firstName String?
-  segments  String[] @default([])
-  isActive  Boolean  @default(true)
-  consentAt DateTime @default(now())
-  createdAt DateTime @default(now())
+  id               String    @id @default(cuid())
+  email            String    @unique
+  firstName        String?
+  segments         String[]  @default([])
+  isActive         Boolean   @default(false)
+  consentAt        DateTime  @default(now())
+  confirmToken     String?   @unique
+  unsubscribeToken String    @unique
+  confirmedAt      DateTime?
+  source           String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+model NewsletterBroadcast {
+  id             String   @id @default(cuid())
+  title          String
+  intro          String?  @db.Text
+  youtubeUrl     String?
+  facebookUrl    String?
+  tiktokUrl      String?
+  instagramUrl   String?
+  recipientCount Int      @default(0)
+  sentAt         DateTime @default(now())
 }
 
 model ContactRequest {

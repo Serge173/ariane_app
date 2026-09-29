@@ -74,7 +74,7 @@ export function AdminGuideClient() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Rechercher dans le guide…"
-              className="w-full pl-10 pr-3 py-2.5 border border-brand-200 text-sm bg-white focus:outline-none focus:border-brand-950"
+              className="input-field pl-10 py-2.5 text-sm focus:ring-black/15"
             />
           </div>
 

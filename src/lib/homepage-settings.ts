@@ -12,6 +12,43 @@ export interface HeroSlideSettings {
   imageAlt: string;
   overline: string;
   title: string;
+  /** Masqué sur le site public sans être supprimé */
+  suspended?: boolean;
+}
+
+const MAX_HERO_SLIDES = 12;
+
+export function getActiveHeroSlides(slides: HeroSlideSettings[]): HeroSlideSettings[] {
+  const active = slides.filter((s) => !s.suspended);
+  if (active.length > 0) return active;
+  return slides.length > 0 ? [slides[0]] : DEFAULT_HOMEPAGE_SETTINGS.hero.slides;
+}
+
+export function reorderHeroSlide(
+  slides: HeroSlideSettings[],
+  fromIndex: number,
+  updated: HeroSlideSettings,
+  toPosition1Based: number
+): HeroSlideSettings[] {
+  let next = slides.map((s, i) => (i === fromIndex ? { ...updated } : s));
+  const toIndex = Math.min(Math.max(toPosition1Based - 1, 0), next.length - 1);
+  if (toIndex !== fromIndex) {
+    const [item] = next.splice(fromIndex, 1);
+    next.splice(toIndex, 0, item);
+  }
+  return next;
+}
+
+export function createEmptyHeroSlide(index: number): HeroSlideSettings {
+  const template = DEFAULT_HOMEPAGE_SETTINGS.hero.slides[0];
+  return {
+    id: `slide-${Date.now()}-${index}`,
+    image: template.image,
+    imageAlt: "Image du diaporama",
+    overline: template.overline,
+    title: "Nouveau slide — modifiez le titre",
+    suspended: false,
+  };
 }
 
 export interface JourneyStepSettings {
@@ -210,22 +247,24 @@ function migrateHeroSlideTitle(title: string): string {
 
 function parseSlides(raw: unknown): HeroSlideSettings[] {
   if (!Array.isArray(raw)) return DEFAULT_HOMEPAGE_SETTINGS.hero.slides;
+  const defaults = DEFAULT_HOMEPAGE_SETTINGS.hero.slides;
+  const template = defaults[0];
   const slides = raw
     .map((item, index) => {
       if (!item || typeof item !== "object") return null;
       const s = item as Partial<HeroSlideSettings>;
-      const fallback = DEFAULT_HOMEPAGE_SETTINGS.hero.slides[index];
-      if (!fallback) return null;
+      const fallback = defaults[index] ?? template;
       return {
-        id: str(s.id, fallback.id),
+        id: str(s.id, fallback.id ?? `slide-${index + 1}`),
         image: str(s.image, fallback.image),
         imageAlt: str(s.imageAlt, fallback.imageAlt),
         overline: migrateBrandText(str(s.overline, fallback.overline)),
         title: migrateHeroSlideTitle(str(s.title, fallback.title)),
+        suspended: Boolean(s.suspended),
       };
     })
     .filter((s): s is HeroSlideSettings => s !== null);
-  return slides.length > 0 ? slides.slice(0, 5) : DEFAULT_HOMEPAGE_SETTINGS.hero.slides;
+  return slides.length > 0 ? slides.slice(0, MAX_HERO_SLIDES) : DEFAULT_HOMEPAGE_SETTINGS.hero.slides;
 }
 
 function parseSteps(raw: unknown): JourneyStepSettings[] {

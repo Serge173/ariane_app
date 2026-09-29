@@ -104,6 +104,79 @@ export async function notifyAdminAppointment(data: {
   });
 }
 
+export async function sendNewsletterConfirmEmail(data: {
+  email: string;
+  firstName?: string | null;
+  confirmUrl: string;
+}): Promise<void> {
+  const greeting = data.firstName?.trim() ? `Bonjour ${data.firstName.trim()},` : "Bonjour,";
+  await sendEmail({
+    to: data.email,
+    subject: "Confirmez votre inscription à la newsletter — Ariane DAGO",
+    html: `
+      <p>${greeting}</p>
+      <p>Merci pour votre intérêt pour Conseil en image avec Ariane.</p>
+      <p>Cliquez sur le lien ci-dessous pour confirmer votre inscription et recevoir nos actus, conseils image et liens vers YouTube, Facebook et TikTok :</p>
+      <p><a href="${data.confirmUrl}">Confirmer mon inscription</a></p>
+      <p style="font-size:12px;color:#666">Si vous n'êtes pas à l'origine de cette demande, ignorez cet email.</p>
+    `,
+  });
+}
+
+export async function sendNewsletterWelcomeEmail(data: {
+  email: string;
+  firstName?: string | null;
+  unsubscribeUrl: string;
+}): Promise<void> {
+  const greeting = data.firstName?.trim() ? `Bonjour ${data.firstName.trim()},` : "Bonjour,";
+  await sendEmail({
+    to: data.email,
+    subject: "Félicitations — vous êtes inscrit(e) à notre newsletter",
+    html: `
+      <p>${greeting}</p>
+      <p><strong>Félicitations et bienvenue !</strong> Votre inscription à la newsletter Ariane DAGO Conseil en image est bien enregistrée.</p>
+      <p>Vous ne manquerez plus rien de nos nouveautés, actus et liens vers nos réseaux.</p>
+      <p>Merci pour votre confiance — j&apos;ai hâte de partager cette aventure avec vous.</p>
+      <p>À très bientôt,<br/><strong>Ariane DAGO</strong></p>
+      <p style="margin-top:28px;font-size:12px;color:#666">
+        <a href="${data.unsubscribeUrl}">Se désabonner</a>
+      </p>
+    `,
+  });
+}
+
+export async function sendNewsletterSocialBroadcast(data: {
+  email: string;
+  firstName?: string | null;
+  title: string;
+  intro?: string | null;
+  youtubeUrl?: string | null;
+  facebookUrl?: string | null;
+  tiktokUrl?: string | null;
+  instagramUrl?: string | null;
+  unsubscribeUrl: string;
+}): Promise<boolean> {
+  const greeting = data.firstName?.trim() ? `Bonjour ${data.firstName.trim()},` : "Bonjour,";
+  const links: string[] = [];
+  if (data.youtubeUrl) links.push(`<li><a href="${data.youtubeUrl}">YouTube</a></li>`);
+  if (data.facebookUrl) links.push(`<li><a href="${data.facebookUrl}">Facebook</a></li>`);
+  if (data.tiktokUrl) links.push(`<li><a href="${data.tiktokUrl}">TikTok</a></li>`);
+  if (data.instagramUrl) links.push(`<li><a href="${data.instagramUrl}">Instagram</a></li>`);
+
+  return sendEmail({
+    to: data.email,
+    subject: data.title,
+    html: `
+      <p>${greeting}</p>
+      ${data.intro ? `<p>${data.intro.replace(/\n/g, "<br/>")}</p>` : ""}
+      ${links.length ? `<ul>${links.join("")}</ul>` : ""}
+      <p style="margin-top:24px;font-size:12px;color:#666">
+        <a href="${data.unsubscribeUrl}">Se désabonner</a>
+      </p>
+    `,
+  });
+}
+
 export async function notifyAdminOrder(data: {
   orderNumber: string;
   total: number;

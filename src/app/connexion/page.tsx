@@ -66,7 +66,7 @@ export default function ConnexionPage() {
   };
 
   return (
-    <div className="min-h-screen py-12 flex items-center">
+    <div className="client-space-auth min-h-screen py-12 flex items-center bg-white">
       <div className="container-premium max-w-md w-full">
         <div className="text-center mb-10">
           <p className="text-overline mb-3">Espace client</p>

@@ -13,12 +13,14 @@ export default async function ClientDashboard() {
   let user = null;
   let orders: Awaited<ReturnType<typeof getOrders>> = [];
   let documents: Awaited<ReturnType<typeof getDocuments>> = [];
+  let notifications: Awaited<ReturnType<typeof getNotifications>> = [];
 
   try {
-    [user, orders, documents] = await Promise.all([
+    [user, orders, documents, notifications] = await Promise.all([
       prisma.user.findUnique({ where: { id: userId }, select: { firstName: true, lastName: true } }),
       getOrders(userId),
       getDocuments(userId),
+      getNotifications(userId),
     ]);
   } catch {}
 
@@ -94,6 +96,38 @@ export default async function ClientDashboard() {
         </section>
       )}
 
+      {notifications.length > 0 && (
+        <section className="mb-8 bg-white border border-brand-100 p-6">
+          <h2 className="font-display text-lg mb-4">Actus & réseaux sociaux</h2>
+          <ul className="space-y-4">
+            {notifications.map((n) => {
+              const meta = n.metadata as Record<string, string | null> | null;
+              const firstLink =
+                meta?.youtubeUrl || meta?.facebookUrl || meta?.tiktokUrl || meta?.instagramUrl || null;
+              return (
+                <li key={n.id} className="border-b border-brand-50 pb-4 last:border-0 last:pb-0">
+                  <p className="text-sm font-medium text-brand-950">{n.title}</p>
+                  <p className="text-sm text-brand-600 mt-1">{n.message}</p>
+                  {firstLink && (
+                    <a
+                      href={firstLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block mt-2 text-xs uppercase tracking-widest text-accent hover:underline"
+                    >
+                      Voir la publication
+                    </a>
+                  )}
+                  <p className="text-[10px] text-brand-400 mt-2">
+                    {new Date(n.createdAt).toLocaleDateString("fr-FR")}
+                  </p>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
+
       <div className="grid lg:grid-cols-2 gap-8">
         <section className="bg-white border border-brand-100 p-6">
           <div className="flex items-center justify-between mb-6">
@@ -157,4 +191,12 @@ async function getOrders(userId: string) {
 
 async function getDocuments(userId: string) {
   return prisma.clientDocument.findMany({ where: { userId }, orderBy: { createdAt: "desc" } });
+}
+
+async function getNotifications(userId: string) {
+  return prisma.notification.findMany({
+    where: { userId, type: "IN_APP" },
+    orderBy: { createdAt: "desc" },
+    take: 5,
+  });
 }

@@ -3,6 +3,7 @@ import { Instagram, Facebook, Linkedin, ExternalLink, type LucideIcon } from "lu
 import type { SiteSettings, SiteSocialLink } from "@/lib/site-settings";
 import { APPOINTMENT_REQUEST_PATH } from "@/lib/booking-copy";
 import { FooterAccordionSection } from "@/components/layout/FooterAccordionSection";
+import { NewsletterFooterSignup } from "@/components/newsletter/NewsletterFooterSignup";
 
 const socialIconMap: Record<string, LucideIcon | null> = {
   Facebook: Facebook,
@@ -63,7 +64,7 @@ export function Footer({ siteSettings }: FooterProps) {
             </Link>
           </div>
 
-          <div className="lg:flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 sm:gap-8 lg:gap-6 xl:gap-10 min-w-0">
+          <div className="lg:flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-0 sm:gap-8 lg:gap-6 xl:gap-8 min-w-0">
             <FooterAccordionSection title="Navigation">
             <ul className="space-y-2.5">
               {footer.navigation.map((link) => (
@@ -111,6 +112,10 @@ export function Footer({ siteSettings }: FooterProps) {
                 </li>
               ))}
             </ul>
+            </FooterAccordionSection>
+
+            <FooterAccordionSection title="Newsletter">
+              <NewsletterFooterSignup />
             </FooterAccordionSection>
 
             <FooterAccordionSection title="Contact">

@@ -60,6 +60,7 @@ export const adminNavGroups: AdminNavGroup[] = [
     label: "Relation",
     items: [
       { name: "Messages", href: "/admin/messages" },
+      { name: "Newsletter", href: "/admin/newsletter" },
       { name: "Avis clients", href: "/admin/avis" },
     ],
   },
@@ -129,6 +130,7 @@ const BREADCRUMB_LABELS: Record<string, string> = {
   contenu: "Contenu",
   blog: "Contenu",
   messages: "Messages",
+  newsletter: "Newsletter",
   avis: "Avis",
   statistiques: "Statistiques",
   guide: "Guide",
@@ -149,7 +151,7 @@ export function getAdminBreadcrumb(pathname: string): { group: string; page: str
       ? "Offre"
       : CONTENT_PATHS.some((p) => pathname.startsWith(p))
       ? "Contenu"
-      : section === "messages" || section === "avis"
+      : section === "messages" || section === "newsletter" || section === "avis"
       ? "Relation"
       : ["statistiques", "guide", "parametres"].includes(section)
       ? "Système"

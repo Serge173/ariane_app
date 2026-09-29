@@ -5,6 +5,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 import { CartToast } from "@/components/ui/CartToast";
+import { NewsletterPopup } from "@/components/newsletter/NewsletterPopup";
 import type { SiteSettings } from "@/lib/site-settings";
 
 export function AppShell({
@@ -37,6 +38,7 @@ export function AppShell({
         </main>
         <WhatsAppButton />
         <CartToast />
+        <NewsletterPopup />
       </div>
     );
   }
@@ -48,6 +50,7 @@ export function AppShell({
       <Footer siteSettings={siteSettings} />
       <WhatsAppButton />
       <CartToast />
+      <NewsletterPopup />
     </>
   );
 }

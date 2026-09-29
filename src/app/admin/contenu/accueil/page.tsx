@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth";
 import { canManageTeam } from "@/lib/user-roles";
 import { ContentSubNav } from "@/components/admin/content/ContentSubNav";
 import { HomepageSettingsForm } from "@/components/admin/content/HomepageSettingsForm";
+import { PageHeader } from "@/components/admin/ui/PageHeader";
 import { getHomepageSettings } from "@/lib/homepage-settings";
 
 export default async function AdminHomepageContentPage() {
@@ -12,12 +13,10 @@ export default async function AdminHomepageContentPage() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="heading-section mb-2">Page d&apos;accueil</h1>
-        <p className="text-brand-600">
-          Hero, parcours client, témoignages Avant/Après (4 cadres) et bloc contact — sans aperçu boutique
-        </p>
-      </div>
+      <PageHeader
+        title="Page d'accueil"
+        description="Sections numérotées : modifiez le hero, le parcours, les témoignages et le contact. Enregistrez en bas de page."
+      />
 
       <ContentSubNav active="accueil" />
 

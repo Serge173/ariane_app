@@ -22,7 +22,7 @@ export function ClientShell({ children }: { children: React.ReactNode }) {
   const nameParts = (session?.user?.name || "Client").split(" ");
 
   return (
-    <div className="min-h-screen bg-surface">
+    <div className="client-space-shell min-h-screen bg-surface">
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-brand-950/30 z-40 lg:hidden"

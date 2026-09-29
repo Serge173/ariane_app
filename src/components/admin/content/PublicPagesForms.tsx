@@ -1,9 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useFeedbackModal } from "@/hooks/useFeedbackModal";
-import { Field, Section, SaveButton } from "@/components/admin/content/FormFields";
+import {
+  Field,
+  Section,
+  SaveButton,
+  ContentEditorBlock,
+  ContentEditorFields,
+  ContentEditorForm,
+  ContentEditorNote,
+} from "@/components/admin/content/FormFields";
 import type {
   PublicPagesSettings,
   AboutPageSettings,
@@ -71,9 +79,11 @@ export function AboutSettingsForm({ initial, canEdit }: { initial: AboutPageSett
           e.preventDefault();
           submit({ about: form });
         }}
-        className="max-w-3xl space-y-6 pb-12"
+        className="contents"
       >
-        <Section title="En-tête">
+        <ContentEditorForm>
+        <Section index={1} title="En-tête" description="Titre et texte d'introduction de la page À propos.">
+          <ContentEditorFields>
           <Field label="Surtitre" value={form.overline} onChange={(v) => setForm({ ...form, overline: v })} disabled={!canEdit} />
           <Field label="Titre" value={form.title} onChange={(v) => setForm({ ...form, title: v })} disabled={!canEdit} />
           {form.paragraphs.map((p, i) => (
@@ -85,10 +95,11 @@ export function AboutSettingsForm({ initial, canEdit }: { initial: AboutPageSett
           ))}
           <Field label="URL image" value={form.image} onChange={(v) => setForm({ ...form, image: v })} disabled={!canEdit} />
           <Field label="Texte alternatif image" value={form.imageAlt} onChange={(v) => setForm({ ...form, imageAlt: v })} disabled={!canEdit} />
+          </ContentEditorFields>
         </Section>
-        <Section title="Mission / Vision / Valeurs">
+        <Section index={2} title="Mission / Vision / Valeurs" description="Blocs de valeurs affichés sur la page.">
           {form.values.map((item, i) => (
-            <div key={i} className="border border-brand-100 p-4 space-y-3">
+            <ContentEditorBlock key={i} index={i + 1} title={item.title || `Valeur ${i + 1}`}>
               <Field label="Titre" value={item.title} onChange={(v) => {
                 const values = [...form.values];
                 values[i] = { ...values[i], title: v };
@@ -99,14 +110,17 @@ export function AboutSettingsForm({ initial, canEdit }: { initial: AboutPageSett
                 values[i] = { ...values[i], text: v };
                 setForm({ ...form, values });
               }} disabled={!canEdit} multiline />
-            </div>
+            </ContentEditorBlock>
           ))}
         </Section>
-        <Section title="Appel à l'action">
+        <Section index={3} title="Appel à l'action">
+          <ContentEditorFields>
           <Field label="Bouton — texte" value={form.ctaLabel} onChange={(v) => setForm({ ...form, ctaLabel: v })} disabled={!canEdit} />
           <Field label="Bouton — lien" value={form.ctaHref} onChange={(v) => setForm({ ...form, ctaHref: v })} disabled={!canEdit} />
+          </ContentEditorFields>
         </Section>
         {canEdit && <SaveButton loading={loading} label="Enregistrer" />}
+        </ContentEditorForm>
       </form>
     </>
   );
@@ -118,22 +132,28 @@ export function OffersSettingsForm({ initial, canEdit }: { initial: OffersPageSe
   return (
     <>
       {FeedbackModal}
-      <form onSubmit={(e) => { e.preventDefault(); submit({ offers: form }); }} className="max-w-3xl space-y-6 pb-12">
-        <Section title="En-tête">
+      <form onSubmit={(e) => { e.preventDefault(); submit({ offers: form }); }} className="contents">
+        <ContentEditorForm>
+        <Section index={1} title="En-tête" description="Introduction de la page prestations.">
+          <ContentEditorFields>
           <Field label="Surtitre" value={form.overline} onChange={(v) => setForm({ ...form, overline: v })} disabled={!canEdit} />
           <Field label="Titre" value={form.title} onChange={(v) => setForm({ ...form, title: v })} disabled={!canEdit} />
           <Field label="Introduction" value={form.intro} onChange={(v) => setForm({ ...form, intro: v })} disabled={!canEdit} multiline />
           <Field label="Lien aide — texte" value={form.helpLinkLabel} onChange={(v) => setForm({ ...form, helpLinkLabel: v })} disabled={!canEdit} />
           <Field label="Lien aide — URL" value={form.helpLinkHref} onChange={(v) => setForm({ ...form, helpLinkHref: v })} disabled={!canEdit} />
-          <p className="text-sm text-brand-500">Les cartes forfaits viennent du catalogue Accompagnements.</p>
+          <ContentEditorNote>Les cartes forfaits viennent du catalogue Accompagnements.</ContentEditorNote>
+          </ContentEditorFields>
         </Section>
-        <Section title="Bloc entreprises">
+        <Section index={2} title="Bloc entreprises">
+          <ContentEditorFields>
           <Field label="Titre" value={form.enterpriseTitle} onChange={(v) => setForm({ ...form, enterpriseTitle: v })} disabled={!canEdit} />
           <Field label="Texte" value={form.enterpriseIntro} onChange={(v) => setForm({ ...form, enterpriseIntro: v })} disabled={!canEdit} multiline />
           <Field label="Bouton — texte" value={form.enterpriseCtaLabel} onChange={(v) => setForm({ ...form, enterpriseCtaLabel: v })} disabled={!canEdit} />
           <Field label="Bouton — URL" value={form.enterpriseCtaHref} onChange={(v) => setForm({ ...form, enterpriseCtaHref: v })} disabled={!canEdit} />
+          </ContentEditorFields>
         </Section>
         {canEdit && <SaveButton loading={loading} label="Enregistrer" />}
+        </ContentEditorForm>
       </form>
     </>
   );
@@ -145,14 +165,22 @@ export function FaqSettingsForm({ initial, canEdit }: { initial: FaqPageSettings
   return (
     <>
       {FeedbackModal}
-      <form onSubmit={(e) => { e.preventDefault(); submit({ faq: form }); }} className="max-w-3xl space-y-6 pb-12">
-        <Section title="En-tête">
+      <form onSubmit={(e) => { e.preventDefault(); submit({ faq: form }); }} className="contents">
+        <ContentEditorForm>
+        <Section index={1} title="En-tête">
+          <ContentEditorFields>
           <Field label="Surtitre" value={form.overline} onChange={(v) => setForm({ ...form, overline: v })} disabled={!canEdit} />
           <Field label="Titre" value={form.title} onChange={(v) => setForm({ ...form, title: v })} disabled={!canEdit} />
+          </ContentEditorFields>
         </Section>
-        <Section title="Questions">
+        <Section index={2} title="Questions / réponses" description="Modifiez, ajoutez ou supprimez chaque entrée de la FAQ.">
           {form.items.map((item, i) => (
-            <div key={i} className="border border-brand-100 p-4 space-y-3">
+            <ContentEditorBlock
+              key={i}
+              index={i + 1}
+              title={item.q.slice(0, 48) || `Question ${i + 1}`}
+              onRemove={canEdit ? () => setForm({ ...form, items: form.items.filter((_, j) => j !== i) }) : undefined}
+            >
               <Field label="Question" value={item.q} onChange={(v) => {
                 const items = [...form.items];
                 items[i] = { ...items[i], q: v };
@@ -163,20 +191,16 @@ export function FaqSettingsForm({ initial, canEdit }: { initial: FaqPageSettings
                 items[i] = { ...items[i], a: v };
                 setForm({ ...form, items });
               }} disabled={!canEdit} multiline />
-              {canEdit && (
-                <button type="button" onClick={() => setForm({ ...form, items: form.items.filter((_, j) => j !== i) })} className="text-xs text-red-600 inline-flex items-center gap-1">
-                  <Trash2 className="w-3 h-3" /> Supprimer
-                </button>
-              )}
-            </div>
+            </ContentEditorBlock>
           ))}
           {canEdit && (
-            <button type="button" onClick={() => setForm({ ...form, items: [...form.items, { q: "Nouvelle question", a: "" }] })} className="text-xs uppercase tracking-wide inline-flex items-center gap-1">
+            <button type="button" onClick={() => setForm({ ...form, items: [...form.items, { q: "Nouvelle question", a: "" }] })} className="content-editor-add-btn">
               <Plus className="w-4 h-4" /> Ajouter une question
             </button>
           )}
         </Section>
         {canEdit && <SaveButton loading={loading} label="Enregistrer" />}
+        </ContentEditorForm>
       </form>
     </>
   );
@@ -192,20 +216,26 @@ export function ContactSettingsForm({ initial, canEdit }: { initial: ContactPage
   return (
     <>
       {FeedbackModal}
-      <form onSubmit={(e) => { e.preventDefault(); submit({ contact: form }); }} className="max-w-3xl space-y-6 pb-12">
-        {(["general", "entreprise", "diagnostic"] as const).map((key) => (
-          <Section key={key} title={`Formulaire — ${key}`}>
+      <form onSubmit={(e) => { e.preventDefault(); submit({ contact: form }); }} className="contents">
+        <ContentEditorForm>
+        {(["general", "entreprise", "diagnostic"] as const).map((key, idx) => (
+          <Section key={key} index={idx + 1} title={`Formulaire — ${key}`}>
+            <ContentEditorFields>
             <Field label="Titre" value={form.types[key].title} onChange={(v) => updateType(key, "title", v)} disabled={!canEdit} />
             <Field label="Sous-titre" value={form.types[key].subtitle} onChange={(v) => updateType(key, "subtitle", v)} disabled={!canEdit} />
+            </ContentEditorFields>
           </Section>
         ))}
-        <Section title="Confirmation">
+        <Section index={4} title="Message de confirmation">
+          <ContentEditorFields>
           <Field label="Titre succès" value={form.successTitle} onChange={(v) => setForm({ ...form, successTitle: v })} disabled={!canEdit} />
           <Field label="Message succès" value={form.successMessage} onChange={(v) => setForm({ ...form, successMessage: v })} disabled={!canEdit} multiline />
           <Field label="Titre bloc coordonnées" value={form.coordinatesTitle} onChange={(v) => setForm({ ...form, coordinatesTitle: v })} disabled={!canEdit} />
-          <p className="text-sm text-brand-500">Adresse, téléphone et email viennent de Navigation & footer.</p>
+          <ContentEditorNote>Adresse, téléphone et email viennent de Navigation & footer.</ContentEditorNote>
+          </ContentEditorFields>
         </Section>
         {canEdit && <SaveButton loading={loading} label="Enregistrer" />}
+        </ContentEditorForm>
       </form>
     </>
   );
@@ -217,21 +247,27 @@ export function BlogSettingsForm({ initial, canEdit }: { initial: BlogPageSettin
   return (
     <>
       {FeedbackModal}
-      <form onSubmit={(e) => { e.preventDefault(); submit({ blog: form }); }} className="max-w-3xl space-y-6 pb-12">
-        <Section title="Liste des articles">
+      <form onSubmit={(e) => { e.preventDefault(); submit({ blog: form }); }} className="contents">
+        <ContentEditorForm>
+        <Section index={1} title="Liste des articles">
+          <ContentEditorFields>
           <Field label="Surtitre" value={form.overline} onChange={(v) => setForm({ ...form, overline: v })} disabled={!canEdit} />
           <Field label="Titre" value={form.title} onChange={(v) => setForm({ ...form, title: v })} disabled={!canEdit} />
           <Field label="Introduction" value={form.intro} onChange={(v) => setForm({ ...form, intro: v })} disabled={!canEdit} multiline />
           <Field label="Message liste vide" value={form.emptyMessage} onChange={(v) => setForm({ ...form, emptyMessage: v })} disabled={!canEdit} />
+          </ContentEditorFields>
         </Section>
-        <Section title="Pied d'article">
+        <Section index={2} title="Pied d'article">
+          <ContentEditorFields>
           <Field label="Surtitre" value={form.articleFooterOverline} onChange={(v) => setForm({ ...form, articleFooterOverline: v })} disabled={!canEdit} />
           <Field label="Texte" value={form.articleFooterText} onChange={(v) => setForm({ ...form, articleFooterText: v })} disabled={!canEdit} multiline />
           <Field label="Bouton — texte" value={form.articleFooterCtaLabel} onChange={(v) => setForm({ ...form, articleFooterCtaLabel: v })} disabled={!canEdit} />
           <Field label="Bouton — URL" value={form.articleFooterCtaHref} onChange={(v) => setForm({ ...form, articleFooterCtaHref: v })} disabled={!canEdit} />
           <Field label="Titre articles similaires" value={form.relatedTitle} onChange={(v) => setForm({ ...form, relatedTitle: v })} disabled={!canEdit} />
+          </ContentEditorFields>
         </Section>
         {canEdit && <SaveButton loading={loading} label="Enregistrer" />}
+        </ContentEditorForm>
       </form>
     </>
   );
@@ -271,13 +307,16 @@ function LegalPageForm({
   return (
     <>
       {FeedbackModal}
-      <form onSubmit={handleSubmit} className="max-w-3xl space-y-6 pb-12">
-        <Section title={pageLabel}>
+      <form onSubmit={handleSubmit} className="contents">
+        <ContentEditorForm>
+        <Section index={1} title={pageLabel} description="Contenu légal affiché sur le site public.">
+          <ContentEditorFields>
           <Field label="Titre" value={form.title} onChange={(v) => setForm({ ...form, title: v })} disabled={!canEdit} />
           <Field label="Introduction" value={form.intro} onChange={(v) => setForm({ ...form, intro: v })} disabled={!canEdit} multiline />
+          </ContentEditorFields>
           {form.sections.map((section, i) => (
-            <div key={i} className="border border-brand-100 p-4 space-y-3">
-              <Field label={`Section ${i + 1} — titre`} value={section.title} onChange={(v) => {
+            <ContentEditorBlock key={i} index={i + 1} title={section.title || `Paragraphe ${i + 1}`}>
+              <Field label="Titre de bloc" value={section.title} onChange={(v) => {
                 const sections = [...form.sections];
                 sections[i] = { ...sections[i], title: v };
                 setForm({ ...form, sections });
@@ -287,11 +326,14 @@ function LegalPageForm({
                 sections[i] = { ...sections[i], body: v };
                 setForm({ ...form, sections });
               }} disabled={!canEdit} multiline />
-            </div>
+            </ContentEditorBlock>
           ))}
+          <ContentEditorFields>
           <Field label="Note de bas de page" value={form.disclaimer} onChange={(v) => setForm({ ...form, disclaimer: v })} disabled={!canEdit} multiline />
+          </ContentEditorFields>
         </Section>
         {canEdit && <SaveButton loading={loading} label="Enregistrer" />}
+        </ContentEditorForm>
       </form>
     </>
   );
@@ -309,22 +351,27 @@ export function OrientationSettingsForm({ initial, canEdit }: { initial: Orienta
   return (
     <>
       {FeedbackModal}
-      <form onSubmit={(e) => { e.preventDefault(); submit({ orientation: form }); }} className="max-w-3xl space-y-6 pb-12">
-        <Section title="Introduction">
+      <form onSubmit={(e) => { e.preventDefault(); submit({ orientation: form }); }} className="contents">
+        <ContentEditorForm>
+        <Section index={1} title="Introduction">
+          <ContentEditorFields>
           <Field label="Surtitre" value={form.overline} onChange={(v) => setForm({ ...form, overline: v })} disabled={!canEdit} />
           <Field label="Titre" value={form.title} onChange={(v) => setForm({ ...form, title: v })} disabled={!canEdit} />
           <Field label="Texte d'aide progression" value={form.progressHint} onChange={(v) => setForm({ ...form, progressHint: v })} disabled={!canEdit} multiline />
+          </ContentEditorFields>
         </Section>
-        <Section title="Écran résultat">
+        <Section index={2} title="Écran résultat">
+          <ContentEditorFields>
           <Field label="Surtitre" value={form.resultOverline} onChange={(v) => setForm({ ...form, resultOverline: v })} disabled={!canEdit} />
           <Field label="CTA sur-mesure" value={form.ctaDiagnostic} onChange={(v) => setForm({ ...form, ctaDiagnostic: v })} disabled={!canEdit} />
           <Field label="Préfixe bouton choix" value={form.ctaChoosePrefix} onChange={(v) => setForm({ ...form, ctaChoosePrefix: v })} disabled={!canEdit} />
           <Field label="CTA toutes prestations" value={form.ctaAllOffers} onChange={(v) => setForm({ ...form, ctaAllOffers: v })} disabled={!canEdit} />
+          </ContentEditorFields>
         </Section>
-        <Section title="Questions">
+        <Section index={3} title="Questions du questionnaire">
           {form.questions.map((q, qi) => (
-            <div key={q.id} className="border border-brand-100 p-4 space-y-3">
-              <Field label={`Question ${qi + 1}`} value={q.question} onChange={(v) => {
+            <ContentEditorBlock key={q.id} index={qi + 1} title={q.question.slice(0, 40) || `Question ${qi + 1}`}>
+              <Field label="Intitulé" value={q.question} onChange={(v) => {
                 const questions = [...form.questions];
                 questions[qi] = { ...questions[qi], question: v };
                 setForm({ ...form, questions });
@@ -338,16 +385,15 @@ export function OrientationSettingsForm({ initial, canEdit }: { initial: Orienta
                   setForm({ ...form, questions });
                 }} disabled={!canEdit} />
               ))}
-            </div>
+            </ContentEditorBlock>
           ))}
-          <p className="text-sm text-brand-500">La logique de scoring reste fixe (valeurs techniques non modifiables).</p>
+          <ContentEditorNote>La logique de scoring reste fixe (valeurs techniques non modifiables).</ContentEditorNote>
         </Section>
-        <Section title="Recommandations">
-          {recKeys.map((key) => {
+        <Section index={4} title="Recommandations">
+          {recKeys.map((key, i) => {
             const rec = form.recommendations[key];
             return (
-              <div key={key} className="border border-brand-100 p-4 space-y-3">
-                <p className="text-xs uppercase tracking-widest text-brand-500">{key}</p>
+              <ContentEditorBlock key={key} index={i + 1} title={key}>
                 <Field label="Nom" value={rec.name} onChange={(v) => setForm({
                   ...form,
                   recommendations: { ...form.recommendations, [key]: { ...rec, name: v } },
@@ -360,11 +406,12 @@ export function OrientationSettingsForm({ initial, canEdit }: { initial: Orienta
                   ...form,
                   recommendations: { ...form.recommendations, [key]: { ...rec, price: v } },
                 })} disabled={!canEdit} />
-              </div>
+              </ContentEditorBlock>
             );
           })}
         </Section>
         {canEdit && <SaveButton loading={loading} label="Enregistrer" />}
+        </ContentEditorForm>
       </form>
     </>
   );

@@ -6,58 +6,13 @@ import { useFeedbackModal } from "@/hooks/useFeedbackModal";
 import type { SiteSettings, SiteNavLink, SiteSocialLink } from "@/lib/site-settings";
 import { APPOINTMENT_REQUEST_PATH } from "@/lib/booking-copy";
 import { SHOPPING_LINE_OPTIONS, shoppingHref } from "@/lib/shopping";
-
-function Field({
-  label,
-  value,
-  onChange,
-  disabled,
-  multiline,
-  hint,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  disabled?: boolean;
-  multiline?: boolean;
-  hint?: string;
-}) {
-  return (
-    <div>
-      <label className="label-field">{label}</label>
-      {hint && <p className="text-xs text-brand-500 mb-1.5">{hint}</p>}
-      {multiline ? (
-        <textarea
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          disabled={disabled}
-          rows={3}
-          className="input-field resize-y min-h-[4.5rem]"
-        />
-      ) : (
-        <input
-          type="text"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          disabled={disabled}
-          className="input-field"
-        />
-      )}
-    </div>
-  );
-}
-
-function Section({ title, description, children }: { title: string; description?: string; children: React.ReactNode }) {
-  return (
-    <section className="bg-white border border-brand-100 p-6 space-y-5">
-      <div>
-        <h2 className="font-display text-xl">{title}</h2>
-        {description && <p className="text-sm text-brand-500 mt-1">{description}</p>}
-      </div>
-      {children}
-    </section>
-  );
-}
+import {
+  Field,
+  Section,
+  ContentEditorBlock,
+  ContentEditorFields,
+  ContentEditorForm,
+} from "@/components/admin/content/FormFields";
 
 function NavLinksEditor({
   label,
@@ -110,8 +65,13 @@ function NavLinksEditor({
         {hint && <p className="text-xs text-brand-500 mt-1">{hint}</p>}
       </div>
       {links.map((link, index) => (
-        <div key={index} className="border border-brand-100 p-3 space-y-3">
-          <div className="grid sm:grid-cols-[1fr_1fr_auto_auto] gap-2 items-end">
+        <ContentEditorBlock
+          key={index}
+          index={index + 1}
+          title={link.name || `Lien ${index + 1}`}
+          onRemove={disabled ? undefined : () => onChange(links.filter((_, i) => i !== index))}
+        >
+          <div className="grid sm:grid-cols-[1fr_1fr_auto] gap-2 items-end">
             <Field label="Libellé" value={link.name} onChange={(v) => update(index, { name: v })} disabled={disabled} />
             <Field label="URL" value={link.href} onChange={(v) => update(index, { href: v })} disabled={disabled} />
             {allowHighlight && (
@@ -124,16 +84,6 @@ function NavLinksEditor({
                 />
                 Mise en avant
               </label>
-            )}
-            {disabled ? null : (
-              <button
-                type="button"
-                onClick={() => onChange(links.filter((_, i) => i !== index))}
-                className="p-2 text-brand-400 hover:text-red-600 pb-2.5"
-                aria-label="Supprimer"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
             )}
           </div>
 
@@ -206,13 +156,13 @@ function NavLinksEditor({
               )}
             </div>
           )}
-        </div>
+        </ContentEditorBlock>
       ))}
       {!disabled && (
         <button
           type="button"
           onClick={() => onChange([...links, { name: "Nouveau lien", href: "/" }])}
-          className="inline-flex items-center gap-1 text-xs uppercase tracking-wide text-brand-700"
+          className="content-editor-add-btn"
         >
           <Plus className="w-4 h-4" /> Ajouter un lien
         </button>
@@ -240,25 +190,16 @@ function SocialLinksEditor({
     <div className="space-y-3">
       <p className="text-xs uppercase tracking-widest text-brand-500">Réseaux sociaux</p>
       {links.map((link, index) => (
-        <div key={index} className="grid sm:grid-cols-3 gap-2 items-end border border-brand-100 p-3">
+        <ContentEditorBlock
+          key={index}
+          index={index + 1}
+          title={link.name || `Réseau ${index + 1}`}
+          onRemove={disabled ? undefined : () => onChange(links.filter((_, i) => i !== index))}
+        >
           <Field label="Plateforme" value={link.name} onChange={(v) => update(index, { name: v })} disabled={disabled} />
           <Field label="Libellé affiché" value={link.label} onChange={(v) => update(index, { label: v })} disabled={disabled} />
-          <div className="flex gap-2 items-end">
-            <div className="flex-1">
-              <Field label="URL" value={link.href} onChange={(v) => update(index, { href: v })} disabled={disabled} />
-            </div>
-            {disabled ? null : (
-              <button
-                type="button"
-                onClick={() => onChange(links.filter((_, i) => i !== index))}
-                className="p-2 text-brand-400 hover:text-red-600 mb-0.5"
-                aria-label="Supprimer"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
-            )}
-          </div>
-        </div>
+          <Field label="URL" value={link.href} onChange={(v) => update(index, { href: v })} disabled={disabled} />
+        </ContentEditorBlock>
       ))}
       {!disabled && (
         <button
@@ -318,16 +259,21 @@ export function SiteSettingsForm({
   return (
     <>
       {FeedbackModal}
-      <form onSubmit={handleSubmit} className="max-w-3xl space-y-6 pb-12">
+      <form onSubmit={handleSubmit} className="contents">
+        <ContentEditorForm>
         <Section
+          index={1}
           title="Marque — en-tête du site"
           description="Affichée dans le header (menu principal). Le pied de page a ses propres champs ci-dessous."
         >
+          <ContentEditorFields>
           <Field label="Titre principal" value={form.brand.title} onChange={(v) => setForm((f) => ({ ...f, brand: { ...f.brand, title: v } }))} disabled={!canEdit} />
           <Field label="Sous-titre" value={form.brand.subtitle} onChange={(v) => setForm((f) => ({ ...f, brand: { ...f.brand, subtitle: v } }))} disabled={!canEdit} />
+          </ContentEditorFields>
         </Section>
 
         <Section
+          index={2}
           title="Navigation principale"
           description="Le lien « Shopping » doit rester en mise en avant avec les sous-liens Luxe et Premium (boutique). Il ne doit pas être confondu avec la prise de RDV."
         >
@@ -341,9 +287,11 @@ export function SiteSettingsForm({
         </Section>
 
         <Section
+          index={3}
           title="Pied de page — Conseil en image"
           description="Bloc ARIANE DAGO. Le bouton « Prendre rdv ! » ouvre toujours le formulaire de demande de rendez-vous (sans achat boutique)."
         >
+          <ContentEditorFields>
           <Field label="Nom" value={form.footer.title} onChange={(v) => setForm((f) => ({ ...f, footer: { ...f.footer, title: v } }))} disabled={!canEdit} />
           <Field label="Sous-titre" value={form.footer.subtitle} onChange={(v) => setForm((f) => ({ ...f, footer: { ...f.footer, subtitle: v } }))} disabled={!canEdit} />
           <Field label="Texte de présentation" value={form.footer.description} onChange={(v) => setForm((f) => ({ ...f, footer: { ...f.footer, description: v } }))} disabled={!canEdit} multiline />
@@ -372,6 +320,7 @@ export function SiteSettingsForm({
           <Field label="Adresse — ligne 2" value={form.footer.contact.line2} onChange={(v) => setForm((f) => ({ ...f, footer: { ...f.footer, contact: { ...f.footer.contact, line2: v } } }))} disabled={!canEdit} />
           <Field label="Téléphone" value={form.footer.contact.phone} onChange={(v) => setForm((f) => ({ ...f, footer: { ...f.footer, contact: { ...f.footer.contact, phone: v } } }))} disabled={!canEdit} />
           <Field label="Email" value={form.footer.contact.email} onChange={(v) => setForm((f) => ({ ...f, footer: { ...f.footer, contact: { ...f.footer.contact, email: v } } }))} disabled={!canEdit} />
+          </ContentEditorFields>
           <SocialLinksEditor
             links={form.footer.social}
             onChange={(social) => setForm((f) => ({ ...f, footer: { ...f.footer, social } }))}
@@ -380,11 +329,14 @@ export function SiteSettingsForm({
         </Section>
 
         {canEdit && (
-          <button type="submit" disabled={loading} className="btn-primary inline-flex items-center gap-2">
-            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-            Enregistrer navigation & footer
-          </button>
+          <div className="content-editor-save-bar">
+            <button type="submit" disabled={loading} className="btn-primary inline-flex items-center gap-2">
+              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+              Enregistrer navigation & footer
+            </button>
+          </div>
         )}
+        </ContentEditorForm>
       </form>
     </>
   );

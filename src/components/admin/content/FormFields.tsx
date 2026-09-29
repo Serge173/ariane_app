@@ -1,21 +1,34 @@
 "use client";
 
+import {
+  ContentEditorBlock,
+  ContentEditorFields,
+  ContentEditorForm,
+  ContentEditorNote,
+  ContentEditorSection,
+} from "@/components/admin/content/ContentEditorLayout";
+
+export { ContentEditorBlock, ContentEditorFields, ContentEditorForm, ContentEditorNote };
+
 export function Field({
   label,
   value,
   onChange,
   disabled,
   multiline,
+  hint,
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
   disabled?: boolean;
   multiline?: boolean;
+  hint?: string;
 }) {
   return (
     <div>
       <label className="label-field">{label}</label>
+      {hint && <p className="text-xs text-brand-500 mb-1.5">{hint}</p>}
       {multiline ? (
         <textarea
           value={value}
@@ -37,19 +50,32 @@ export function Field({
   );
 }
 
-export function Section({ title, children }: { title: string; children: React.ReactNode }) {
+export function Section({
+  index,
+  title,
+  description,
+  children,
+  tone,
+}: {
+  index: number;
+  title: string;
+  description?: string;
+  children: React.ReactNode;
+  tone?: "default" | "muted";
+}) {
   return (
-    <section className="bg-white border border-brand-100 p-6 space-y-5">
-      <h2 className="font-display text-xl">{title}</h2>
+    <ContentEditorSection index={index} title={title} description={description} tone={tone}>
       {children}
-    </section>
+    </ContentEditorSection>
   );
 }
 
 export function SaveButton({ loading, label }: { loading: boolean; label: string }) {
   return (
-    <button type="submit" disabled={loading} className="btn-primary inline-flex items-center gap-2">
-      {loading ? "Enregistrement..." : label}
-    </button>
+    <div className="content-editor-save-bar">
+      <button type="submit" disabled={loading} className="btn-primary inline-flex items-center gap-2">
+        {loading ? "Enregistrement..." : label}
+      </button>
+    </div>
   );
 }

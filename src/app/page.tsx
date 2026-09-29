@@ -4,7 +4,7 @@ import { OffersGrid } from "@/components/home/OffersGrid";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 import { CTASection } from "@/components/home/CTASection";
 import { OffersSection } from "@/components/home/HomeSections";
-import { getHomepageSettings } from "@/lib/homepage-settings";
+import { getActiveHeroSlides, getHomepageSettings } from "@/lib/homepage-settings";
 
 export default async function HomePage() {
   const homepage = await getHomepageSettings();
@@ -12,7 +12,7 @@ export default async function HomePage() {
   return (
     <>
       <HeroSlider
-        slides={homepage.hero.slides}
+        slides={getActiveHeroSlides(homepage.hero.slides)}
         primaryCta={homepage.hero.primaryCta}
         scarcityLabel={homepage.hero.scarcityLabel}
       />
