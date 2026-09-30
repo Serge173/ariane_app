@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { formatPrice } from "@/lib/utils";
+import { formatPublicPrice } from "@/lib/shop/public-price";
 import { luxeImage } from "@/lib/images";
 import { ProductImage } from "@/components/ui/ProductImage";
 import type { BoutiqueProduct } from "@/components/shop/BoutiqueCatalog";
@@ -42,7 +42,9 @@ export function BoutiqueFeaturedRow({ products }: { products: BoutiqueProduct[] 
             <p className="font-sans text-sm text-brand-950 mb-1 line-clamp-2 group-hover:underline underline-offset-2">
               {product.name}
             </p>
-            <p className="font-sans text-sm text-brand-700">{formatPrice(product.price)}</p>
+            {formatPublicPrice(product.price) && (
+              <p className="font-sans text-sm text-brand-700">{formatPublicPrice(product.price)}</p>
+            )}
           </Link>
         ))}
       </div>

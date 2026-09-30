@@ -1,11 +1,12 @@
 import { buildVariantLabel } from "@/lib/shop/variants";
+import { parseAdminPriceInput } from "@/lib/shop/public-price";
 
 export interface VariantInput {
   id?: string;
   size?: string;
   color?: string;
   sku?: string;
-  price: number | string;
+  price?: number | string | null;
   compareAtPrice?: number | string | null;
   stock?: number | string;
   lowStockThreshold?: number | string;
@@ -23,7 +24,7 @@ export function normalizeVariantInput(raw: VariantInput, index: number) {
     size,
     color,
     sku: raw.sku?.trim() || null,
-    price: Number(raw.price),
+    price: parseAdminPriceInput(raw.price),
     compareAtPrice:
       raw.compareAtPrice != null && raw.compareAtPrice !== ""
         ? Number(raw.compareAtPrice)

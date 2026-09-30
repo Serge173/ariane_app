@@ -1,7 +1,7 @@
 import Link from "next/link";
 import prisma from "@/lib/prisma";
 import { luxeImage } from "@/lib/images";
-import { formatPrice } from "@/lib/utils";
+import { formatPublicPrice } from "@/lib/shop/public-price";
 import { formatCategoryLabel } from "@/lib/categories";
 import { ArrowRight } from "lucide-react";
 import { ProductImage } from "@/components/ui/ProductImage";
@@ -15,7 +15,7 @@ interface PreviewProduct {
   name: string;
   brand: string | null;
   shortDescription: string | null;
-  price: number;
+  price: number | null;
   images: string[];
   isFeatured: boolean;
   categoryName: string | null;
@@ -155,7 +155,13 @@ export async function BoutiquePreviewSection({
                   {product.shortDescription}
                 </p>
                 <div className="flex items-center justify-between gap-1 min-w-0">
-                  <span className="text-[10px] sm:text-sm font-medium truncate">{formatPrice(product.price)}</span>
+                  {formatPublicPrice(product.price) ? (
+                    <span className="text-[10px] sm:text-sm font-medium truncate">
+                      {formatPublicPrice(product.price)}
+                    </span>
+                  ) : (
+                    <span className="flex-1 min-w-0" />
+                  )}
                   <ArrowRight className="hidden sm:block w-4 h-4 text-brand-400 shrink-0" strokeWidth={1.5} />
                 </div>
               </div>

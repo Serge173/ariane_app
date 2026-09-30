@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { formatPrice } from "@/lib/utils";
+import { hasPublicPrice } from "@/lib/shop/public-price";
 import { ProductType } from "@prisma/client";
 import { luxeImage, coachingImage } from "@/lib/images";
 import { ProductImage } from "@/components/ui/ProductImage";
@@ -9,7 +10,7 @@ export interface AdminProductRow {
   name: string;
   slug: string;
   brand: string | null;
-  price: number;
+  price: number | null;
   duration: string | null;
   images: string[];
   isActive: boolean;
@@ -62,7 +63,9 @@ export function AdminProductsTable({ products, type }: AdminProductsTableProps) 
               {isLuxe && (
                 <td className="py-4 px-4 text-brand-600">{product.brand || "—"}</td>
               )}
-              <td className="py-4 px-4">{formatPrice(product.price)}</td>
+              <td className="py-4 px-4">
+                {hasPublicPrice(product.price) ? formatPrice(product.price) : "—"}
+              </td>
               <td className="py-4 px-4 text-brand-600">{product.category.name}</td>
               {!isLuxe && (
                 <td className="py-4 px-4 text-brand-600">{product.duration || "—"}</td>

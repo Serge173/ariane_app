@@ -1,5 +1,6 @@
 import type { PrismaClient } from "@prisma/client";
 import { buildVariantLabel } from "@/lib/shop/variants";
+import { hasPublicPrice } from "@/lib/shop/public-price";
 
 export interface OrderLineInput {
   productId?: string;
@@ -75,12 +76,16 @@ export async function resolveOrderLines(
           `Stock insuffisant pour « ${product.name} » (${variant.name})`
         );
       }
-      unitPrice = variant.price;
+      unitPrice = variant.price ?? product.price;
       variantId = variant.id;
       variantLabel = variant.name || buildVariantLabel(variant.size, variant.color);
     }
 
-    const lineTotal = unitPrice * quantity;
+    if (!hasPublicPrice(unitPrice)) {
+      throw new OrderPricingError(`Prix non disponible pour « ${product.name} »`);
+    }
+
+    const lineTotal = unitPrice! * quantity;
     subtotal += lineTotal;
 
     lines.push({
@@ -88,7 +93,7 @@ export async function resolveOrderLines(
       variantId,
       variantLabel,
       quantity,
-      unitPrice,
+      unitPrice: unitPrice!,
       total: lineTotal,
       productType: product.productType,
       mode: product.mode,

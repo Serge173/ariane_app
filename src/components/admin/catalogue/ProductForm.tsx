@@ -244,7 +244,7 @@ export function ProductForm({ initial, initialVariants = [], categories, brands,
 
           <div>
             <label className="block text-xs uppercase tracking-widest text-brand-500 mb-2">
-              Prix (FCFA) *
+              Prix (FCFA)
             </label>
             <input
               type="number"
@@ -252,7 +252,7 @@ export function ProductForm({ initial, initialVariants = [], categories, brands,
               className="input-field"
               value={form.price}
               onChange={(e) => set("price", e.target.value)}
-              required
+              placeholder="Laisser vide pour ne rien afficher sur le site"
             />
           </div>
 

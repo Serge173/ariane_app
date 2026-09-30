@@ -49,7 +49,7 @@ export default async function EditProductPage({ params }: Props) {
     categoryId: product.categoryId,
     brandId: product.brandId ?? "",
     brandName: product.brand ?? "",
-    price: String(product.price),
+    price: product.price != null ? String(product.price) : "",
     shortDescription: product.shortDescription ?? "",
     description: product.description,
     imagesText: product.images.join("\n"),

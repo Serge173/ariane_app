@@ -4,6 +4,7 @@ import { requireAdmin, jsonError } from "@/lib/admin-api";
 import { slugify } from "@/lib/utils";
 import { buildKeywordsFromProduct, parseKeywordsInput, parseLinesInput } from "@/lib/catalogue";
 import { syncProductVariants } from "@/lib/shop/sync-variants";
+import { parseAdminPriceInput } from "@/lib/shop/public-price";
 
 interface Ctx {
   params: Promise<{ id: string }>;
@@ -89,7 +90,7 @@ export async function PATCH(req: NextRequest, ctx: Ctx) {
       ...(body.categoryId !== undefined && { categoryId: body.categoryId }),
       brandId,
       brand,
-      ...(body.price !== undefined && { price: Number(body.price) }),
+      ...(body.price !== undefined && { price: parseAdminPriceInput(body.price) }),
       ...(body.shortDescription !== undefined && {
         shortDescription: body.shortDescription?.trim() || null,
       }),

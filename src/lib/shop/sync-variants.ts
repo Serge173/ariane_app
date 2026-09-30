@@ -11,7 +11,13 @@ export async function syncProductVariants(
   if (variants === undefined) return;
 
   const normalized = variants
-    .filter((v) => v.price != null && v.price !== "")
+    .filter(
+      (v) =>
+        v.size?.trim() ||
+        v.color?.trim() ||
+        v.sku?.trim() ||
+        (v.price != null && String(v.price).trim() !== "")
+    )
     .map((v, index) => normalizeVariantInput(v, index));
 
   const existing = await db.productVariant.findMany({ where: { productId } });

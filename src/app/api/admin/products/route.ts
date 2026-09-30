@@ -6,6 +6,7 @@ import { slugify } from "@/lib/utils";
 import { buildKeywordsFromProduct, parseKeywordsInput, parseLinesInput } from "@/lib/catalogue";
 import { getCategoryDescendantIds } from "@/lib/categories";
 import { syncProductVariants } from "@/lib/shop/sync-variants";
+import { parseAdminPriceInput } from "@/lib/shop/public-price";
 
 export async function GET(req: NextRequest) {
   const { error } = await requireAdmin();
@@ -90,7 +91,10 @@ export async function POST(req: NextRequest) {
   if (!name?.trim()) return jsonError("Le nom est requis");
   if (!categoryId) return jsonError("La catégorie est requise");
   if (!description?.trim()) return jsonError("La description est requise");
-  if (price == null || Number.isNaN(Number(price))) return jsonError("Prix invalide");
+  const parsedPrice = parseAdminPriceInput(price);
+  if (price != null && String(price).trim() !== "" && parsedPrice == null) {
+    return jsonError("Prix invalide");
+  }
 
   const slug = slugify(rawSlug || name);
   const exists = await prisma.product.findUnique({ where: { slug } });
@@ -134,7 +138,7 @@ export async function POST(req: NextRequest) {
       categoryId,
       brandId: resolvedBrandId,
       brand,
-      price: Number(price),
+      price: parsedPrice,
       shortDescription: shortDescription?.trim() || null,
       description: description.trim(),
       images: parseLinesInput(imagesText),

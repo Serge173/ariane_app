@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formatPrice } from "@/lib/utils";
+import { hasPublicPrice } from "@/lib/shop/public-price";
 import { ProductImage } from "@/components/ui/ProductImage";
 import { luxeImage, coachingImage } from "@/lib/images";
 import {
@@ -22,7 +23,7 @@ interface ProductRow {
   name: string;
   slug: string;
   brand: string | null;
-  price: number;
+  price: number | null;
   productType: "LUXE" | "SERVICE";
   isActive: boolean;
   isFeatured: boolean;
@@ -240,7 +241,9 @@ export function ProductManager({
                   </td>
                   <td className="py-3 px-4 text-brand-600">{formatCategoryLabel(p.category)}</td>
                   <td className="py-3 px-4 text-brand-600">{p.brandRef?.name || p.brand || "—"}</td>
-                  <td className="py-3 px-4">{formatPrice(p.price)}</td>
+                  <td className="py-3 px-4">
+                    {hasPublicPrice(p.price) ? formatPrice(p.price) : "—"}
+                  </td>
                   <td className="py-3 px-4">
                     <span
                       className={`text-[10px] uppercase px-2 py-1 ${

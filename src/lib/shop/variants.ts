@@ -1,10 +1,12 @@
+import { productPublicPricing } from "@/lib/shop/public-price";
+
 export interface ShopVariant {
   id: string;
   name: string;
   size: string | null;
   color: string | null;
   sku: string | null;
-  price: number;
+  price: number | null;
   compareAtPrice: number | null;
   stock: number;
   trackInventory: boolean;
@@ -22,17 +24,8 @@ export function variantInStock(variant: Pick<ShopVariant, "stock" | "trackInvent
 }
 
 export function productDisplayPrice(
-  basePrice: number,
+  basePrice: number | null | undefined,
   variants: ShopVariant[]
-): { price: number; compareAtPrice: number | null; fromPrice: boolean } {
-  const active = variants.filter((v) => v.isActive);
-  if (active.length === 0) {
-    return { price: basePrice, compareAtPrice: null, fromPrice: false };
-  }
-  const min = active.reduce((acc, v) => (v.price < acc.price ? v : acc), active[0]);
-  return {
-    price: min.price,
-    compareAtPrice: min.compareAtPrice,
-    fromPrice: active.length > 1 || min.price !== basePrice,
-  };
+): { price: number | null; compareAtPrice: number | null; fromPrice: boolean } {
+  return productPublicPricing(basePrice, variants);
 }

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { coachingImage } from "@/lib/images";
-import { formatPrice } from "@/lib/utils";
+import { formatPublicPrice } from "@/lib/shop/public-price";
 import { formatCategoryLabel } from "@/lib/categories";
 import { ArrowRight } from "lucide-react";
 import { ProductImage } from "@/components/ui/ProductImage";
@@ -10,7 +10,7 @@ export interface OfferProduct {
   slug: string;
   name: string;
   shortDescription: string | null;
-  price: number;
+  price: number | null;
   images: string[];
   isFeatured?: boolean;
   categoryName?: string;
@@ -31,7 +31,11 @@ export function OffersCatalog({ products }: OffersCatalogProps) {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-      {products.map((product) => (
+      {products.map((product) => {
+        const priceLabel = formatPublicPrice(product.price, {
+          prefix: product.slug === "sur-mesure" ? "À partir de " : "",
+        });
+        return (
         <Link
           key={product.id}
           href={product.slug === "sur-mesure" ? "/contact?type=diagnostic" : `/offres/${product.slug}`}
@@ -62,15 +66,17 @@ export function OffersCatalog({ products }: OffersCatalogProps) {
               {product.shortDescription}
             </p>
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">
-                {product.slug === "sur-mesure" ? "À partir de " : ""}
-                {formatPrice(product.price)}
-              </span>
+              {priceLabel ? (
+                <span className="text-sm font-medium">{priceLabel}</span>
+              ) : (
+                <span />
+              )}
               <ArrowRight className="w-4 h-4" strokeWidth={1.5} />
             </div>
           </div>
         </Link>
-      ))}
+        );
+      })}
     </div>
   );
 }
@@ -81,7 +87,7 @@ export function mapDbOfferProducts(
     slug: string;
     name: string;
     shortDescription: string | null;
-    price: number;
+    price: number | null;
     images: string[];
     isFeatured: boolean;
     category: { name: string; parent?: { name: string } | null };

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import prisma from "@/lib/prisma";
 import { coachingImage } from "@/lib/images";
-import { formatPrice } from "@/lib/utils";
+import { formatPublicPrice } from "@/lib/shop/public-price";
 import { ArrowRight } from "lucide-react";
 import { ProductImage } from "@/components/ui/ProductImage";
 import { StaggerReveal } from "@/components/motion/StaggerReveal";
@@ -53,7 +53,11 @@ export async function OffersGrid({ compact = false }: { compact?: boolean }) {
           : "grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-4 w-full min-w-0"
       }
     >
-      {products.map((product) => (
+      {products.map((product) => {
+        const priceLabel = formatPublicPrice(product.price ?? null, {
+          prefix: product.slug === "sur-mesure" ? "Dès " : "",
+        });
+        return (
         <Link
           key={product.id}
           href={product.slug === "sur-mesure" ? "/contact?type=diagnostic" : `/offres/${product.slug}`}
@@ -84,15 +88,17 @@ export async function OffersGrid({ compact = false }: { compact?: boolean }) {
               {product.shortDescription}
             </p>
             <div className="flex items-center justify-between gap-1 min-w-0">
-              <span className="text-[10px] sm:text-sm font-medium truncate">
-                {product.slug === "sur-mesure" ? "Dès " : ""}
-                {formatPrice(Number(product.price))}
-              </span>
+              {priceLabel ? (
+                <span className="text-[10px] sm:text-sm font-medium truncate">{priceLabel}</span>
+              ) : (
+                <span className="flex-1 min-w-0" />
+              )}
               <ArrowRight className="hidden sm:block w-4 h-4 text-brand-400 shrink-0" strokeWidth={1.5} />
             </div>
           </div>
         </Link>
-      ))}
+        );
+      })}
     </StaggerReveal>
   );
 }

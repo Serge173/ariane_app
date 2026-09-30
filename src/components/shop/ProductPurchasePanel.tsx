@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
+import { formatPublicPrice, hasPublicPrice } from "@/lib/shop/public-price";
 import { useCartStore } from "@/lib/store/cart";
 import type { ShopVariant } from "@/lib/shop/variants";
 import { productDisplayPrice, variantInStock } from "@/lib/shop/variants";
@@ -14,7 +15,7 @@ interface ProductPurchasePanelProps {
     id: string;
     slug: string;
     name: string;
-    price: number;
+    price: number | null;
     compareAtPrice?: number | null;
     image?: string;
   };
@@ -35,14 +36,19 @@ export function ProductPurchasePanel({ product, variants }: ProductPurchasePanel
   const selectedVariant = variants.find((v) => v.id === selectedVariantId) ?? null;
   const pricing = selectedVariant
     ? {
-        price: selectedVariant.price,
+        price: selectedVariant.price ?? product.price,
         compareAtPrice: selectedVariant.compareAtPrice,
         fromPrice: false,
       }
     : productDisplayPrice(product.price, variants);
 
+  const priceLabel = formatPublicPrice(pricing.price, {
+    prefix: pricing.fromPrice ? "À partir de " : "",
+  });
+
   const requiresVariant = variants.length > 0;
   const canAdd =
+    hasPublicPrice(pricing.price) &&
     (!requiresVariant || Boolean(selectedVariant)) &&
     (!selectedVariant || variantInStock(selectedVariant));
 
@@ -53,11 +59,12 @@ export function ProductPurchasePanel({ product, variants }: ProductPurchasePanel
     }
 
     const price = selectedVariant?.price ?? product.price;
+    if (!hasPublicPrice(price)) return;
     const result = addItem({
       productId: product.id,
       slug: product.slug,
       name: product.name,
-      price,
+      price: price!,
       quantity: 1,
       productType: "LUXE",
       image: product.image,
@@ -77,15 +84,16 @@ export function ProductPurchasePanel({ product, variants }: ProductPurchasePanel
 
   return (
     <div>
+      {priceLabel && (
       <div className="flex items-baseline gap-3 mb-8">
-        <p className="text-2xl font-light">
-          {pricing.fromPrice && <span className="text-sm text-brand-400 mr-2">À partir de</span>}
-          {formatPrice(pricing.price)}
-        </p>
-        {pricing.compareAtPrice != null && pricing.compareAtPrice > pricing.price && (
+        <p className="text-2xl font-light">{priceLabel}</p>
+        {pricing.compareAtPrice != null &&
+          pricing.price != null &&
+          pricing.compareAtPrice > pricing.price && (
           <p className="text-sm text-brand-400 line-through">{formatPrice(pricing.compareAtPrice)}</p>
         )}
       </div>
+      )}
 
       {variants.length > 0 && (
         <div className="mb-8">

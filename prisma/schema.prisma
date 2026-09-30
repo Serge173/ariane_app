@@ -196,7 +196,7 @@ model Product {
   brandRef        Brand?      @relation(fields: [brandId], references: [id], onDelete: SetNull)
   shortDescription String?
   description     String      @db.Text
-  price           Int
+  price           Int?
   currency        String      @default("XOF")
   productType     ProductType @default(SERVICE)
   categoryId      String
@@ -235,7 +235,7 @@ model ProductVariant {
   size              String?
   color             String?
   sku               String?
-  price             Int
+  price             Int?
   compareAtPrice    Int?
   stock             Int          @default(0)
   lowStockThreshold Int          @default(3)

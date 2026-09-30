@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { coachingImage } from "@/lib/images";
-import { formatPrice } from "@/lib/utils";
+import { formatPublicPrice, hasPublicPrice } from "@/lib/shop/public-price";
 import { Check, Calendar, ArrowRight } from "lucide-react";
 import { AddToCartButton } from "@/components/shop/AddToCartButton";
 import { ProductImage } from "@/components/ui/ProductImage";
@@ -90,6 +90,11 @@ export default async function OfferDetailPage({ params }: Props) {
   };
 
   const isSurMesure = slug === "sur-mesure";
+  const dbPrice = dbProduct?.price ?? null;
+  const displayPrice = dbProduct ? dbPrice : fallback?.price ?? null;
+  const priceLabel = formatPublicPrice(displayPrice, {
+    prefix: isSurMesure ? "À partir de " : "",
+  });
 
   return (
     <div className="offres-forfait-page min-h-screen w-full pt-24 pb-20">
@@ -101,10 +106,9 @@ export default async function OfferDetailPage({ params }: Props) {
           <h1 className="heading-section mb-4 text-black">{product.name}</h1>
           <p className="text-base leading-relaxed text-black mb-6">{product.shortDescription}</p>
 
-          <p className="text-2xl font-light text-black mb-8">
-            {isSurMesure ? "À partir de " : ""}
-            {formatPrice(product.price)}
-          </p>
+          {priceLabel && (
+          <p className="text-2xl font-light text-black mb-8">{priceLabel}</p>
+          )}
 
           {"duration" in product && product.duration && (
             <p className="text-sm text-black mb-8">
@@ -128,16 +132,18 @@ export default async function OfferDetailPage({ params }: Props) {
             </Link>
           ) : (
             <div className="flex flex-col sm:flex-row gap-4">
+              {hasPublicPrice(displayPrice) && (
               <AddToCartButton
                 product={{
                   productId: product.id,
                   slug: product.slug,
                   name: product.name,
-                  price: product.price,
+                  price: displayPrice!,
                   image: product.images[0],
                 }}
                 productType="SERVICE"
               />
+              )}
               <Link
                 href={`/reservation?product=${product.slug}`}
                 className="btn-secondary inline-flex items-center gap-2"

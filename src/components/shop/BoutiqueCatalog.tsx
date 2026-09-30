@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { ShoppingBag, ArrowRight } from "lucide-react";
-import { formatPrice } from "@/lib/utils";
+import { formatPublicPrice, hasPublicPrice } from "@/lib/shop/public-price";
 import { useCartStore } from "@/lib/store/cart";
 import { luxeImage } from "@/lib/images";
 import { ProductImage } from "@/components/ui/ProductImage";
@@ -14,7 +14,7 @@ export interface BoutiqueProduct {
   name: string;
   brand?: string | null;
   shortDescription: string | null;
-  price: number;
+  price: number | null;
   images: string[];
   isFeatured?: boolean;
   categorySlug?: string;
@@ -107,12 +107,12 @@ function BoutiqueProductCard({
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (product.hasVariants) return;
+    if (product.hasVariants || !hasPublicPrice(product.price)) return;
     const result = addItem({
       productId: product.id,
       slug: product.slug,
       name: product.name,
-      price: product.price,
+      price: product.price!,
       quantity: 1,
       productType: "LUXE",
       image: product.images[0],
@@ -125,6 +125,9 @@ function BoutiqueProductCard({
   };
 
   const href = `/boutique/${product.slug}`;
+  const priceLabel = formatPublicPrice(product.price, {
+    prefix: product.fromPrice ? "À partir de " : "",
+  });
 
   if (variant === "wix") {
     return (
@@ -146,10 +149,7 @@ function BoutiqueProductCard({
             {product.name}
           </h3>
         </Link>
-        <p className="font-sans text-sm text-brand-600">
-          {product.fromPrice && <span className="text-brand-400 text-xs mr-1">À partir de</span>}
-          {formatPrice(product.price)}
-        </p>
+        {priceLabel && <p className="font-sans text-sm text-brand-600">{priceLabel}</p>}
       </article>
     );
   }
@@ -177,7 +177,7 @@ function BoutiqueProductCard({
         <h3 className="font-sans text-sm text-brand-950 mb-1 line-clamp-2 group-hover:underline underline-offset-2">
           {product.name}
         </h3>
-        <p className="font-sans text-sm text-brand-700">{formatPrice(product.price)}</p>
+        {priceLabel && <p className="font-sans text-sm text-brand-700">{priceLabel}</p>}
       </Link>
     );
   }
@@ -214,9 +214,10 @@ function BoutiqueProductCard({
         <p className="product-description mb-4 line-clamp-2 flex-1">
           {product.shortDescription}
         </p>
-        <p className="text-sm font-medium mb-4">{formatPrice(product.price)}</p>
+        {priceLabel && <p className="text-sm font-medium mb-4">{priceLabel}</p>}
 
         <div className="flex gap-2 mt-auto">
+          {hasPublicPrice(product.price) && !product.hasVariants && (
           <button
             onClick={handleAdd}
             className="btn-primary flex-1 text-[10px] py-2.5 inline-flex items-center justify-center gap-1"
@@ -224,6 +225,7 @@ function BoutiqueProductCard({
             <ShoppingBag className="w-3.5 h-3.5" />
             Ajouter
           </button>
+          )}
           <Link
             href={href}
             className="btn-secondary px-4 text-[10px] py-2.5 inline-flex items-center justify-center"

@@ -17,7 +17,7 @@ export function variantsToFormRows(
     size: string | null;
     color: string | null;
     sku: string | null;
-    price: number | { toString(): string };
+    price: number | null | { toString(): string };
     compareAtPrice: number | null | { toString(): string };
     stock: number;
     lowStockThreshold: number;
