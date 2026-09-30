@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { X } from "lucide-react";
 import type { HeroSlideSettings } from "@/lib/homepage-settings";
+import { isRemoteImageAllowed } from "@/lib/next-image-src";
 
 export function HeroSlidePreviewModal({
   slide,
