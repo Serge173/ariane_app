@@ -10,11 +10,8 @@ import {
 } from "@/lib/categories";
 import { Loader2 } from "lucide-react";
 import { useFeedbackModal } from "@/hooks/useFeedbackModal";
-import {
-  ProductVariantEditor,
-  variantsToFormRows,
-  type VariantFormRow,
-} from "@/components/admin/catalogue/ProductVariantEditor";
+import { ProductVariantEditor } from "@/components/admin/catalogue/ProductVariantEditor";
+import { variantsToFormRows, type VariantFormRow } from "@/lib/product-variant-form";
 
 export interface CategoryOption {
   id: string;

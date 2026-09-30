@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { CatalogueSubNav } from "@/components/admin/catalogue/CatalogueSubNav";
 import { ProductForm } from "@/components/admin/catalogue/ProductForm";
-import { variantsToFormRows } from "@/components/admin/catalogue/ProductVariantEditor";
+import { variantsToFormRows } from "@/lib/product-variant-form";
 
 interface Props {
   params: Promise<{ id: string }>;

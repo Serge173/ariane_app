@@ -1,19 +1,9 @@
 "use client";
 
 import { Plus, Trash2 } from "lucide-react";
+import type { VariantFormRow } from "@/lib/product-variant-form";
 
-export interface VariantFormRow {
-  id?: string;
-  size: string;
-  color: string;
-  sku: string;
-  price: string;
-  compareAtPrice: string;
-  stock: string;
-  lowStockThreshold: string;
-  trackInventory: boolean;
-  isActive: boolean;
-}
+export type { VariantFormRow } from "@/lib/product-variant-form";
 
 interface ProductVariantEditorProps {
   rows: VariantFormRow[];
@@ -110,32 +100,4 @@ export function ProductVariantEditor({ rows, onChange, basePrice }: ProductVaria
       )}
     </section>
   );
-}
-
-export function variantsToFormRows(
-  variants: Array<{
-    id: string;
-    size: string | null;
-    color: string | null;
-    sku: string | null;
-    price: number;
-    compareAtPrice: number | null;
-    stock: number;
-    lowStockThreshold: number;
-    trackInventory: boolean;
-    isActive: boolean;
-  }>
-): VariantFormRow[] {
-  return variants.map((v) => ({
-    id: v.id,
-    size: v.size ?? "",
-    color: v.color ?? "",
-    sku: v.sku ?? "",
-    price: String(v.price),
-    compareAtPrice: v.compareAtPrice != null ? String(v.compareAtPrice) : "",
-    stock: String(v.stock),
-    lowStockThreshold: String(v.lowStockThreshold),
-    trackInventory: v.trackInventory,
-    isActive: v.isActive,
-  }));
 }
