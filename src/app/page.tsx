@@ -4,10 +4,19 @@ import { OffersGrid } from "@/components/home/OffersGrid";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 import { CTASection } from "@/components/home/CTASection";
 import { OffersSection } from "@/components/home/HomeSections";
-import { getActiveHeroSlides, getHomepageSettings } from "@/lib/homepage-settings";
+import {
+  DEFAULT_HOMEPAGE_SETTINGS,
+  getActiveHeroSlides,
+  getHomepageSettings,
+} from "@/lib/homepage-settings";
 
 export default async function HomePage() {
-  const homepage = await getHomepageSettings();
+  let homepage = DEFAULT_HOMEPAGE_SETTINGS;
+  try {
+    homepage = await getHomepageSettings();
+  } catch (error) {
+    console.error("[HomePage] getHomepageSettings failed", error);
+  }
 
   return (
     <>

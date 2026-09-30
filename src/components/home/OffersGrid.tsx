@@ -86,7 +86,7 @@ export async function OffersGrid({ compact = false }: { compact?: boolean }) {
             <div className="flex items-center justify-between gap-1 min-w-0">
               <span className="text-[10px] sm:text-sm font-medium truncate">
                 {product.slug === "sur-mesure" ? "Dès " : ""}
-                {formatPrice(product.price)}
+                {formatPrice(Number(product.price))}
               </span>
               <ArrowRight className="hidden sm:block w-4 h-4 text-brand-400 shrink-0" strokeWidth={1.5} />
             </div>

@@ -4,7 +4,7 @@ import { Providers } from "@/components/providers/Providers";
 import { AppShell } from "@/components/layout/AppShell";
 import { SiteExtras } from "@/components/layout/SiteExtras";
 import { SiteJsonLd } from "@/components/seo/SiteJsonLd";
-import { getSiteSettings } from "@/lib/site-settings";
+import { DEFAULT_SITE_SETTINGS, getSiteSettings } from "@/lib/site-settings";
 import { getRootMetadata } from "@/lib/site-metadata";
 
 const inter = Inter({
@@ -28,7 +28,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const siteSettings = await getSiteSettings();
+  let siteSettings = DEFAULT_SITE_SETTINGS;
+  try {
+    siteSettings = await getSiteSettings();
+  } catch (error) {
+    console.error("[RootLayout] getSiteSettings failed", error);
+  }
 
   return (
     <html lang="fr" className={`${inter.variable} ${cormorant.variable}`}>

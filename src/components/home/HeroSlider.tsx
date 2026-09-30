@@ -14,7 +14,7 @@ import {
   STAGGER_HERO_TEXT,
 } from "@/lib/motion";
 import type { HeroSlideSettings } from "@/lib/homepage-settings";
-import { resolveNextImageSrc } from "@/lib/next-image-src";
+import { isRemoteImageAllowed } from "@/lib/next-image-src";
 import { FlashInfoTicker } from "@/components/home/FlashInfoTicker";
 
 const AUTOPLAY_MS = 7000;
@@ -175,19 +175,34 @@ export function HeroSlider({ slides, primaryCta, scarcityLabel }: HeroSliderProp
               )}
               key={isActive ? `kb-${slide.id}-${active}` : slide.id}
             >
-              <Image
-                src={
-                  failedImages.has(slide.id)
-                    ? IMAGES.hero
-                    : resolveNextImageSrc(slide.image, IMAGES.hero)
+              {(() => {
+                const src = failedImages.has(slide.id)
+                  ? IMAGES.hero
+                  : slide.image?.trim() || IMAGES.hero;
+                const alt = slide.imageAlt;
+                if (!isRemoteImageAllowed(src)) {
+                  return (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={src}
+                      alt={alt}
+                      className="absolute inset-0 h-full w-full object-cover object-center"
+                      onError={() => markImageFailed(slide.id)}
+                    />
+                  );
                 }
-                alt={slide.imageAlt}
-                fill
-                priority={index === 0}
-                className="object-cover object-center"
-                sizes="100vw"
-                onError={() => markImageFailed(slide.id)}
-              />
+                return (
+                  <Image
+                    src={src}
+                    alt={alt}
+                    fill
+                    priority={index === 0}
+                    className="object-cover object-center"
+                    sizes="100vw"
+                    onError={() => markImageFailed(slide.id)}
+                  />
+                );
+              })()}
             </div>
             <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/15 to-black/40" />
           </motion.div>

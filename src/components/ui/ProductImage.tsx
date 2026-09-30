@@ -3,6 +3,7 @@
 import Image, { type ImageProps } from "next/image";
 import { useEffect, useState } from "react";
 import { IMAGES } from "@/lib/images";
+import { isRemoteImageAllowed } from "@/lib/next-image-src";
 import { cn } from "@/lib/utils";
 
 type ProductImageProps = Omit<ImageProps, "src" | "alt"> & {
@@ -26,7 +27,29 @@ export function ProductImage({
     setErrored(false);
   }, [src]);
 
-  const currentSrc = !src || errored ? fallback : src;
+  const currentSrc = !src || errored ? fallback : src.trim();
+  const useNextImage = isRemoteImageAllowed(currentSrc);
+
+  const handleError = () => {
+    setErrored(true);
+  };
+
+  if (!useNextImage) {
+    const { fill, sizes: _sizes, priority: _priority, ...imgProps } = props;
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        {...imgProps}
+        src={currentSrc}
+        alt={alt}
+        className={cn(fill && "absolute inset-0 h-full w-full object-cover", className)}
+        onError={(event) => {
+          handleError();
+          onError?.(event);
+        }}
+      />
+    );
+  }
 
   return (
     <Image
@@ -35,7 +58,7 @@ export function ProductImage({
       alt={alt}
       className={cn(className)}
       onError={(event) => {
-        setErrored(true);
+        handleError();
         onError?.(event);
       }}
     />
