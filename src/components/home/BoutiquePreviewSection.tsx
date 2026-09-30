@@ -1,7 +1,7 @@
 import Link from "next/link";
 import prisma from "@/lib/prisma";
 import { luxeImage } from "@/lib/images";
-import { formatPublicPrice } from "@/lib/shop/public-price";
+import { formatPublicPrice, normalizeStoredPrice } from "@/lib/shop/public-price";
 import { formatCategoryLabel } from "@/lib/categories";
 import { ArrowRight } from "lucide-react";
 import { ProductImage } from "@/components/ui/ProductImage";
@@ -29,7 +29,7 @@ function getFallbackProducts(): PreviewProduct[] {
       name: "Sac Cabas Cuir",
       brand: "Maison Élégance",
       shortDescription: "Maroquinerie artisanale, finitions main",
-      price: 450000,
+      price: null,
       images: [luxeImage("sac-cabas-cuir")],
       isFeatured: true,
       categoryName: "Sacs",
@@ -40,7 +40,7 @@ function getFallbackProducts(): PreviewProduct[] {
       name: "Blazer Soie Noire",
       brand: "Collection Ariane",
       shortDescription: "Coupe structurée, élégance professionnelle",
-      price: 320000,
+      price: null,
       images: [luxeImage("blazer-soie-noire")],
       isFeatured: true,
       categoryName: "Vêtements",
@@ -51,7 +51,7 @@ function getFallbackProducts(): PreviewProduct[] {
       name: "Parfum Signature",
       brand: "Ariane Parfums",
       shortDescription: "Notes florales et boisées, flacon collector",
-      price: 120000,
+      price: null,
       images: [luxeImage("parfum-signature-ariane")],
       isFeatured: true,
       categoryName: "Parfums",
@@ -62,7 +62,7 @@ function getFallbackProducts(): PreviewProduct[] {
       name: "Foulard Soie Signature",
       brand: "Collection Ariane",
       shortDescription: "Imprimé exclusif, 100% soie",
-      price: 75000,
+      price: null,
       images: [luxeImage("foulard-soie-signature")],
       isFeatured: false,
       categoryName: "Accessoires",
@@ -90,7 +90,7 @@ async function getLuxeProducts(count: number): Promise<PreviewProduct[]> {
       name: p.name,
       brand: p.brandRef?.name || p.brand,
       shortDescription: p.shortDescription,
-      price: p.price,
+      price: normalizeStoredPrice(p.price),
       images: p.images,
       isFeatured: p.isFeatured,
       categoryName: formatCategoryLabel(p.category),

@@ -24,8 +24,11 @@ import {
   pickSpotlightProductIds,
 } from "@/lib/boutique-settings";
 import { productDisplayPrice } from "@/lib/shop/variants";
+import { normalizeStoredPrice } from "@/lib/shop/public-price";
 import { BRAND_FULL_NAME } from "@/lib/brand";
 import { isShoppingLine, type ShoppingLine } from "@/lib/shopping";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "La Boutique",
@@ -97,13 +100,13 @@ async function getCatalogData(params: { q?: string; category?: string; brand?: s
             size: v.size,
             color: v.color,
             sku: v.sku,
-            price: v.price,
+            price: normalizeStoredPrice(v.price),
             compareAtPrice: v.compareAtPrice,
             stock: v.stock,
             trackInventory: v.trackInventory,
             isActive: v.isActive,
           }));
-          const pricing = productDisplayPrice(p.price, shopVariants);
+          const pricing = productDisplayPrice(normalizeStoredPrice(p.price), shopVariants);
           return {
             id: p.id,
             slug: p.slug,

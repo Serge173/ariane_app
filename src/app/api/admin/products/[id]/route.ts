@@ -5,6 +5,7 @@ import { slugify } from "@/lib/utils";
 import { buildKeywordsFromProduct, parseKeywordsInput, parseLinesInput } from "@/lib/catalogue";
 import { syncProductVariants } from "@/lib/shop/sync-variants";
 import { parseAdminPriceInput } from "@/lib/shop/public-price";
+import { revalidateProductCatalog } from "@/lib/revalidate-catalog";
 
 interface Ctx {
   params: Promise<{ id: string }>;
@@ -116,6 +117,7 @@ export async function PATCH(req: NextRequest, ctx: Ctx) {
     include: { category: { include: { parent: true } }, brandRef: true, variants: { orderBy: { sortOrder: "asc" } } },
   });
 
+  revalidateProductCatalog(product.slug);
   return NextResponse.json(withVariants ?? product);
 }
 
@@ -124,12 +126,15 @@ export async function DELETE(_req: NextRequest, ctx: Ctx) {
   if (error) return error;
 
   const { id } = await ctx.params;
+  const existing = await prisma.product.findUnique({ where: { id }, select: { slug: true } });
   const orderCount = await prisma.orderItem.count({ where: { productId: id } });
   if (orderCount > 0) {
     await prisma.product.update({ where: { id }, data: { isActive: false } });
+    revalidateProductCatalog(existing?.slug);
     return NextResponse.json({ archived: true });
   }
 
   await prisma.product.delete({ where: { id } });
+  revalidateProductCatalog(existing?.slug);
   return NextResponse.json({ deleted: true });
 }

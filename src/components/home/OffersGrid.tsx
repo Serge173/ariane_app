@@ -1,49 +1,13 @@
 import Link from "next/link";
-import prisma from "@/lib/prisma";
 import { coachingImage } from "@/lib/images";
 import { formatPublicPrice } from "@/lib/shop/public-price";
+import { fetchActiveServiceProducts } from "@/lib/shop/catalog-products";
 import { ArrowRight } from "lucide-react";
 import { ProductImage } from "@/components/ui/ProductImage";
 import { StaggerReveal } from "@/components/motion/StaggerReveal";
 
-async function getProducts() {
-  try {
-    return await prisma.product.findMany({
-      where: { isActive: true, productType: "SERVICE" },
-      orderBy: { sortOrder: "asc" },
-    });
-  } catch {
-    return getFallbackProducts();
-  }
-}
-
-function getFallbackProducts() {
-  return [
-    {
-      id: "1", slug: "standard", name: "Standard", shortDescription: "L'essentiel pour aligner votre image",
-      price: 60000, images: [coachingImage("standard")],
-      features: ["Analyse colorimétrique", "Audit garde-robe", "Guide digital"], isFeatured: false,
-    },
-    {
-      id: "2", slug: "gold", name: "Gold", shortDescription: "Transformation en profondeur",
-      price: 150000, images: [coachingImage("gold")],
-      features: ["Tout Standard", "Personal shopping", "Suivi 1 mois"], isFeatured: true,
-    },
-    {
-      id: "3", slug: "platinum", name: "Platinum", shortDescription: "Excellence premium",
-      price: 350000, images: [coachingImage("platinum")],
-      features: ["Tout Gold", "Multi-séances", "Suivi 3 mois"], isFeatured: true,
-    },
-    {
-      id: "4", slug: "sur-mesure", name: "Sur-mesure", shortDescription: "Accompagnement unique",
-      price: 500000, images: [coachingImage("sur-mesure")],
-      features: ["Diagnostic complet", "Conciergerie luxe", "Parcours flexible"], isFeatured: false,
-    },
-  ];
-}
-
 export async function OffersGrid({ compact = false }: { compact?: boolean }) {
-  const products = await getProducts();
+  const products = await fetchActiveServiceProducts();
 
   return (
     <StaggerReveal
@@ -54,7 +18,7 @@ export async function OffersGrid({ compact = false }: { compact?: boolean }) {
       }
     >
       {products.map((product) => {
-        const priceLabel = formatPublicPrice(product.price ?? null, {
+        const priceLabel = formatPublicPrice(product.price, {
           prefix: product.slug === "sur-mesure" ? "Dès " : "",
         });
         return (

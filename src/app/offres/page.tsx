@@ -14,6 +14,8 @@ import { CatalogSearch } from "@/components/shop/BoutiqueSearch";
 import { mapDbOfferProducts, OffersCatalog } from "@/components/shop/OffersCatalog";
 import { getPublicPagesSettings } from "@/lib/public-pages-settings";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Nos prestations",
   description: "Découvrez nos formules de conseil en image : Standard, Gold, Platinum et Sur-mesure.",

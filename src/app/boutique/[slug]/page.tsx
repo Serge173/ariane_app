@@ -8,6 +8,7 @@ import { Check, ChevronRight, Truck, ShieldCheck } from "lucide-react";
 import { formatCategoryLabel } from "@/lib/categories";
 import { ProductGallery } from "@/components/shop/ProductGallery";
 import { ProductPurchasePanel } from "@/components/shop/ProductPurchasePanel";
+import { normalizeStoredPrice } from "@/lib/shop/public-price";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -97,6 +98,8 @@ const fallbackProducts: Record<string, {
   },
 };
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const product = await getProduct(slug);
@@ -122,7 +125,7 @@ export default async function BoutiqueProductPage({ params }: Props) {
         slug: dbProduct.slug,
         name: dbProduct.name,
         brand: dbProduct.brand,
-        price: dbProduct.price,
+        price: normalizeStoredPrice(dbProduct.price),
         shortDescription: dbProduct.shortDescription,
         description: dbProduct.description,
         features: dbProduct.features,
@@ -142,7 +145,7 @@ export default async function BoutiqueProductPage({ params }: Props) {
           size: v.size,
           color: v.color,
           sku: v.sku,
-          price: v.price,
+          price: normalizeStoredPrice(v.price),
           compareAtPrice: v.compareAtPrice,
           stock: v.stock,
           trackInventory: v.trackInventory,
@@ -154,7 +157,7 @@ export default async function BoutiqueProductPage({ params }: Props) {
         slug,
         name: fallback!.name,
         brand: fallback!.brand,
-        price: fallback!.price,
+        price: normalizeStoredPrice(fallback!.price),
         shortDescription: fallback!.shortDescription,
         description: fallback!.description,
         features: fallback!.features,

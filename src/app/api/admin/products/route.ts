@@ -7,6 +7,7 @@ import { buildKeywordsFromProduct, parseKeywordsInput, parseLinesInput } from "@
 import { getCategoryDescendantIds } from "@/lib/categories";
 import { syncProductVariants } from "@/lib/shop/sync-variants";
 import { parseAdminPriceInput } from "@/lib/shop/public-price";
+import { revalidateProductCatalog } from "@/lib/revalidate-catalog";
 
 export async function GET(req: NextRequest) {
   const { error } = await requireAdmin();
@@ -162,5 +163,6 @@ export async function POST(req: NextRequest) {
     include: { category: { include: { parent: true } }, brandRef: true, variants: true },
   });
 
+  revalidateProductCatalog(slug);
   return NextResponse.json(withVariants ?? product, { status: 201 });
 }

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { coachingImage } from "@/lib/images";
-import { formatPublicPrice } from "@/lib/shop/public-price";
+import { formatPublicPrice, normalizeStoredPrice } from "@/lib/shop/public-price";
 import { formatCategoryLabel } from "@/lib/categories";
 import { ArrowRight } from "lucide-react";
 import { ProductImage } from "@/components/ui/ProductImage";
@@ -98,7 +98,7 @@ export function mapDbOfferProducts(
     slug: p.slug,
     name: p.name,
     shortDescription: p.shortDescription,
-    price: p.price,
+    price: normalizeStoredPrice(p.price),
     images: p.images,
     isFeatured: p.isFeatured,
     categoryName: formatCategoryLabel(p.category),

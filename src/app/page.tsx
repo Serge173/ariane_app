@@ -10,6 +10,9 @@ import {
   getHomepageSettings,
 } from "@/lib/homepage-settings";
 
+/** Les forfaits viennent de la base — pas de HTML figé avec d’anciens prix. */
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
   let homepage = DEFAULT_HOMEPAGE_SETTINGS;
   try {

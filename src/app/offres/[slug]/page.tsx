@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { coachingImage } from "@/lib/images";
-import { formatPublicPrice, hasPublicPrice } from "@/lib/shop/public-price";
+import { formatPublicPrice, hasPublicPrice, normalizeStoredPrice } from "@/lib/shop/public-price";
 import { Check, Calendar, ArrowRight } from "lucide-react";
 import { AddToCartButton } from "@/components/shop/AddToCartButton";
 import { ProductImage } from "@/components/ui/ProductImage";
@@ -61,6 +61,8 @@ const fallbackProducts: Record<string, {
   },
 };
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const product = await getProduct(slug);
@@ -90,8 +92,9 @@ export default async function OfferDetailPage({ params }: Props) {
   };
 
   const isSurMesure = slug === "sur-mesure";
-  const dbPrice = dbProduct?.price ?? null;
-  const displayPrice = dbProduct ? dbPrice : fallback?.price ?? null;
+  const displayPrice = dbProduct
+    ? normalizeStoredPrice(dbProduct.price)
+    : normalizeStoredPrice(fallback?.price ?? null);
   const priceLabel = formatPublicPrice(displayPrice, {
     prefix: isSurMesure ? "À partir de " : "",
   });
