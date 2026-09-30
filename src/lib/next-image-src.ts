@@ -1,5 +1,11 @@
+/** Chemins locaux servis par Next (public/ ou routes API). */
+export function isLocalImagePath(url: string): boolean {
+  return url.startsWith("/") && !url.startsWith("//");
+}
+
 /** URLs autorisées par `images.remotePatterns` dans next.config — évite un crash SSR de next/image. */
 export function isRemoteImageAllowed(url: string): boolean {
+  if (isLocalImagePath(url)) return true;
   try {
     const { hostname, protocol } = new URL(url);
     if (protocol !== "https:" && protocol !== "http:") return false;

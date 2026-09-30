@@ -3,9 +3,10 @@ import { BRAND_FULL_NAME } from "@/lib/brand";
 import { getSiteSettings } from "@/lib/site-settings";
 
 export async function SiteJsonLd() {
+  try {
   const site = await getSiteSettings();
   const appUrl = resolveAppUrl();
-  const phone = site.footer.contact.phone.replace(/\s/g, "");
+  const phone = (site.footer.contact.phone ?? "").replace(/\s/g, "");
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -31,4 +32,8 @@ export async function SiteJsonLd() {
       dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
     />
   );
+  } catch (error) {
+    console.error("[SiteJsonLd]", error);
+    return null;
+  }
 }

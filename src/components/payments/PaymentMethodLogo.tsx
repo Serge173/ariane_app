@@ -5,6 +5,7 @@ import { useState } from "react";
 import { PAYMENT_ICON_MAP, PAYMENT_PROVIDER_LABELS, PAYMENT_CONTEXT_LABELS } from "@/lib/payment-methods";
 import { getProviderTemplate } from "@/lib/payment-providers";
 import { CreditCard } from "lucide-react";
+import { isRemoteImageAllowed } from "@/lib/next-image-src";
 import { cn } from "@/lib/utils";
 
 export interface PaymentMethodDisplay {
@@ -45,7 +46,9 @@ export function PaymentMethodLogo({
   const Icon = PAYMENT_ICON_MAP[method.icon || ""] || CreditCard;
   const useNativeImg =
     logoUrl &&
-    (logoUrl.startsWith("/uploads/") || logoUrl.endsWith(".svg") || logoUrl.startsWith("data:"));
+    (logoUrl.startsWith("data:") ||
+      logoUrl.endsWith(".svg") ||
+      !isRemoteImageAllowed(logoUrl));
 
   const wrapperClass = cn(
     "relative flex-shrink-0 rounded-lg overflow-hidden bg-brand-50 border border-brand-100",

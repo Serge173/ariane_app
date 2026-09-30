@@ -24,14 +24,23 @@ async function getMeta() {
 }
 
 export default async function AdminProductsPage() {
-  const { categories, brands } = await getMeta();
+  try {
+    const { categories, brands } = await getMeta();
 
-  return (
-    <div>
-      <CatalogueSubNav active="products" />
-      <Suspense fallback={<p className="text-brand-400">Chargement...</p>}>
-        <ProductManager initialCategories={categories} initialBrands={brands} />
-      </Suspense>
-    </div>
-  );
+    return (
+      <div>
+        <CatalogueSubNav active="products" />
+        <Suspense fallback={<p className="text-brand-400">Chargement...</p>}>
+          <ProductManager initialCategories={categories} initialBrands={brands} />
+        </Suspense>
+      </div>
+    );
+  } catch (error) {
+    console.error("[AdminProductsPage]", error);
+    return (
+      <div className="p-6 text-sm text-red-700 bg-red-50 border border-red-200">
+        Impossible de charger la page produits. Vérifiez la connexion à la base de données puis réessayez.
+      </div>
+    );
+  }
 }

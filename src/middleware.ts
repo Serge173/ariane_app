@@ -4,7 +4,13 @@ import type { NextRequest } from "next/server";
 import { isAdmin, isClient } from "@/lib/roles";
 
 async function readToken(req: NextRequest) {
-  return getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  const secret = process.env.NEXTAUTH_SECRET;
+  if (!secret) return null;
+  try {
+    return await getToken({ req, secret });
+  } catch {
+    return null;
+  }
 }
 
 function signInUrl(req: NextRequest, path: string) {

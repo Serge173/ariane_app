@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { isRemoteImageAllowed } from "@/lib/next-image-src";
 import { cn } from "@/lib/utils";
 
 interface ProfileAvatarProps {
@@ -41,6 +42,7 @@ export function ProfileAvatar({
   const sizeClass = sizeClasses[size];
 
   if (src) {
+    const safeSrc = src.trim();
     return (
       <div
         className={cn(
@@ -49,13 +51,18 @@ export function ProfileAvatar({
           className
         )}
       >
-        <Image
-          src={src}
-          alt="Photo de profil"
-          fill
-          className="object-cover"
-          sizes={size === "xl" ? "96px" : size === "lg" ? "64px" : "40px"}
-        />
+        {isRemoteImageAllowed(safeSrc) ? (
+          <Image
+            src={safeSrc}
+            alt="Photo de profil"
+            fill
+            className="object-cover"
+            sizes={size === "xl" ? "96px" : size === "lg" ? "64px" : "40px"}
+          />
+        ) : (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={safeSrc} alt="Photo de profil" className="absolute inset-0 h-full w-full object-cover" />
+        )}
       </div>
     );
   }

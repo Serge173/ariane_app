@@ -5,17 +5,24 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatPrice(amount: number, currency = "XOF"): string {
+export function formatPrice(amount: unknown, currency = "XOF"): string {
+  const n =
+    typeof amount === "number"
+      ? amount
+      : typeof amount === "bigint"
+        ? Number(amount)
+        : Number(amount);
+  const value = Number.isFinite(n) ? n : 0;
   if (currency === "XOF") {
     return new Intl.NumberFormat("fr-FR", {
       style: "decimal",
       minimumFractionDigits: 0,
-    }).format(amount) + " FCFA";
+    }).format(value) + " FCFA";
   }
   return new Intl.NumberFormat("fr-FR", {
     style: "currency",
     currency,
-  }).format(amount / 100);
+  }).format(value / 100);
 }
 
 export function formatDate(date: Date | string): string {

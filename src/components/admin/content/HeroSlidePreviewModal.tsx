@@ -122,14 +122,23 @@ export function HeroSlidePreviewModal({
           <p className="text-[10px] uppercase tracking-widest text-brand-500 mb-2">Image</p>
           {imageUrl ? (
             <div className="relative w-full aspect-[16/9] bg-brand-100 border border-brand-200 overflow-hidden">
-              <Image
-                src={imageUrl}
-                alt={slide.imageAlt || slide.title || "Slide hero"}
-                fill
-                className="object-cover"
-                sizes="(max-width: 640px) 100vw, 560px"
-                unoptimized
-              />
+              {isRemoteImageAllowed(imageUrl) ? (
+                <Image
+                  src={imageUrl}
+                  alt={slide.imageAlt || slide.title || "Slide hero"}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 640px) 100vw, 560px"
+                  unoptimized
+                />
+              ) : (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={imageUrl}
+                  alt={slide.imageAlt || slide.title || "Slide hero"}
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+              )}
             </div>
           ) : (
             <p className="text-sm text-brand-500 italic">Aucune image renseignée</p>
