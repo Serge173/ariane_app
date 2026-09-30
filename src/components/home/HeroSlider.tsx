@@ -14,6 +14,7 @@ import {
   STAGGER_HERO_TEXT,
 } from "@/lib/motion";
 import type { HeroSlideSettings } from "@/lib/homepage-settings";
+import { resolveNextImageSrc } from "@/lib/next-image-src";
 import { FlashInfoTicker } from "@/components/home/FlashInfoTicker";
 
 const AUTOPLAY_MS = 7000;
@@ -175,7 +176,11 @@ export function HeroSlider({ slides, primaryCta, scarcityLabel }: HeroSliderProp
               key={isActive ? `kb-${slide.id}-${active}` : slide.id}
             >
               <Image
-                src={failedImages.has(slide.id) ? IMAGES.hero : slide.image}
+                src={
+                  failedImages.has(slide.id)
+                    ? IMAGES.hero
+                    : resolveNextImageSrc(slide.image, IMAGES.hero)
+                }
                 alt={slide.imageAlt}
                 fill
                 priority={index === 0}

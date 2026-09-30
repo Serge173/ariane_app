@@ -1,14 +1,21 @@
 import type { NextConfig } from "next";
 
+function normalizePublicUrl(raw: string): string {
+  const trimmed = raw.trim().replace(/\/$/, "");
+  if (!trimmed) return "";
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return `https://${trimmed}`;
+}
+
 function resolveBuildAppUrl(): string {
   const fromEnv = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "");
-  if (fromEnv) return fromEnv;
+  if (fromEnv) return normalizePublicUrl(fromEnv);
 
   const fromNextAuth = process.env.NEXTAUTH_URL?.replace(/\/$/, "");
-  if (fromNextAuth) return fromNextAuth;
+  if (fromNextAuth) return normalizePublicUrl(fromNextAuth);
 
   const productionHost = process.env.VERCEL_PROJECT_PRODUCTION_URL;
-  if (productionHost) return `https://${productionHost}`;
+  if (productionHost) return normalizePublicUrl(productionHost);
 
   return "";
 }
