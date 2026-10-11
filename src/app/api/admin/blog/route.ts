@@ -4,7 +4,7 @@ import prisma from "@/lib/prisma";
 import { requireAdmin, jsonError } from "@/lib/admin-api";
 import { slugify } from "@/lib/utils";
 import { parseTagsInput } from "@/lib/blog";
-import { publicationLinksForApi } from "@/lib/blog-publication-links";
+import { publicationLinksForPrisma } from "@/lib/blog-publication-links";
 import { maybeSendNewsletterForBlogPost } from "@/lib/newsletter-blog";
 
 export async function GET(req: NextRequest) {
@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
       excerpt: excerpt?.trim() || null,
       content: content.trim(),
       coverImage: coverImage?.trim() || null,
-      publicationLinks: publicationLinksForApi(publicationLinks),
+      publicationLinks: publicationLinksForPrisma(publicationLinks),
       author: author?.trim() || "Ariane DAGO",
       tags,
       isPublished: publish,

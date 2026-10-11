@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma";
 import { requireAdmin, jsonError } from "@/lib/admin-api";
 import { slugify } from "@/lib/utils";
 import { parseTagsInput } from "@/lib/blog";
-import { publicationLinksForApi } from "@/lib/blog-publication-links";
+import { publicationLinksForPrisma } from "@/lib/blog-publication-links";
 import { maybeSendNewsletterForBlogPost } from "@/lib/newsletter-blog";
 
 interface Ctx {
@@ -54,7 +54,7 @@ export async function PATCH(req: NextRequest, ctx: Ctx) {
       ...(body.content !== undefined && { content: body.content.trim() }),
       ...(body.coverImage !== undefined && { coverImage: body.coverImage?.trim() || null }),
       ...(body.publicationLinks !== undefined && {
-        publicationLinks: publicationLinksForApi(body.publicationLinks),
+        publicationLinks: publicationLinksForPrisma(body.publicationLinks),
       }),
       ...(body.author !== undefined && { author: body.author?.trim() || "Ariane DAGO" }),
       ...(body.tagsText !== undefined && { tags: parseTagsInput(body.tagsText) }),

@@ -1,3 +1,5 @@
+import { Prisma } from "@prisma/client";
+
 export type BlogPublicationLinks = {
   facebookUrl?: string;
   youtubeUrl?: string;
@@ -39,10 +41,18 @@ export function normalizePublicationLinksInput(
   return Object.keys(out).length > 0 ? out : null;
 }
 
-export function publicationLinksForApi(links: BlogPublicationLinks | null | undefined) {
+/** Valeur Prisma pour le champ JSON `publicationLinks` (null DB = DbNull). */
+export function publicationLinksForPrisma(
+  links: BlogPublicationLinks | null | undefined
+): Prisma.InputJsonValue | typeof Prisma.DbNull | undefined {
+  if (links === undefined) return undefined;
   const normalized = normalizePublicationLinksInput(links);
-  return normalized ?? null;
+  if (normalized === null) return Prisma.DbNull;
+  return normalized as Prisma.InputJsonValue;
 }
+
+/** @deprecated use publicationLinksForPrisma */
+export const publicationLinksForApi = publicationLinksForPrisma;
 
 export const PUBLICATION_LINK_LABELS: Record<keyof BlogPublicationLinks, string> = {
   facebookUrl: "Facebook",
