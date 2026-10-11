@@ -18,7 +18,12 @@ export const BOOKING_COPY = {  boutique: {
     pageTitle: "Finaliser ma demande de RDV ARIANE DAGO",
     stepLabel: (step: number, totalSteps: number) => {
       if (totalSteps === 2) {
-        return step === 1 ? "Vos coordonnées" : "Date et créneau";
+        return step === 1 ? "Mon parcours de découverte" : "Date et créneau";
+      }
+      if (totalSteps === 3) {
+        if (step === 1) return "Vos coordonnées";
+        if (step === 2) return "Date et créneau";
+        return "Paiement";
       }
       return step === 1 ? "Vos coordonnées" : step === 2 ? "Date et créneau" : "Paiement";
     },

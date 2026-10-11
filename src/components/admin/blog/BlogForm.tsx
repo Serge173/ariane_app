@@ -6,6 +6,11 @@ import { slugify } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import { useFeedbackModal } from "@/hooks/useFeedbackModal";
 import { BlogCoverImageField } from "@/components/admin/blog/BlogCoverImageField";
+import {
+  type BlogPublicationLinks,
+  emptyPublicationLinks,
+  parsePublicationLinks,
+} from "@/lib/blog-publication-links";
 
 export interface BlogFormData {
   id?: string;
@@ -14,6 +19,7 @@ export interface BlogFormData {
   excerpt: string;
   content: string;
   coverImage: string;
+  publicationLinks: BlogPublicationLinks;
   author: string;
   tagsText: string;
   isPublished: boolean;
@@ -30,6 +36,7 @@ const empty: BlogFormData = {
   excerpt: "",
   content: "",
   coverImage: "",
+  publicationLinks: emptyPublicationLinks(),
   author: "Ariane DAGO",
   tagsText: "",
   isPublished: false,
@@ -37,7 +44,11 @@ const empty: BlogFormData = {
 
 export function BlogForm({ initial, mode }: BlogFormProps) {
   const router = useRouter();
-  const [form, setForm] = useState<BlogFormData>({ ...empty, ...initial });
+  const [form, setForm] = useState<BlogFormData>(() => ({
+    ...empty,
+    ...initial,
+    publicationLinks: parsePublicationLinks(initial?.publicationLinks),
+  }));
   const [loading, setLoading] = useState(false);
   const [autoSlug, setAutoSlug] = useState(mode === "create");
   const { showSuccess, showError, FeedbackModal } = useFeedbackModal();
@@ -163,6 +174,10 @@ export function BlogForm({ initial, mode }: BlogFormProps) {
           <BlogCoverImageField
             value={form.coverImage}
             onChange={(url) => set("coverImage", url)}
+            publicationLinks={form.publicationLinks}
+            onPublicationLinksChange={(publicationLinks) =>
+              setForm((f) => ({ ...f, publicationLinks }))
+            }
           />
         </div>
 

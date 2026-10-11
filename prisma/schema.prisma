@@ -451,18 +451,19 @@ model Review {
 }
 
 model BlogPost {
-  id          String    @id @default(cuid())
-  title       String
-  slug        String    @unique
-  excerpt     String?
-  content     String    @db.Text
-  coverImage  String?
-  author      String    @default("Ariane DAGO")
-  tags        String[]
-  isPublished Boolean   @default(false)
-  publishedAt DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id               String    @id @default(cuid())
+  title            String
+  slug             String    @unique
+  excerpt          String?
+  content          String    @db.Text
+  coverImage       String?
+  publicationLinks Json?
+  author           String    @default("Ariane DAGO")
+  tags             String[]
+  isPublished      Boolean   @default(false)
+  publishedAt      DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
   @@index([slug])
   @@index([isPublished])
@@ -484,15 +485,21 @@ model NewsletterSubscriber {
 }
 
 model NewsletterBroadcast {
-  id             String   @id @default(cuid())
-  title          String
-  intro          String?  @db.Text
-  youtubeUrl     String?
-  facebookUrl    String?
-  tiktokUrl      String?
-  instagramUrl   String?
-  recipientCount Int      @default(0)
-  sentAt         DateTime @default(now())
+  id              String   @id @default(cuid())
+  title           String
+  intro           String?  @db.Text
+  publicationBody String?  @db.Text
+  youtubeUrl      String?
+  facebookUrl     String?
+  whatsappUrl     String?
+  twitterUrl      String?
+  tiktokUrl       String?
+  instagramUrl    String?
+  siteUrl         String?
+  source          String   @default("manual")
+  blogPostId      String?  @unique
+  recipientCount  Int      @default(0)
+  sentAt          DateTime @default(now())
 }
 
 model ContactRequest {
@@ -504,6 +511,7 @@ model ContactRequest {
   phone     String?
   company   String?
   message   String   @db.Text
+  metadata  Json?
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
 }

@@ -1,5 +1,13 @@
 import { Resend } from "resend";
 import { getPlatformSettings } from "@/lib/platform-settings";
+import { getNewsletterSettings } from "@/lib/newsletter-settings";
+import {
+  buildLinksListHtml,
+  buildPublicationBlockHtml,
+  newsletterGreeting,
+  renderNewsletterTemplate,
+  type PublicationLinkKey,
+} from "@/lib/newsletter-template";
 
 function getResend(): Resend | null {
   const key = process.env.RESEND_API_KEY?.trim();
@@ -145,6 +153,53 @@ export async function sendNewsletterWelcomeEmail(data: {
   });
 }
 
+export async function sendNewsletterPublicationEmail(data: {
+  email: string;
+  firstName?: string | null;
+  title: string;
+  intro?: string | null;
+  publicationBody?: string | null;
+  links: Partial<Record<PublicationLinkKey, string | null>>;
+  unsubscribeUrl: string;
+}): Promise<boolean> {
+  const settings = await getNewsletterSettings();
+  const greeting = newsletterGreeting(data.firstName);
+  const message = data.intro?.trim()
+    ? data.intro.replace(/\n/g, "<br/>")
+    : "Nous venons de publier du nouveau contenu — voici les détails :";
+  const publicationBlock = buildPublicationBlockHtml(data.publicationBody);
+  const linksBlock = buildLinksListHtml(data.links);
+  const siteUrl = data.links.site?.trim() ?? "";
+
+  const vars: Record<string, string> = {
+    firstName: data.firstName?.trim() ?? "",
+    greeting,
+    title: data.title,
+    message,
+    publicationContent: data.publicationBody?.trim() ?? "",
+    publicationBlock,
+    linksBlock,
+    facebookUrl: data.links.facebook?.trim() ?? "",
+    whatsappUrl: data.links.whatsapp?.trim() ?? "",
+    twitterUrl: data.links.twitter?.trim() ?? "",
+    tiktokUrl: data.links.tiktok?.trim() ?? "",
+    instagramUrl: data.links.instagram?.trim() ?? "",
+    youtubeUrl: data.links.youtube?.trim() ?? "",
+    siteUrl,
+    unsubscribeUrl: data.unsubscribeUrl,
+  };
+
+  const subject = renderNewsletterTemplate(settings.emailSubjectTemplate, vars).trim() || data.title;
+  const html = renderNewsletterTemplate(settings.emailBodyTemplate, vars);
+
+  return sendEmail({
+    to: data.email,
+    subject,
+    html,
+  });
+}
+
+/** @deprecated use sendNewsletterPublicationEmail */
 export async function sendNewsletterSocialBroadcast(data: {
   email: string;
   firstName?: string | null;
@@ -156,24 +211,18 @@ export async function sendNewsletterSocialBroadcast(data: {
   instagramUrl?: string | null;
   unsubscribeUrl: string;
 }): Promise<boolean> {
-  const greeting = data.firstName?.trim() ? `Bonjour ${data.firstName.trim()},` : "Bonjour,";
-  const links: string[] = [];
-  if (data.youtubeUrl) links.push(`<li><a href="${data.youtubeUrl}">YouTube</a></li>`);
-  if (data.facebookUrl) links.push(`<li><a href="${data.facebookUrl}">Facebook</a></li>`);
-  if (data.tiktokUrl) links.push(`<li><a href="${data.tiktokUrl}">TikTok</a></li>`);
-  if (data.instagramUrl) links.push(`<li><a href="${data.instagramUrl}">Instagram</a></li>`);
-
-  return sendEmail({
-    to: data.email,
-    subject: data.title,
-    html: `
-      <p>${greeting}</p>
-      ${data.intro ? `<p>${data.intro.replace(/\n/g, "<br/>")}</p>` : ""}
-      ${links.length ? `<ul>${links.join("")}</ul>` : ""}
-      <p style="margin-top:24px;font-size:12px;color:#666">
-        <a href="${data.unsubscribeUrl}">Se désabonner</a>
-      </p>
-    `,
+  return sendNewsletterPublicationEmail({
+    email: data.email,
+    firstName: data.firstName,
+    title: data.title,
+    intro: data.intro,
+    links: {
+      youtube: data.youtubeUrl,
+      facebook: data.facebookUrl,
+      tiktok: data.tiktokUrl,
+      instagram: data.instagramUrl,
+    },
+    unsubscribeUrl: data.unsubscribeUrl,
   });
 }
 

@@ -16,7 +16,7 @@ export default async function AdminNewsletterPage() {
     <div>
       <PageHeader
         title="Newsletter"
-        description="Abonnés (popup + footer), email de bienvenue automatique et envoi d'actus réseaux"
+        description="Abonnés, modèle d'email, envoi auto (blog + webhook réseaux) et notifications"
       />
       <NewsletterAdminPanel
         subscribers={subscribers.map((s) => ({
@@ -44,5 +44,12 @@ async function loadBroadcasts() {
   return prisma.newsletterBroadcast.findMany({
     orderBy: { sentAt: "desc" },
     take: 20,
+    select: {
+      id: true,
+      title: true,
+      recipientCount: true,
+      sentAt: true,
+      source: true,
+    },
   });
 }

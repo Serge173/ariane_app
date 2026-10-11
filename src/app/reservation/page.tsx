@@ -14,6 +14,12 @@ import {
 import { Calendar, Clock } from "lucide-react";
 import { useFeedbackModal } from "@/hooks/useFeedbackModal";
 import { BOOKING_COPY } from "@/lib/booking-copy";
+import { DiscoveryParcoursForm } from "@/components/reservation/DiscoveryParcoursForm";
+import { emptyDiscoveryAnswers, type DiscoveryAnswers } from "@/lib/discovery-parcours-questions";
+import {
+  DEFAULT_DISCOVERY_PARCOURS_SETTINGS,
+  type DiscoveryParcoursSettings,
+} from "@/lib/discovery-parcours-settings";
 
 const TIME_SLOTS = [
   "09:00", "10:00", "11:00", "12:00",
@@ -48,6 +54,13 @@ function ReservationForm() {
     objective: "",
     paymentMethod: "",
   });
+  const [discoverySettings, setDiscoverySettings] = useState<DiscoveryParcoursSettings>(
+    DEFAULT_DISCOVERY_PARCOURS_SETTINGS
+  );
+  const [discoverySettingsReady, setDiscoverySettingsReady] = useState(false);
+  const [discoveryAnswers, setDiscoveryAnswers] = useState<DiscoveryAnswers>(() =>
+    emptyDiscoveryAnswers(DEFAULT_DISCOVERY_PARCOURS_SETTINGS)
+  );
 
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethodOption[]>([]);
   const [methodsLoading, setMethodsLoading] = useState(true);
@@ -60,7 +73,20 @@ function ReservationForm() {
   const isDiscoveryRdv = intent === "rdv" && !productSlug;
   const isPurchaseFlow = !isDiscoveryRdv && (hasCartItems || Boolean(productSlug));
   const totalSteps = isDiscoveryRdv ? 2 : 3;
+  const discoveryDateStep = 2;
   const copy = BOOKING_COPY.appointment;
+
+  useEffect(() => {
+    if (!isDiscoveryRdv) return;
+    fetch("/api/public/discovery-parcours")
+      .then((r) => (r.ok ? r.json() : DEFAULT_DISCOVERY_PARCOURS_SETTINGS))
+      .then((data: DiscoveryParcoursSettings) => {
+        setDiscoverySettings(data);
+        setDiscoveryAnswers(emptyDiscoveryAnswers(data));
+      })
+      .catch(() => {})
+      .finally(() => setDiscoverySettingsReady(true));
+  }, [isDiscoveryRdv]);
 
   useEffect(() => {
     if (intent === "rdv" && !productSlug) {
@@ -128,6 +154,12 @@ function ReservationForm() {
     setForm((f) => ({ ...f, [field]: value }));
   };
 
+  const discoveryContactValid =
+    Boolean(form.firstName.trim()) &&
+    Boolean(form.lastName.trim()) &&
+    Boolean(form.email.trim()) &&
+    Boolean(form.phone.trim());
+
   const handleDiscoverySubmit = async () => {
     setLoading(true);
     try {
@@ -143,6 +175,7 @@ function ReservationForm() {
           time: form.time,
           mode: form.mode,
           objective: form.objective,
+          discoveryAnswers,
         }),
       });
 
@@ -223,21 +256,57 @@ function ReservationForm() {
           <p className="text-overline mb-2">
             {isDiscoveryRdv ? "Demande de rendez-vous" : "Accompagnement"}
           </p>
-          <h1 className="heading-section mb-4">{copy.pageTitle}</h1>
+          {!isDiscoveryRdv ? (
+            <h1 className="heading-section mb-4">{copy.pageTitle}</h1>
+          ) : null}
           <p className="text-brand-600 mb-12">
             Étape {step} sur {totalSteps} — {copy.stepLabel(step, totalSteps)}
           </p>
 
-          <div className="h-1 bg-brand-100 mb-12">
-            <div className="h-full bg-brand-950 transition-all" style={{ width: `${(step / totalSteps) * 100}%` }} />
-          </div>
+          {!isDiscoveryRdv ? (
+            <div className="h-1 bg-brand-100 mb-12">
+              <div
+                className="h-full bg-brand-950 transition-all"
+                style={{ width: `${(step / totalSteps) * 100}%` }}
+              />
+            </div>
+          ) : null}
 
-          {step === 1 && (
+          {step === 1 && isDiscoveryRdv && !discoverySettingsReady && (
+            <p className="text-sm text-brand-500">Chargement du formulaire…</p>
+          )}
+
+          {step === 1 && isDiscoveryRdv && discoverySettingsReady && (
+            <div className="space-y-6">
+              <DiscoveryParcoursForm
+                settings={discoverySettings}
+                contact={{
+                  firstName: form.firstName,
+                  lastName: form.lastName,
+                  email: form.email,
+                  phone: form.phone,
+                  mode: form.mode,
+                  objective: form.objective,
+                }}
+                onContactChange={(field, value) => updateForm(field, value)}
+                answers={discoveryAnswers}
+                onChange={setDiscoveryAnswers}
+              />
+              <button
+                type="button"
+                onClick={() => setStep(discoveryDateStep)}
+                className="btn-primary w-full sm:w-auto"
+                disabled={!discoveryContactValid}
+              >
+                {copy.continueLabel}
+              </button>
+            </div>
+          )}
+
+          {step === 1 && !isDiscoveryRdv && (
             <div className="space-y-6">
               <div className="p-4 bg-brand-50 border border-brand-100 text-sm text-brand-600 leading-relaxed">
-                {isDiscoveryRdv
-                  ? "Indiquez vos coordonnées et votre objectif. Aucune information de livraison n'est requise pour un rendez-vous."
-                  : "Renseignez vos coordonnées et précisez le mode d'accompagnement souhaité."}
+                Renseignez vos coordonnées et précisez le mode d&apos;accompagnement souhaité.
               </div>
 
               <div className="grid sm:grid-cols-2 gap-6">
@@ -267,31 +336,24 @@ function ReservationForm() {
                 </select>
               </div>
               <div>
-                <label className="label-field">
-                  {isDiscoveryRdv ? "Votre objectif ou votre besoin *" : "Notes ou besoins particuliers"}
-                </label>
+                <label className="label-field">Notes ou besoins particuliers</label>
                 <textarea
                   className="input-field min-h-[100px]"
                   value={form.objective}
                   onChange={(e) => updateForm("objective", e.target.value)}
-                  placeholder={
-                    isDiscoveryRdv
-                      ? "Ex. : premier échange image, préparation professionnelle, garde-robe..."
-                      : undefined
-                  }
                 />
               </div>
               <button
                 onClick={() => setStep(2)}
                 className="btn-primary"
-                disabled={!form.firstName || !form.email || !form.phone || (isDiscoveryRdv && !form.objective.trim())}
+                disabled={!form.firstName || !form.lastName || !form.email || !form.phone}
               >
                 {copy.continueLabel}
               </button>
             </div>
           )}
 
-          {step === 2 && (
+          {step === discoveryDateStep && (
             <div className="space-y-6">
               <div>
                 <label className="label-field flex items-center gap-2">
@@ -324,12 +386,17 @@ function ReservationForm() {
                   <p className="font-medium text-brand-950">Récapitulatif</p>
                   <p>{form.firstName} {form.lastName} — {form.email}</p>
                   <p>{form.date} à {form.time?.replace(":", "h")} — {modeLabel}</p>
-                  <p className="italic">&ldquo;{form.objective}&rdquo;</p>
+                  {form.objective.trim() ? (
+                    <p className="italic">&ldquo;{form.objective}&rdquo;</p>
+                  ) : null}
+                  <p className="text-brand-500">Questionnaire « Mon parcours de découverte » inclus.</p>
                 </div>
               )}
 
               <div className="flex gap-4">
-                <button type="button" onClick={() => setStep(1)} className="btn-secondary">Retour</button>
+                <button type="button" onClick={() => setStep(1)} className="btn-secondary">
+                  Retour
+                </button>
                 {isDiscoveryRdv ? (
                   <button
                     type="button"
@@ -340,7 +407,12 @@ function ReservationForm() {
                     {loading ? "Envoi..." : copy.submitDiscovery}
                   </button>
                 ) : (
-                  <button type="button" onClick={() => setStep(3)} className="btn-primary" disabled={!form.date || !form.time}>
+                  <button
+                    type="button"
+                    onClick={() => setStep(3)}
+                    className="btn-primary"
+                    disabled={!form.date || !form.time}
+                  >
                     {copy.continueLabel}
                   </button>
                 )}

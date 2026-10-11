@@ -1,11 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { notifyAdminAppointment } from "@/lib/email";
+import {
+  formatDiscoveryAnswersForMessage,
+  normalizeDiscoveryAnswers,
+} from "@/lib/discovery-parcours-questions";
+import { getDiscoveryParcoursSettings } from "@/lib/discovery-parcours-settings";
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { firstName, lastName, email, phone, date, time, mode, objective } = body;
+    const { firstName, lastName, email, phone, date, time, mode, objective, discoveryAnswers } =
+      body;
 
     if (!firstName?.trim() || !lastName?.trim() || !email?.trim() || !phone?.trim()) {
       return NextResponse.json({ error: "Coordonnées obligatoires manquantes" }, { status: 400 });
@@ -18,13 +24,18 @@ export async function POST(req: NextRequest) {
     const modeLabel =
       mode === "DIGITAL" ? "100% Digital" : mode === "HYBRID" ? "Hybride" : "Présentiel (Abidjan)";
 
+    const formSettings = await getDiscoveryParcoursSettings();
+    const normalizedAnswers = normalizeDiscoveryAnswers(discoveryAnswers, formSettings);
+    const discoveryBlock = formatDiscoveryAnswersForMessage(normalizedAnswers, formSettings);
+
     const message = [
       "Demande de rendez-vous — Ariane DAGO Conseil en image",
       "",
       `Date souhaitée : ${date}`,
       `Créneau : ${time.replace(":", "h")}`,
       `Mode : ${modeLabel}`,
-      objective?.trim() ? `Objectif : ${objective.trim()}` : null,
+      objective?.trim() ? `Objectif (résumé) : ${objective.trim()}` : null,
+      discoveryBlock || null,
     ]
       .filter(Boolean)
       .join("\n");
@@ -37,6 +48,13 @@ export async function POST(req: NextRequest) {
         email: email.trim(),
         phone: phone.trim(),
         message,
+        metadata: {
+          objective: objective?.trim() || null,
+          date,
+          time,
+          mode: modeLabel,
+          discoveryAnswers: normalizedAnswers,
+        },
       },
     });
 

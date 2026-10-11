@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { BlogSubNav } from "@/components/admin/blog/BlogSubNav";
 import { BlogForm } from "@/components/admin/blog/BlogForm";
+import { parsePublicationLinks } from "@/lib/blog-publication-links";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -24,6 +25,7 @@ export default async function AdminEditBlogPage({ params }: Props) {
     excerpt: post.excerpt ?? "",
     content: post.content,
     coverImage: post.coverImage ?? "",
+    publicationLinks: parsePublicationLinks(post.publicationLinks),
     author: post.author,
     tagsText: post.tags.join(", "),
     isPublished: post.isPublished,

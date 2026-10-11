@@ -937,7 +937,7 @@ export const adminGuideSections: GuideSection[] = [
   {
     id: "newsletter",
     title: "Newsletter",
-    summary: "Abonnés du site, email de bienvenue et envoi d'actus.",
+    summary: "Abonnés, modèle d'email, envoi auto (blog + webhook réseaux).",
     blocks: [
       {
         type: "p",
@@ -957,10 +957,15 @@ export const adminGuideSections: GuideSection[] = [
           "Source : popup, footer ou autre origine enregistrée à l'inscription",
         ],
       },
-      { type: "h3", text: "Envoyer une actu" },
+      { type: "h3", text: "Envoi automatique" },
       {
         type: "p",
-        text: "Utilisez le formulaire « Envoyer une actu réseaux » : titre obligatoire, message et liens optionnels. Tous les abonnés actifs reçoivent l'email. Les comptes clients dont l'email correspond reçoivent en plus une notification dans Mon espace.",
+        text: "Dans Admin → Newsletter, activez l'envoi auto à la publication d'un article blog (titre, extrait, contenu et lien). Pour Facebook, WhatsApp, X, TikTok, etc., utilisez le webhook affiché dans les paramètres (Make, Zapier…) : à chaque publication détectée, le même modèle d'email part à tous les abonnés actifs.",
+      },
+      { type: "h3", text: "Modèle & envoi manuel" },
+      {
+        type: "p",
+        text: "Personnalisez l'objet et le corps HTML (variables {{title}}, {{publicationBlock}}, {{linksBlock}}, etc.). Le formulaire « Publier & notifier » permet aussi d'envoyer manuellement le texte complet de la publication et les liens réseau.",
       },
       {
         type: "tip",

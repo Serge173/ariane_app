@@ -3,6 +3,8 @@ import prisma from "@/lib/prisma";
 import { requireAdmin, jsonError } from "@/lib/admin-api";
 import { slugify } from "@/lib/utils";
 import { parseTagsInput } from "@/lib/blog";
+import { publicationLinksForApi } from "@/lib/blog-publication-links";
+import { maybeSendNewsletterForBlogPost } from "@/lib/newsletter-blog";
 
 interface Ctx {
   params: Promise<{ id: string }>;
@@ -51,12 +53,22 @@ export async function PATCH(req: NextRequest, ctx: Ctx) {
       ...(body.excerpt !== undefined && { excerpt: body.excerpt?.trim() || null }),
       ...(body.content !== undefined && { content: body.content.trim() }),
       ...(body.coverImage !== undefined && { coverImage: body.coverImage?.trim() || null }),
+      ...(body.publicationLinks !== undefined && {
+        publicationLinks: publicationLinksForApi(body.publicationLinks),
+      }),
       ...(body.author !== undefined && { author: body.author?.trim() || "Ariane DAGO" }),
       ...(body.tagsText !== undefined && { tags: parseTagsInput(body.tagsText) }),
       ...(body.isPublished !== undefined && { isPublished: body.isPublished }),
       publishedAt,
     },
   });
+
+  const justPublished = body.isPublished === true && !existing.isPublished;
+  if (justPublished) {
+    void maybeSendNewsletterForBlogPost(post).catch((err) =>
+      console.error("[blog patch newsletter]", err)
+    );
+  }
 
   return NextResponse.json(post);
 }
