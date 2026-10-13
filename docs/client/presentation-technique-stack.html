@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Présentation technique — Plateforme Ariane DAGO</title>
+    <style>
+      @page {
+        size: A4;
+        margin: 14mm;
+      }
+      body {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        color: #1a1a1a;
+        background: #eae8e4;
+        line-height: 1.5;
+        font-size: 10.5pt;
+      }
+      .doc {
+        max-width: 210mm;
+        margin: 0 auto;
+        background: #fff;
+      }
+      .page {
+        padding: 12mm 14mm 16mm;
+        page-break-after: always;
+        border-bottom: 1px solid #ddd;
+        position: relative;
+      }
+      .page:not(.cover)::after {
+        content: "Développement · KEAYENI SERGE PACOME";
+        position: absolute;
+        bottom: 5mm;
+        left: 14mm;
+        right: 14mm;
+        text-align: center;
+        font-size: 7.5pt;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #666;
+      }
+      .page:last-child {
+        page-break-after: auto;
+      }
+      .cover {
+        text-align: center;
+        padding-top: 22mm;
+        min-height: 248mm;
+        border: 3px solid #1a1a1a;
+        margin: 6mm;
+      }
+      .cover h1 {
+        font-size: 20pt;
+        font-weight: 400;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin: 0 0 6mm;
+        line-height: 1.25;
+      }
+      .cover .sub {
+        font-size: 10pt;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        margin-bottom: 10mm;
+        color: #444;
+      }
+      .cover .lead {
+        max-width: 150mm;
+        margin: 0 auto 12mm;
+        font-size: 11pt;
+        font-style: italic;
+        color: #333;
+        text-align: left;
+      }
+      .cover .meta {
+        display: inline-block;
+        border: 2px solid #1a1a1a;
+        padding: 5mm 8mm;
+        text-align: left;
+        font-size: 9.5pt;
+        font-family: "Consolas", "Courier New", monospace;
+      }
+      h2 {
+        font-size: 12pt;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin: 0 0 4mm;
+        padding-bottom: 2mm;
+        border-bottom: 2px solid #1a1a1a;
+      }
+      h3 {
+        font-size: 10.5pt;
+        margin: 4mm 0 2mm;
+        color: #9b2335;
+      }
+      p {
+        margin: 0 0 3.5mm;
+      }
+      ul,
+      ol {
+        margin: 0 0 4mm;
+        padding-left: 6mm;
+      }
+      li {
+        margin-bottom: 1.5mm;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 9pt;
+        margin: 3mm 0 5mm;
+      }
+      th,
+      td {
+        border: 1px solid #1a1a1a;
+        padding: 2.5mm 3mm;
+        text-align: left;
+        vertical-align: top;
+      }
+      th {
+        background: #f4f2ef;
+        text-transform: uppercase;
+        font-size: 7.5pt;
+        letter-spacing: 0.06em;
+      }
+      .highlight {
+        background: #f9f7f4;
+        border-left: 4px solid #9b2335;
+        padding: 3mm 4mm;
+        margin: 4mm 0;
+        font-size: 10pt;
+      }
+      .diagram {
+        font-family: "Consolas", "Courier New", monospace;
+        font-size: 8.5pt;
+        background: #f4f2ef;
+        border: 1px solid #1a1a1a;
+        padding: 4mm;
+        white-space: pre-wrap;
+        line-height: 1.35;
+        margin: 4mm 0;
+      }
+      .tag {
+        display: inline-block;
+        border: 1px solid #1a1a1a;
+        padding: 1px 6px;
+        margin: 1px 2px 1px 0;
+        font-size: 8pt;
+        background: #fff;
+      }
+      .footer-page {
+        margin-top: 8mm;
+        font-size: 8pt;
+        color: #777;
+        text-align: center;
+      }
+      .dev-credit {
+        margin-top: 5mm;
+        font-size: 8pt;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: #444;
+        text-align: center;
+      }
+      .dev-credit strong {
+        font-weight: 600;
+      }
+      .two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4mm;
+      }
+      @media print {
+        body {
+          background: #fff;
+        }
+        .no-print {
+          display: none;
+        }
+        .cover {
+          margin: 0;
+        }
+      }
+      .no-print {
+        font-family: system-ui, sans-serif;
+        text-align: center;
+        padding: 16px;
+        font-size: 14px;
+      }
+      .no-print button {
+        padding: 12px 24px;
+        border: none;
+        background: #1a1a1a;
+        color: #fff;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="no-print">
+      <button type="button" onclick="window.print()">Télécharger en PDF (Imprimer)</button>
+      <p style="color: #555; font-size: 12px">Destination : « Enregistrer au format PDF » · A4</p>
+    </div>
+
+    <div class="doc">
+      <section class="page cover">
+        <h1>Plateforme<br />Conseil en image<br />Ariane DAGO</h1>
+        <p class="sub">Présentation application &amp; stack technique</p>
+        <p class="lead">
+          Document de référence décrivant l'application web (parcours client, e-commerce, back-office) et
+          l'ensemble des technologies utilisées pour le développement, le déploiement et l'exploitation.
+        </p>
+        <div class="meta">
+          Projet : conseil-image-ariane (v0.1.x)<br />
+          Dépôt : Serge173/ariane_app<br />
+          Runtime : Node.js 24 · npm 10+<br />
+          Région Vercel : cdg1 (Paris)<br />
+          <strong>Développement : KEAYENI SERGE PACOME</strong>
+        </div>
+        <p class="dev-credit" style="margin-top: 10mm"><strong>KEAYENI SERGE PACOME</strong></p>
+        <p class="footer-page" style="margin-top: 6mm">
+          Dossier technique · <span class="year"></span> · Développement KEAYENI SERGE PACOME
+        </p>
+      </section>
+
+      <section class="page">
+        <h2>1. Vue d'ensemble de l'application</h2>
+        <p>
+          Application <strong>full-stack</strong> unique : site vitrine premium, parcours de réservation et de
+          paiement, boutique en ligne, espace client, blog, newsletter et <strong>back-office administrateur</strong>
+          complet. Conçue <strong>mobile-first</strong>, avec une identité visuelle sobre (inspiration luxe / Polène).
+        </p>
+        <div class="highlight">
+          <strong>Parcours métier :</strong> Prospect → Orientation / découverte → Prestation ou produit →
+          Rendez-vous → Paiement (CinetPay) → Coaching &amp; questionnaires → Suivi (Mon espace) → Fidélisation
+          (newsletter, blog).
+        </div>
+
+        <h3>Modules fonctionnels principaux</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Module</th>
+              <th>Rôle</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Site public</td>
+              <td>Accueil, offres, orientation, réservation, panier, checkout, blog, FAQ, contact, WhatsApp</td>
+            </tr>
+            <tr>
+              <td>Parcours découverte</td>
+              <td>Formulaire configurable (admin) + créneaux RDV, stocké en base (ContactRequest + metadata)</td>
+            </tr>
+            <tr>
+              <td>E-commerce</td>
+              <td>Produits, variantes (taille/couleur), stock, codes promo, commandes, expédition (fulfillment)</td>
+            </tr>
+            <tr>
+              <td>Mon espace client</td>
+              <td>Profil, commandes, RDV, documents, questionnaires</td>
+            </tr>
+            <tr>
+              <td>Admin</td>
+              <td>Contenu, offres, boutique, commandes, RDV, blog, newsletter, paiements, utilisateurs, analytics</td>
+            </tr>
+            <tr>
+              <td>Newsletter</td>
+              <td>Inscriptions, modèle d'email éditable, envoi manuel / auto à la publication blog, webhook externe</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="page">
+        <h2>2. Architecture logicielle</h2>
+        <p>
+          <strong>Next.js 15</strong> avec <strong>App Router</strong> (<code>src/app/</code>) : pages React
+          côté serveur et client, <strong>Route Handlers</strong> pour les API REST (<code>src/app/api/</code>).
+          Pas de backend séparé : logique métier dans <code>src/lib/</code>, accès données via <strong>Prisma</strong>.
+        </p>
+
+        <div class="diagram">
+Navigateur (client)
+    │
+    ▼
+Vercel Edge / Node (Next.js 15)
+    ├── React 19 (RSC + Client Components)
+    ├── API Routes (auth, paiements, admin, webhooks)
+    ├── NextAuth (sessions)
+    └── Prisma Client
+            │
+            ▼
+    PostgreSQL (Neon)
+    + Vercel Blob (médias prod) · public/uploads (local)
+        </div>
+
+        <h3>Patterns utilisés</h3>
+        <ul>
+          <li><strong>Server Components</strong> par défaut ; composants interactifs en <code>"use client"</code></li>
+          <li><strong>Zustand</strong> pour l'état panier côté navigateur</li>
+          <li><strong>React Hook Form + Zod</strong> pour formulaires et validation</li>
+          <li><strong>Settings JSON</strong> en base (<code>SiteContent</code>) pour contenus éditables (hero, parcours découverte, newsletter)</li>
+          <li><strong>Webhooks</strong> : CinetPay (paiement), publication newsletter (Zapier/Make possible)</li>
+        </ul>
+      </section>
+
+      <section class="page">
+        <h2>3. Stack frontend</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Technologie</th>
+              <th>Version / usage</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>React</td>
+              <td>19 — interface utilisateur</td>
+            </tr>
+            <tr>
+              <td>Next.js</td>
+              <td>15 — routing, SSR/SSG, images optimisées, build production</td>
+            </tr>
+            <tr>
+              <td>TypeScript</td>
+              <td>5.7 — typage statique sur tout le projet</td>
+            </tr>
+            <tr>
+              <td>Tailwind CSS</td>
+              <td>3.4 + PostCSS + Autoprefixer — design system utilitaire</td>
+            </tr>
+            <tr>
+              <td>Radix UI</td>
+              <td>Accordion, Dialog, Select, Tabs, Toast, etc. — accessibilité</td>
+            </tr>
+            <tr>
+              <td>class-variance-authority, clsx, tailwind-merge</td>
+              <td>Variants de composants UI réutilisables</td>
+            </tr>
+            <tr>
+              <td>Framer Motion</td>
+              <td>Animations (accueil, transitions)</td>
+            </tr>
+            <tr>
+              <td>Lucide React</td>
+              <td>Icônes</td>
+            </tr>
+            <tr>
+              <td>Recharts</td>
+              <td>Graphiques tableau de bord admin</td>
+            </tr>
+            <tr>
+              <td>date-fns</td>
+              <td>Dates (RDV, disponibilités)</td>
+            </tr>
+            <tr>
+              <td>next/image</td>
+              <td>Images Unsplash + Vercel Blob (remotePatterns)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>4. Stack backend &amp; données</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Technologie</th>
+              <th>Usage</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>PostgreSQL</td>
+              <td>Base relationnelle (hébergement recommandé : Neon)</td>
+            </tr>
+            <tr>
+              <td>Prisma ORM</td>
+              <td>Schéma, migrations / db push, client typé, seed (<code>tsx prisma/seed.ts</code>)</td>
+            </tr>
+            <tr>
+              <td>Modèles métier</td>
+              <td>User, Order, Product, ProductVariant, Payment, Appointment, BlogPost, Newsletter*, ContactRequest, …</td>
+            </tr>
+            <tr>
+              <td>bcryptjs</td>
+              <td>Hash des mots de passe</td>
+            </tr>
+            <tr>
+              <td>sharp</td>
+              <td>Traitement images (pipeline Next.js)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="page">
+        <h2>5. Authentification &amp; rôles</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Composant</th>
+              <th>Détail</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>NextAuth.js</td>
+              <td>v4 — sessions, pages de connexion, protection routes admin</td>
+            </tr>
+            <tr>
+              <td>@auth/prisma-adapter</td>
+              <td>Persistance Account / Session / User en PostgreSQL</td>
+            </tr>
+            <tr>
+              <td>Rôles (<code>UserRole</code>)</td>
+              <td>CLIENT, ADMIN, SUPER_ADMIN, MANAGER_SHOP, MANAGER_ORDERS, ACCOUNTING</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>6. Paiements</h2>
+        <p>
+          Intégration <strong>CinetPay</strong> (Côte d'Ivoire et zone Mobile Money) : Orange, MTN, Moov, Wave,
+          carte bancaire — canaux configurables en admin (<code>PaymentMethodConfig</code>).
+        </p>
+        <ul>
+          <li>Création de transaction côté serveur (<code>src/lib/payments/cinetpay.ts</code>)</li>
+          <li>Webhook de notification : <code>/api/payments/webhook</code></li>
+          <li>Statuts commande / paiement synchronisés en base (enums Prisma)</li>
+        </ul>
+
+        <h2>7. Emails &amp; newsletter</h2>
+        <ul>
+          <li><strong>Resend</strong> — envoi transactionnel et campagnes (<code>src/lib/email.ts</code>)</li>
+          <li>Modèle newsletter éditable en admin, variables dynamiques (contenu publication, liens réseaux)</li>
+          <li>Envoi automatique à la publication d'un article blog (si activé)</li>
+          <li>Webhook <code>/api/webhooks/newsletter-publication</code> pour automatisation externe</li>
+        </ul>
+      </section>
+
+      <section class="page">
+        <h2>8. Hébergement, infra &amp; services cloud</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Service</th>
+              <th>Rôle</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Vercel</td>
+              <td>Hébergement Next.js, CI/CD Git, preview deployments, région cdg1</td>
+            </tr>
+            <tr>
+              <td>Neon (PostgreSQL)</td>
+              <td>Base de données serverless, <code>DATABASE_URL</code></td>
+            </tr>
+            <tr>
+              <td>Vercel Blob</td>
+              <td>Stockage fichiers uploadés en production (<code>@vercel/blob</code>)</td>
+            </tr>
+            <tr>
+              <td>@vercel/analytics</td>
+              <td>Métriques audience (optionnel)</td>
+            </tr>
+            <tr>
+              <td>Google Analytics</td>
+              <td>Via <code>NEXT_PUBLIC_GA_ID</code> (composant AnalyticsScripts)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Build &amp; déploiement</h3>
+        <ul>
+          <li>Script <code>vercel-build</code> : <code>prisma generate</code> → <code>prisma db push</code> → prebuild → <code>next build</code></li>
+          <li>Configuration : <code>vercel.json</code>, <code>next.config.ts</code> (URL publique, images, redirects admin)</li>
+          <li>Guide détaillé : <code>DEPLOY_VERCEL.md</code> à la racine du dépôt</li>
+        </ul>
+
+        <h2>9. Outils de développement</h2>
+        <div class="two-col">
+          <div>
+            <span class="tag">ESLint 9</span>
+            <span class="tag">eslint-config-next</span>
+            <span class="tag">tsx</span>
+            <span class="tag">Prisma Studio</span>
+            <span class="tag">Git / GitHub</span>
+          </div>
+        </div>
+        <p style="margin-top: 4mm">
+          Développement local : <code>npm run dev</code> (port 3001), <code>npm run db:push</code>,
+          <code>npm run db:seed</code>, variables dans <code>.env</code> (voir <code>.env.example</code>).
+        </p>
+      </section>
+
+      <section class="page">
+        <h2>10. Structure du code source</h2>
+        <div class="diagram">
+src/
+├── app/                 # Pages &amp; API (App Router)
+│   ├── admin/           # Back-office
+│   ├── api/             # REST (payments, admin, public, webhooks)
+│   ├── boutique/, offres/, reservation/, mon-espace/, blog/, …
+├── components/          # UI (home, shop, admin, layout, …)
+├── lib/                 # Métier (auth, prisma, payments, newsletter, store, …)
+└── types/
+prisma/
+├── schema.prisma        # Modèle de données complet
+└── seed.ts              # Données initiales (admin, catalogue)
+scripts/                 # Prebuild Vercel, utilitaires
+        </div>
+
+        <h2>11. Variables d'environnement (principales)</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Variable</th>
+              <th>Usage</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>DATABASE_URL</td>
+              <td>Connexion PostgreSQL (Neon)</td>
+            </tr>
+            <tr>
+              <td>NEXTAUTH_URL / NEXTAUTH_SECRET</td>
+              <td>URL publique &amp; secret sessions NextAuth</td>
+            </tr>
+            <tr>
+              <td>NEXT_PUBLIC_APP_URL</td>
+              <td>Liens absolus, emails, webhooks</td>
+            </tr>
+            <tr>
+              <td>CINETPAY_*</td>
+              <td>API Key, Site ID, URL notification</td>
+            </tr>
+            <tr>
+              <td>RESEND_API_KEY</td>
+              <td>Envoi d'emails</td>
+            </tr>
+            <tr>
+              <td>BLOB_READ_WRITE_TOKEN</td>
+              <td>Upload médias Vercel Blob</td>
+            </tr>
+            <tr>
+              <td>NEXT_PUBLIC_WHATSAPP_NUMBER</td>
+              <td>Bouton contact WhatsApp</td>
+            </tr>
+            <tr>
+              <td>NEXT_PUBLIC_GA_ID</td>
+              <td>Google Analytics (optionnel)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="page">
+        <h2>12. Synthèse stack (liste rapide)</h2>
+        <p>
+          <span class="tag">Next.js 15</span>
+          <span class="tag">React 19</span>
+          <span class="tag">TypeScript</span>
+          <span class="tag">Tailwind CSS 3</span>
+          <span class="tag">Radix UI</span>
+          <span class="tag">Framer Motion</span>
+          <span class="tag">Prisma 6</span>
+          <span class="tag">PostgreSQL</span>
+          <span class="tag">NextAuth.js</span>
+          <span class="tag">Zod</span>
+          <span class="tag">React Hook Form</span>
+          <span class="tag">Zustand</span>
+          <span class="tag">CinetPay</span>
+          <span class="tag">Resend</span>
+          <span class="tag">Vercel</span>
+          <span class="tag">Neon</span>
+          <span class="tag">Vercel Blob</span>
+          <span class="tag">Recharts</span>
+          <span class="tag">Lucide</span>
+          <span class="tag">date-fns</span>
+          <span class="tag">bcryptjs</span>
+          <span class="tag">sharp</span>
+          <span class="tag">ESLint</span>
+        </p>
+
+        <h2>13. Périmètre back-office (admin)</h2>
+        <ul>
+          <li>Tableau de bord &amp; statistiques (Recharts, événements analytics en base)</li>
+          <li>Gestion contenu site, hero, FAQ, parcours découverte (questions / textes)</li>
+          <li>Offres, disponibilités, créneaux bloqués, demandes RDV (fiche, édition, impression)</li>
+          <li>Boutique : produits, variantes, stock, marques, catégories, codes promo</li>
+          <li>Commandes : statuts, fulfillment, paiements</li>
+          <li>Blog (couverture, liens publication réseaux), newsletter (abonnés, envois, réglages)</li>
+          <li>Méthodes de paiement, utilisateurs &amp; rôles, guide intégré admin</li>
+        </ul>
+
+        <div class="highlight">
+          <strong>Client :</strong> Ariane DAGO — Conseil en image · Plateforme développée sur mesure pour
+          l'accompagnement, la vente et la relation client digitale.<br /><br />
+          <strong>Développement :</strong> KEAYENI SERGE PACOME — conception, développement et déploiement de
+          l'application.
+        </div>
+
+        <p class="footer-page">
+          Fin du dossier technique · conseil-image-ariane · <span class="year"></span><br />
+          KEAYENI SERGE PACOME
+        </p>
+      </section>
+    </div>
+    <script>
+      const y = new Date().getFullYear();
+      document.querySelectorAll(".year").forEach((el) => (el.textContent = y));
+    </script>
+  </body>
+</html>

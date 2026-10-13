@@ -40,7 +40,7 @@ export function DiscoveryParcoursForm({
     <div className="discovery-parcours">
       <header className="discovery-parcours-header text-center pb-8 mb-8">
         <h2 className="font-display text-xl sm:text-2xl tracking-wide uppercase">{header.title}</h2>
-        <p className="mt-3 text-xs sm:text-sm uppercase tracking-[0.2em] text-brand-700">
+        <p className="discovery-parcours-header-subtitle mt-3 uppercase text-brand-700">
           {header.subtitle}
         </p>
         <p className="mt-2 text-xs text-brand-600">{header.contact}</p>

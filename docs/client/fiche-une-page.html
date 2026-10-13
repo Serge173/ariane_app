@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Fiche client — Ariane DAGO Conseil en image</title>
+    <style>
+      @page {
+        size: A4;
+        margin: 14mm;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        color: #1a1a1a;
+        background: #f4f2ef;
+        line-height: 1.45;
+      }
+      .sheet {
+        max-width: 210mm;
+        min-height: 272mm;
+        margin: 0 auto;
+        background: #fff;
+        border: 3px solid #1a1a1a;
+        padding: 10mm 12mm 12mm;
+      }
+      .head {
+        text-align: center;
+        border-bottom: 2px solid #1a1a1a;
+        padding-bottom: 6mm;
+        margin-bottom: 6mm;
+      }
+      .head h1 {
+        margin: 0;
+        font-size: 17pt;
+        font-weight: 400;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .head p {
+        margin: 4mm 0 0;
+        font-size: 9pt;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+      .head .contact {
+        margin-top: 3mm;
+        font-size: 9pt;
+        letter-spacing: 0.02em;
+        text-transform: none;
+        color: #444;
+      }
+      .tagline {
+        text-align: center;
+        font-size: 11pt;
+        font-style: italic;
+        color: #333;
+        margin: 0 0 7mm;
+      }
+      h2 {
+        font-size: 10pt;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        margin: 5mm 0 3mm;
+        border-left: 4px solid #9b2335;
+        padding-left: 3mm;
+      }
+      ul {
+        margin: 0 0 4mm;
+        padding-left: 5mm;
+        font-size: 10pt;
+      }
+      li {
+        margin-bottom: 2mm;
+      }
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 3mm;
+        margin: 4mm 0 6mm;
+      }
+      .step {
+        border: 2px solid #1a1a1a;
+        padding: 3mm;
+        text-align: center;
+        font-size: 8.5pt;
+      }
+      .step strong {
+        display: block;
+        font-size: 14pt;
+        margin-bottom: 1mm;
+      }
+      .url {
+        text-align: center;
+        margin-top: 6mm;
+        padding: 4mm;
+        border: 2px dashed #1a1a1a;
+        font-size: 11pt;
+        font-weight: bold;
+      }
+      .footer {
+        margin-top: 5mm;
+        font-size: 8pt;
+        color: #666;
+        text-align: center;
+      }
+      @media print {
+        body {
+          background: #fff;
+        }
+        .sheet {
+          border: none;
+          min-height: auto;
+          max-width: none;
+        }
+        .no-print {
+          display: none;
+        }
+      }
+      .no-print {
+        text-align: center;
+        padding: 12px;
+        font-family: system-ui, sans-serif;
+        font-size: 13px;
+      }
+      .no-print button {
+        padding: 10px 20px;
+        border: 2px solid #1a1a1a;
+        background: #1a1a1a;
+        color: #fff;
+        cursor: pointer;
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <p class="no-print">
+      <button type="button" onclick="window.print()">Enregistrer en PDF (Imprimer)</button>
+      — Choisissez « Enregistrer au format PDF » comme imprimante.
+    </p>
+
+    <article class="sheet">
+      <header class="head">
+        <h1>Je suis mon propre standard</h1>
+        <p>Ariane DAGO · Conseillère en image</p>
+        <p class="contact">+225 07 68 56 15 70 · stephaniearianedago@gmail.com</p>
+      </header>
+
+      <p class="tagline">
+        Votre plateforme en ligne pour découvrir, réserver et suivre votre transformation d'image — simple,
+        élégante, pensée pour vous.
+      </p>
+
+      <div class="steps">
+        <div class="step"><strong>1</strong>Découvrir le site &amp; les offres</div>
+        <div class="step"><strong>2</strong>Questionnaire ou parcours RDV</div>
+        <div class="step"><strong>3</strong>Choisir &amp; réserver votre créneau</div>
+        <div class="step"><strong>4</strong>Suivre tout dans Mon espace</div>
+      </div>
+
+      <h2>Commencer en 2 clics</h2>
+      <ul>
+        <li>
+          <strong>Démarrer mon parcours de ma découverte</strong> — formulaire personnalisé (coordonnées +
+          questionnaire) puis choix de la date de rendez-vous.
+        </li>
+        <li>
+          <strong>Questionnaire d'orientation</strong> — en quelques minutes, une recommandation de formule
+          adaptée à vos objectifs.
+        </li>
+      </ul>
+
+      <h2>Ce que vous y trouvez</h2>
+      <ul>
+        <li><strong>Accompagnements</strong> — forfaits conseil en image (Standard, Gold, Platinum, sur-mesure).</li>
+        <li><strong>Boutique</strong> — sélection mode &amp; accessoires.</li>
+        <li><strong>Blog &amp; conseils</strong> — articles et actualités image.</li>
+        <li><strong>Newsletter</strong> — inscrivez-vous pour ne rien manquer (actus, réseaux, nouveautés).</li>
+        <li><strong>Contact &amp; FAQ</strong> — réponses et prise de contact directe.</li>
+      </ul>
+
+      <h2>Après votre inscription</h2>
+      <ul>
+        <li><strong>Mon espace</strong> — commandes, rendez-vous, documents et suivi de votre parcours.</li>
+        <li><strong>Paiement sécurisé</strong> — Mobile Money &amp; carte (selon options proposées).</li>
+        <li><strong>Confirmation</strong> — email de prise en compte de votre demande ou commande.</li>
+      </ul>
+
+      <p class="url">www · Votre site Ariane DAGO (lien communiqué par votre conseillère)</p>
+
+      <p class="footer">
+        Document client — une page · Conseil en image avec Ariane DAGO · {year}
+      </p>
+    </article>
+    <script>
+      document.body.innerHTML = document.body.innerHTML.replace("{year}", new Date().getFullYear());
+    </script>
+  </body>
+</html>

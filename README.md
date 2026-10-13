@@ -122,6 +122,6 @@ prisma/
 **Conseil en Image avec Ariane** — DAGO Stéphanie Ariane  
 Abidjan, Côte d'Ivoire
 
-## Prestataire
+## Développement
 
-Consultant Keayeni Serge Pacôme
+**KEAYENI SERGE PACOME** — conception, développement et déploiement de la plateforme.

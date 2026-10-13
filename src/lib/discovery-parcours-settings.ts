@@ -23,9 +23,12 @@ export type DiscoveryParcoursSettings = {
   questions: DiscoveryQuestionDef[];
 };
 
+/** Ancien libellé en base — affiché sans point d'exclamation. */
+const LEGACY_DISCOVERY_HEADER_TITLE = "JE SUIS MON PROPRE STANDARD !";
+
 export const DEFAULT_DISCOVERY_PARCOURS_SETTINGS: DiscoveryParcoursSettings = {
   header: {
-    title: "JE SUIS MON PROPRE STANDARD !",
+    title: "JE SUIS MON PROPRE STANDARD",
     subtitle: "ARIANE DAGO | CONSULTANTE EN IMAGE",
     contact: "+225 07 68 56 15 70 | stephaniearianedago@gmail.com",
   },
@@ -128,12 +131,16 @@ export function parseDiscoveryParcoursSettings(raw: unknown): DiscoveryParcoursS
   const headerRaw =
     o.header && typeof o.header === "object" ? (o.header as Record<string, unknown>) : {};
 
+  let title = d.header.title;
+  if (typeof headerRaw.title === "string" && headerRaw.title.trim()) {
+    const trimmed = headerRaw.title.trim();
+    title =
+      trimmed === LEGACY_DISCOVERY_HEADER_TITLE ? d.header.title : trimmed;
+  }
+
   return {
     header: {
-      title:
-        typeof headerRaw.title === "string" && headerRaw.title.trim()
-          ? headerRaw.title.trim()
-          : d.header.title,
+      title,
       subtitle:
         typeof headerRaw.subtitle === "string" && headerRaw.subtitle.trim()
           ? headerRaw.subtitle.trim()

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Présentation client — Plateforme Ariane DAGO</title>
+    <style>
+      @page {
+        size: A4;
+        margin: 16mm;
+      }
+      body {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        color: #1a1a1a;
+        background: #eae8e4;
+        line-height: 1.55;
+        font-size: 11pt;
+      }
+      .doc {
+        max-width: 210mm;
+        margin: 0 auto;
+        background: #fff;
+      }
+      .page {
+        padding: 14mm 16mm;
+        page-break-after: always;
+        border-bottom: 1px solid #ddd;
+      }
+      .page:last-child {
+        page-break-after: auto;
+      }
+      .cover {
+        text-align: center;
+        padding-top: 28mm;
+        min-height: 240mm;
+        border: 3px solid #1a1a1a;
+        margin: 8mm;
+      }
+      .cover h1 {
+        font-size: 22pt;
+        font-weight: 400;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin: 0 0 8mm;
+      }
+      .cover .sub {
+        font-size: 11pt;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        margin-bottom: 12mm;
+      }
+      .cover .lead {
+        max-width: 140mm;
+        margin: 0 auto 14mm;
+        font-size: 12pt;
+        font-style: italic;
+        color: #333;
+      }
+      .cover .box {
+        display: inline-block;
+        border: 2px solid #1a1a1a;
+        padding: 6mm 10mm;
+        text-align: left;
+        font-size: 10pt;
+      }
+      h2 {
+        font-size: 13pt;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        margin: 0 0 5mm;
+        padding-bottom: 2mm;
+        border-bottom: 2px solid #1a1a1a;
+      }
+      h3 {
+        font-size: 11pt;
+        margin: 5mm 0 2mm;
+        color: #9b2335;
+      }
+      p {
+        margin: 0 0 4mm;
+      }
+      ul {
+        margin: 0 0 5mm;
+        padding-left: 6mm;
+      }
+      li {
+        margin-bottom: 2mm;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 10pt;
+        margin: 4mm 0 6mm;
+      }
+      th,
+      td {
+        border: 1px solid #1a1a1a;
+        padding: 3mm 4mm;
+        text-align: left;
+        vertical-align: top;
+      }
+      th {
+        background: #f4f2ef;
+        text-transform: uppercase;
+        font-size: 8pt;
+        letter-spacing: 0.08em;
+      }
+      .highlight {
+        background: #f9f7f4;
+        border-left: 4px solid #9b2335;
+        padding: 4mm 5mm;
+        margin: 5mm 0;
+      }
+      .footer-page {
+        margin-top: 10mm;
+        font-size: 8pt;
+        color: #777;
+        text-align: center;
+      }
+      @media print {
+        body {
+          background: #fff;
+        }
+        .no-print {
+          display: none;
+        }
+        .cover {
+          margin: 0;
+        }
+      }
+      .no-print {
+        font-family: system-ui, sans-serif;
+        text-align: center;
+        padding: 16px;
+        font-size: 14px;
+      }
+      .no-print button {
+        padding: 12px 24px;
+        border: none;
+        background: #1a1a1a;
+        color: #fff;
+        cursor: pointer;
+        margin: 0 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="no-print">
+      <button type="button" onclick="window.print()">Télécharger en PDF (Imprimer)</button>
+      <p style="color:#555;font-size:12px">Destination : « Enregistrer au format PDF » · Format A4</p>
+    </div>
+
+    <div class="doc">
+      <section class="page cover">
+        <h1>Conseil en image<br />avec Ariane DAGO</h1>
+        <p class="sub">Plateforme client · Guide complet</p>
+        <p class="lead">
+          Bienvenue dans l'univers de la découverte de soi. Cette présentation vous explique comment utiliser
+          le site pour avancer sereinement dans votre parcours image — de la première visite au suivi de votre
+          accompagnement.
+        </p>
+        <div class="box">
+          <strong>Contact</strong><br />
+          +225 07 68 56 15 70<br />
+          stephaniearianedago@gmail.com
+        </div>
+        <p class="footer-page" style="margin-top: 20mm">Document client · <span id="y1"></span></p>
+      </section>
+
+      <section class="page">
+        <h2>1. L'esprit du site</h2>
+        <p>
+          La plateforme a été conçue comme une extension premium de l'accompagnement Ariane : claire, raffinée,
+          accessible sur mobile comme sur ordinateur. Chaque étape — découvrir, choisir, réserver, payer, suivre
+          — est pensée pour vous faire gagner du temps tout en respectant l'exigence d'un conseil en image
+          sur mesure.
+        </p>
+        <div class="highlight">
+          <strong>Votre fil conducteur :</strong> comprendre vos besoins → trouver la bonne formule → fixer un
+          rendez-vous → vivre votre coaching → rester informée via la newsletter et Mon espace.
+        </div>
+
+        <h2>2. Page d'accueil</h2>
+        <p>En arrivant sur le site, vous découvrez :</p>
+        <ul>
+          <li>Des visuels et messages qui présentent l'univers Ariane DAGO ;</li>
+          <li>Le bouton principal <strong>« Démarrer mon parcours de ma découverte »</strong> pour une première prise de contact structurée ;</li>
+          <li>Les forfaits et prestations à la une ;</li>
+          <li>Des témoignages et invitations à explorer la boutique ou les offres.</li>
+        </ul>
+      </section>
+
+      <section class="page">
+        <h2>3. Deux portes d'entrée pour vous orienter</h2>
+
+        <h3>A. Parcours de découverte (rendez-vous)</h3>
+        <p>Idéal si vous souhaitez un <strong>premier échange</strong> avec Ariane.</p>
+        <ol>
+          <li>Cliquez sur « Démarrer mon parcours de ma découverte ».</li>
+          <li>Remplissez le formulaire « Je suis mon propre standard » (coordonnées + questions sur votre image, vos couleurs, vos objectifs).</li>
+          <li>Choisissez une <strong>date et un créneau</strong> qui vous conviennent.</li>
+          <li>Validez : vous recevez une confirmation ; l'équipe prépare votre rendez-vous.</li>
+        </ol>
+
+        <h3>B. Questionnaire d'orientation</h3>
+        <p>Accessible depuis le menu (page <strong>Orientation</strong>) :</p>
+        <ul>
+          <li>Répondez à un court questionnaire ;</li>
+          <li>Obtenez une <strong>suggestion de formule</strong> (Standard, Gold, Platinum ou sur-mesure) ;</li>
+          <li>Accédez directement à la fiche de l'offre recommandée ou à la prise de contact.</li>
+        </ul>
+      </section>
+
+      <section class="page">
+        <h2>4. Prestations &amp; boutique</h2>
+
+        <h3>Accompagnements (/offres)</h3>
+        <p>
+          Présentation détaillée des forfaits conseil en image : contenu, durée, modalités (présentiel Abidjan,
+          100&nbsp;% digital ou hybride). Les tarifs affichés sont ceux définis par l'équipe — si un prix n'est
+          pas indiqué, contactez-nous pour un devis personnalisé.
+        </p>
+
+        <h3>Boutique (/boutique)</h3>
+        <p>
+          Sélection mode et accessoires : ajoutez au panier, choisissez vos options (taille, couleur le cas
+          échéant), puis finalisez la commande avec livraison et paiement en ligne.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Parcours</th>
+              <th>Usage</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Prestation + RDV</td>
+              <td>Réservation d'accompagnement avec créneau et paiement adapté</td>
+            </tr>
+            <tr>
+              <td>Boutique</td>
+              <td>Achat produits, panier, checkout dédié</td>
+            </tr>
+            <tr>
+              <td>RDV découverte seul</td>
+              <td>Demande sans achat immédiat — échange préalable</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="page">
+        <h2>5. Compte, espace client &amp; newsletter</h2>
+
+        <h3>Créer un compte / se connecter</h3>
+        <p>
+          La connexion vous permet de centraliser votre relation avec Ariane DAGO : historique, rendez-vous et
+          documents utiles.
+        </p>
+
+        <h3>Mon espace</h3>
+        <ul>
+          <li>Suivi des <strong>commandes</strong> (boutique et prestations) ;</li>
+          <li>Visualisation des <strong>rendez-vous</strong> ;</li>
+          <li>Accès aux <strong>questionnaires</strong> et documents partagés ;</li>
+          <li>Mise à jour de votre profil.</li>
+        </ul>
+
+        <h3>Newsletter</h3>
+        <p>
+          Inscrivez-vous depuis le site (popup ou pied de page). Vous recevez un email de bienvenue, puis les
+          actualités, conseils image et liens vers les contenus sur les réseaux sociaux. Désinscription possible
+          à tout moment via le lien en bas de chaque email.
+        </p>
+
+        <h2>6. Blog, FAQ &amp; contact</h2>
+        <ul>
+          <li><strong>Blog</strong> — articles conseil en image ;</li>
+          <li><strong>FAQ</strong> — réponses aux questions fréquentes ;</li>
+          <li><strong>Contact</strong> — message direct (entreprise, diagnostic sur-mesure, question générale).</li>
+        </ul>
+      </section>
+
+      <section class="page">
+        <h2>7. Paiement &amp; sécurité</h2>
+        <p>
+          Les paiements en ligne s'effectuent via des solutions adaptées au contexte local (Mobile Money, carte,
+          etc., selon les modes activés). Vous êtes guidé étape par étape ; un récapitulatif s'affiche avant
+          validation.
+        </p>
+        <p>
+          Vos données personnelles sont traitées conformément à la politique de confidentialité du site (page
+          dédiée). Nous utilisons vos réponses au questionnaire de découverte uniquement pour préparer votre
+          accompagnement.
+        </p>
+
+        <h2>8. En résumé</h2>
+        <div class="highlight">
+          <ul style="margin-bottom: 0">
+            <li><strong>Envie d'un first step ?</strong> → Parcours de découverte ou orientation.</li>
+            <li><strong>Formule claire ?</strong> → Page Offres.</li>
+            <li><strong>Shopping ?</strong> → Boutique.</li>
+            <li><strong>Suivi dans la durée ?</strong> → Mon espace + newsletter.</li>
+          </ul>
+        </div>
+
+        <p style="margin-top: 10mm; text-align: center; font-size: 12pt">
+          <strong>Ariane DAGO · Conseillère en image</strong><br />
+          +225 07 68 56 15 70 · stephaniearianedago@gmail.com
+        </p>
+        <p class="footer-page">Fin du document · <span id="y2"></span></p>
+      </section>
+    </div>
+    <script>
+      const y = new Date().getFullYear();
+      document.getElementById("y1").textContent = y;
+      document.getElementById("y2").textContent = y;
+    </script>
+  </body>
+</html>

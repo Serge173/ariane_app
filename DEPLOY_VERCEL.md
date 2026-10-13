@@ -135,3 +135,7 @@ npx vercel --prod
 - `vercel.json` — build, région (`cdg1` = Paris, proche de la CI)
 - `package.json` — script `vercel-build`, `postinstall: prisma generate`
 - `.env.example` — liste complète des variables
+
+---
+
+**Développement : KEAYENI SERGE PACOME**
