@@ -329,7 +329,17 @@
     @apply bg-brand-50/40 border-2 border-black p-5 sm:p-8;
   }
 
-  /* Sous-titre header : une seule ligne sur téléphone / tablette */
+  /* Titre & sous-titre header : une seule ligne sur téléphone / tablette */
+  .discovery-parcours-header-title {
+    white-space: nowrap;
+    font-size: clamp(0.625rem, 3.35vw, 1.5rem);
+    letter-spacing: clamp(0.02em, 0.12vw, 0.05em);
+    line-height: 1.25;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   .discovery-parcours-header-subtitle {
     white-space: nowrap;
     font-size: clamp(0.5625rem, 2.85vw, 0.875rem);
