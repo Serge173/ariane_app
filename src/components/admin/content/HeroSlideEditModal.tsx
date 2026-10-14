@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Loader2, Upload, X } from "lucide-react";
 import { Field } from "@/components/admin/content/FormFields";
 import type { HeroSlideSettings } from "@/lib/homepage-settings";
-import { ContainedMediaImage } from "@/components/ui/ContainedMediaImage";
+import { SmartFullscreenImage } from "@/components/ui/SmartFullscreenImage";
 
 export function HeroSlideEditModal({
   listPosition,
@@ -167,12 +167,10 @@ export function HeroSlideEditModal({
           </label>
 
           {draft.image?.trim() ? (
-            <div className="relative mt-3 w-full aspect-[16/9] border border-brand-200 overflow-hidden">
-              <ContainedMediaImage
+            <div className="relative mt-3 w-full aspect-[16/9] border border-brand-200 overflow-hidden bg-brand-950">
+              <SmartFullscreenImage
                 src={draft.image.trim()}
                 alt={draft.imageAlt || "Aperçu slide"}
-                frameClassName="absolute inset-0 h-full w-full"
-                darkFrame
                 sizes="560px"
               />
             </div>

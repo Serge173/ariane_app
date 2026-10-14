@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -14,9 +13,7 @@ import {
   STAGGER_HERO_TEXT,
 } from "@/lib/motion";
 import type { HeroSlideSettings } from "@/lib/homepage-settings";
-import { isRemoteImageAllowed } from "@/lib/next-image-src";
-import { ContainedMediaImage } from "@/components/ui/ContainedMediaImage";
-import { imageFillClass, isUserManagedImageUrl, resolveImageFit } from "@/lib/image-display";
+import { SmartFullscreenImage } from "@/components/ui/SmartFullscreenImage";
 import { FlashInfoTicker } from "@/components/home/FlashInfoTicker";
 
 const AUTOPLAY_MS = 7000;
@@ -150,7 +147,7 @@ export function HeroSlider({ slides, primaryCta, scarcityLabel }: HeroSliderProp
 
   return (
     <section
-      className="relative h-[68svh] min-h-[360px] sm:h-[82svh] sm:min-h-[460px] lg:h-[100svh] lg:min-h-[560px] w-full overflow-hidden"
+      className="relative h-[100svh] min-h-[360px] w-full overflow-hidden"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       aria-roledescription="carousel"
@@ -158,6 +155,10 @@ export function HeroSlider({ slides, primaryCta, scarcityLabel }: HeroSliderProp
     >
       {slides.map((slide, index) => {
         const isActive = index === active;
+        const src = failedImages.has(slide.id)
+          ? IMAGES.hero
+          : slide.image?.trim() || IMAGES.hero;
+
         return (
           <motion.div
             key={slide.id}
@@ -170,61 +171,15 @@ export function HeroSlider({ slides, primaryCta, scarcityLabel }: HeroSliderProp
             style={{ zIndex: isActive ? 1 : 0 }}
             aria-hidden={!isActive}
           >
-            {(() => {
-              const src = failedImages.has(slide.id)
-                ? IMAGES.hero
-                : slide.image?.trim() || IMAGES.hero;
-              const alt = slide.imageAlt;
-              const isStockHero = src === IMAGES.hero;
-              const useHeroContain =
-                !isStockHero || isUserManagedImageUrl(src) || resolveImageFit(src, "auto") === "contain";
-
-              if (useHeroContain) {
-                return (
-                  <ContainedMediaImage
-                    key={slide.id}
-                    src={src}
-                    alt={alt}
-                    frameClassName="absolute inset-0 h-full w-full"
-                    darkFrame
-                    sizes="100vw"
-                    priority={index === 0}
-                    onError={() => markImageFailed(slide.id)}
-                  />
-                );
-              }
-
-              return (
-                <div
-                  className={cn(
-                    "absolute inset-0 overflow-hidden",
-                    isActive && !reduced && "animate-ken-burns"
-                  )}
-                  key={isActive ? `kb-${slide.id}-${active}` : slide.id}
-                >
-                  {isRemoteImageAllowed(src) ? (
-                    <Image
-                      src={src}
-                      alt={alt}
-                      fill
-                      priority={index === 0}
-                      className={imageFillClass("cover")}
-                      sizes="100vw"
-                      onError={() => markImageFailed(slide.id)}
-                    />
-                  ) : (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={src}
-                      alt={alt}
-                      className={imageFillClass("cover")}
-                      onError={() => markImageFailed(slide.id)}
-                    />
-                  )}
-                </div>
-              );
-            })()}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/15 to-black/40" />
+            <SmartFullscreenImage
+              src={src}
+              alt={slide.imageAlt}
+              priority={index === 0}
+              sizes="100vw"
+              kenBurns={isActive && !reduced}
+              onError={() => markImageFailed(slide.id)}
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-black/45 pointer-events-none" />
           </motion.div>
         );
       })}

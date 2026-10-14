@@ -2,7 +2,7 @@
 
 import { X } from "lucide-react";
 import type { HeroSlideSettings } from "@/lib/homepage-settings";
-import { ContainedMediaImage } from "@/components/ui/ContainedMediaImage";
+import { SmartFullscreenImage } from "@/components/ui/SmartFullscreenImage";
 
 export function HeroSlidePreviewModal({
   slide,
@@ -121,12 +121,10 @@ export function HeroSlidePreviewModal({
         <div className="hero-slide-preview-image-wrap">
           <p className="text-[10px] uppercase tracking-widest text-brand-500 mb-2">Image</p>
           {imageUrl ? (
-            <div className="relative w-full aspect-[16/9] border border-brand-200 overflow-hidden">
-              <ContainedMediaImage
+            <div className="relative w-full aspect-[16/9] border border-brand-200 overflow-hidden bg-brand-950">
+              <SmartFullscreenImage
                 src={imageUrl}
                 alt={slide.imageAlt || slide.title || "Slide hero"}
-                frameClassName="absolute inset-0 h-full w-full"
-                darkFrame
                 sizes="(max-width: 640px) 100vw, 560px"
               />
             </div>
