@@ -15,6 +15,7 @@ import {
 } from "@/lib/motion";
 import type { HeroSlideSettings } from "@/lib/homepage-settings";
 import { isRemoteImageAllowed } from "@/lib/next-image-src";
+import { ContainedMediaImage } from "@/components/ui/ContainedMediaImage";
 import { imageFillClass, isUserManagedImageUrl, resolveImageFit } from "@/lib/image-display";
 import { FlashInfoTicker } from "@/components/home/FlashInfoTicker";
 
@@ -169,47 +170,60 @@ export function HeroSlider({ slides, primaryCta, scarcityLabel }: HeroSliderProp
             style={{ zIndex: isActive ? 1 : 0 }}
             aria-hidden={!isActive}
           >
-            <div
-              className={cn(
-                "absolute inset-0 overflow-hidden",
-                isActive && !reduced && "animate-ken-burns"
-              )}
-              key={isActive ? `kb-${slide.id}-${active}` : slide.id}
-            >
-              {(() => {
-                const src = failedImages.has(slide.id)
-                  ? IMAGES.hero
-                  : slide.image?.trim() || IMAGES.hero;
-                const alt = slide.imageAlt;
-                const heroFit = resolveImageFit(src, "auto");
-                const imgClass = imageFillClass(
-                  heroFit,
-                  heroFit === "contain" || isUserManagedImageUrl(src) ? "bg-black" : undefined
+            {(() => {
+              const src = failedImages.has(slide.id)
+                ? IMAGES.hero
+                : slide.image?.trim() || IMAGES.hero;
+              const alt = slide.imageAlt;
+              const isStockHero = src === IMAGES.hero;
+              const useHeroContain =
+                !isStockHero || isUserManagedImageUrl(src) || resolveImageFit(src, "auto") === "contain";
+
+              if (useHeroContain) {
+                return (
+                  <ContainedMediaImage
+                    key={slide.id}
+                    src={src}
+                    alt={alt}
+                    frameClassName="absolute inset-0 h-full w-full"
+                    darkFrame
+                    sizes="100vw"
+                    priority={index === 0}
+                    onError={() => markImageFailed(slide.id)}
+                  />
                 );
-                if (!isRemoteImageAllowed(src)) {
-                  return (
+              }
+
+              return (
+                <div
+                  className={cn(
+                    "absolute inset-0 overflow-hidden",
+                    isActive && !reduced && "animate-ken-burns"
+                  )}
+                  key={isActive ? `kb-${slide.id}-${active}` : slide.id}
+                >
+                  {isRemoteImageAllowed(src) ? (
+                    <Image
+                      src={src}
+                      alt={alt}
+                      fill
+                      priority={index === 0}
+                      className={imageFillClass("cover")}
+                      sizes="100vw"
+                      onError={() => markImageFailed(slide.id)}
+                    />
+                  ) : (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={src}
                       alt={alt}
-                      className={imgClass}
+                      className={imageFillClass("cover")}
                       onError={() => markImageFailed(slide.id)}
                     />
-                  );
-                }
-                return (
-                  <Image
-                    src={src}
-                    alt={alt}
-                    fill
-                    priority={index === 0}
-                    className={imgClass}
-                    sizes="100vw"
-                    onError={() => markImageFailed(slide.id)}
-                  />
-                );
-              })()}
-            </div>
+                  )}
+                </div>
+              );
+            })()}
             <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/15 to-black/40" />
           </motion.div>
         );

@@ -137,7 +137,7 @@
     transform-origin: center;
   }
 
-  .group:hover .product-frame__image {
+  .group:hover .product-frame__image:not(.product-frame__image--contain) {
     transform: scale(1.03);
   }
 

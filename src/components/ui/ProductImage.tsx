@@ -11,12 +11,12 @@ import {
 } from "@/lib/image-display";
 import { isRemoteImageAllowed } from "@/lib/next-image-src";
 import { cn } from "@/lib/utils";
+import { ContainedMediaImage } from "@/components/ui/ContainedMediaImage";
 
 type ProductImageProps = Omit<ImageProps, "src" | "alt"> & {
   src?: string | null;
   alt: string;
   fallback?: string;
-  /** auto = contain si upload/Blob, cover sinon (préserve l’existant en prod) */
   fit?: ImageFitPreference;
 };
 
@@ -28,9 +28,13 @@ export function ProductImage({
   fit = "auto",
   className,
   fill,
+  sizes,
+  priority,
+  quality: qualityProp,
   onError,
   ...props
 }: ProductImageProps) {
+  const quality = typeof qualityProp === "number" ? qualityProp : 90;
   const [errored, setErrored] = useState(false);
 
   useEffect(() => {
@@ -46,12 +50,28 @@ export function ProductImage({
     setErrored(true);
   };
 
+  if (fill && resolvedFit === "contain") {
+    return (
+      <div className={cn("absolute inset-0 product-frame__image--contain", className)}>
+        <ContainedMediaImage
+          src={currentSrc}
+          alt={alt}
+          frameClassName="absolute inset-0 h-full w-full"
+          sizes={typeof sizes === "string" ? sizes : undefined}
+          priority={priority}
+          quality={quality}
+          onError={() => {
+            handleError();
+          }}
+        />
+      </div>
+    );
+  }
+
   if (!useNextImage) {
-    const { sizes: _sizes, priority: _priority, ...imgProps } = props;
     return (
       // eslint-disable-next-line @next/next/no-img-element
       <img
-        {...imgProps}
         src={currentSrc}
         alt={alt}
         className={cn(fill ? imageFillClass(resolvedFit) : fitClass, className)}
@@ -69,6 +89,7 @@ export function ProductImage({
       fill={fill}
       src={currentSrc}
       alt={alt}
+      quality={quality}
       className={cn(fill ? imageFillClass(resolvedFit) : fitClass, className)}
       onError={(event) => {
         handleError();
