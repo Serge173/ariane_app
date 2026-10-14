@@ -1,9 +1,10 @@
 "use client";
 
 import { useReducedMotion } from "framer-motion";
+
 interface FlashInfoTickerProps {
   label: string;
-  /** Bande horizontale (legacy) ou ruban oblique à gauche du hero */
+  /** Bande horizontale pleine largeur ou diagonale gauche → haut */
   variant?: "bar" | "side-left";
 }
 
@@ -12,21 +13,23 @@ export function FlashInfoTicker({ label, variant = "side-left" }: FlashInfoTicke
   const segment = `${label}   ◆   `;
 
   const tickerContent = reduced ? (
-    <p className="flex h-full min-h-[2.25rem] items-center px-3 text-[9px] sm:text-[10px] uppercase tracking-[0.12em] text-white/95 line-clamp-3 leading-snug">
+    <p className="flex h-full items-center px-4 text-[10px] sm:text-xs uppercase tracking-[0.14em] text-white truncate font-medium">
       {label}
     </p>
   ) : (
-    <div className="flex h-full min-h-[2.25rem] items-center overflow-hidden">
+    <div className="flex h-full flex-1 items-center overflow-hidden">
       <div className="animate-flash-ticker flex whitespace-nowrap will-change-transform">
-        <span className="px-3 text-[9px] sm:text-[10px] uppercase tracking-[0.12em] text-white/95">
+        <span className="px-4 text-[10px] sm:text-xs uppercase tracking-[0.14em] text-white font-medium">
+          {segment}
           {segment}
           {segment}
           {segment}
         </span>
         <span
-          className="px-3 text-[9px] sm:text-[10px] uppercase tracking-[0.12em] text-white/95"
+          className="px-4 text-[10px] sm:text-xs uppercase tracking-[0.14em] text-white font-medium"
           aria-hidden
         >
+          {segment}
           {segment}
           {segment}
           {segment}
@@ -56,19 +59,15 @@ export function FlashInfoTicker({ label, variant = "side-left" }: FlashInfoTicke
   }
 
   return (
-    <div
-      className="flash-info-side pointer-events-none"
-      role="marquee"
-      aria-label={label}
-    >
-      <div className="flash-info-side__ribbon">
-        <div className="flash-info-side__badge">
-          <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" aria-hidden />
-          <span className="text-[8px] sm:text-[9px] font-medium uppercase tracking-[0.32em] text-white">
+    <div className="flash-info-diagonal pointer-events-none" role="marquee" aria-label={label}>
+      <div className="flash-info-diagonal__bar">
+        <div className="flash-info-diagonal__badge">
+          <span className="h-2 w-2 rounded-full bg-white animate-pulse shadow-sm" aria-hidden />
+          <span className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-[0.32em] text-white">
             Info
           </span>
         </div>
-        <div className="flash-info-side__track">{tickerContent}</div>
+        <div className="flash-info-diagonal__track">{tickerContent}</div>
       </div>
     </div>
   );

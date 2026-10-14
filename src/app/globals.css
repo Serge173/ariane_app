@@ -493,69 +493,51 @@
   width: max-content;
 }
 
-  /* Bande d'info oblique — côté gauche du hero (libère l'image) */
-  .flash-info-side {
-    @apply absolute z-20 left-0;
-    top: 5.25rem;
-    bottom: 5.5rem;
-    width: 3.25rem;
-  }
-
-  @media (min-width: 640px) {
-    .flash-info-side {
-      top: 6.25rem;
-      bottom: 6rem;
-      width: 3.75rem;
-    }
-  }
-
-  .flash-info-side__ribbon {
-    @apply absolute flex flex-col border border-white/20 bg-black/50 backdrop-blur-md shadow-lg overflow-hidden;
-    left: 0.35rem;
-    top: 50%;
-    width: 2.65rem;
-    max-height: min(72vh, 520px);
-    transform: translateY(-50%) rotate(-12deg);
-    transform-origin: center center;
-  }
-
-  @media (min-width: 640px) {
-    .flash-info-side__ribbon {
-      left: 0.5rem;
-      width: 3rem;
-      transform: translateY(-50%) rotate(-10deg);
-    }
-  }
-
-  .flash-info-side__badge {
-    @apply flex shrink-0 flex-col items-center justify-center gap-1.5 bg-accent py-2.5 px-1;
-  }
-
-  .flash-info-side__track {
-    @apply relative min-h-0 flex-1 overflow-hidden py-1;
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
-  }
-
-  .flash-info-side__track .animate-flash-ticker {
-    animation: flash-ticker-vertical 32s linear infinite;
-    flex-direction: column;
-    height: max-content;
-  }
-
-  .flash-info-side__track p {
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
-  }
-
-@keyframes flash-ticker-vertical {
-  from {
-    transform: translateY(0);
-  }
-  to {
-    transform: translateY(-50%);
-  }
+.flash-info-diagonal .animate-flash-ticker {
+  animation-duration: 22s;
 }
+
+  /*
+   * Bande info oblique : part du 1/3 du bord gauche → rejoint le 1/3 du bord haut.
+   * Défilement horizontal le long de la diagonale (image hero dégagée).
+   */
+  .flash-info-diagonal {
+    position: absolute;
+    z-index: 20;
+    left: 0;
+    top: 33.333%;
+    width: min(72vw, 66svh);
+    transform-origin: left center;
+    transform: rotate(-38deg);
+  }
+
+  @supports (width: hypot(1px, 1px)) {
+    .flash-info-diagonal {
+      width: hypot(33.333vw, 33.333svh);
+    }
+  }
+
+  @supports (transform: rotate(atan2(-1, 1))) {
+    .flash-info-diagonal {
+      transform: rotate(atan2(-33.333svh, 33.333vw));
+    }
+  }
+
+  .flash-info-diagonal__bar {
+    @apply flex h-11 sm:h-12 items-stretch overflow-hidden border border-white/25 bg-black/55 backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.35)];
+  }
+
+  .flash-info-diagonal__badge {
+    @apply flex shrink-0 items-center gap-2 bg-accent px-3 sm:px-4;
+  }
+
+  .flash-info-diagonal__track {
+    @apply relative min-w-0 flex-1 overflow-hidden;
+  }
+
+  .flash-info-diagonal__track .animate-flash-ticker {
+    animation: flash-ticker 22s linear infinite;
+  }
 
 @keyframes ken-burns {
   from { transform: scale(1); }
