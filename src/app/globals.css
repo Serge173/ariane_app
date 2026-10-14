@@ -493,6 +493,70 @@
   width: max-content;
 }
 
+  /* Bande d'info oblique — côté gauche du hero (libère l'image) */
+  .flash-info-side {
+    @apply absolute z-20 left-0;
+    top: 5.25rem;
+    bottom: 5.5rem;
+    width: 3.25rem;
+  }
+
+  @media (min-width: 640px) {
+    .flash-info-side {
+      top: 6.25rem;
+      bottom: 6rem;
+      width: 3.75rem;
+    }
+  }
+
+  .flash-info-side__ribbon {
+    @apply absolute flex flex-col border border-white/20 bg-black/50 backdrop-blur-md shadow-lg overflow-hidden;
+    left: 0.35rem;
+    top: 50%;
+    width: 2.65rem;
+    max-height: min(72vh, 520px);
+    transform: translateY(-50%) rotate(-12deg);
+    transform-origin: center center;
+  }
+
+  @media (min-width: 640px) {
+    .flash-info-side__ribbon {
+      left: 0.5rem;
+      width: 3rem;
+      transform: translateY(-50%) rotate(-10deg);
+    }
+  }
+
+  .flash-info-side__badge {
+    @apply flex shrink-0 flex-col items-center justify-center gap-1.5 bg-accent py-2.5 px-1;
+  }
+
+  .flash-info-side__track {
+    @apply relative min-h-0 flex-1 overflow-hidden py-1;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+  }
+
+  .flash-info-side__track .animate-flash-ticker {
+    animation: flash-ticker-vertical 32s linear infinite;
+    flex-direction: column;
+    height: max-content;
+  }
+
+  .flash-info-side__track p {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+  }
+
+@keyframes flash-ticker-vertical {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+}
+
 @keyframes ken-burns {
   from { transform: scale(1); }
   to { transform: scale(1.06); }

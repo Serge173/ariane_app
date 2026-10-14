@@ -184,19 +184,10 @@ export function HeroSlider({ slides, primaryCta, scarcityLabel }: HeroSliderProp
         );
       })}
 
-      {scarcityLabel && (
-        <div className="absolute top-[4.75rem] sm:top-24 left-0 right-0 z-20 pointer-events-none">
-          <FlashInfoTicker label={scarcityLabel} />
-        </div>
-      )}
+      {scarcityLabel && <FlashInfoTicker label={scarcityLabel} variant="side-left" />}
 
       <div className="relative z-10 flex h-full items-end sm:items-center">
-        <div
-          className={cn(
-            "container-premium w-full pb-9 sm:pb-20",
-            scarcityLabel ? "pt-[7.5rem] sm:pt-[11.5rem]" : "pt-[4.75rem] sm:pt-32"
-          )}
-        >
+        <div className="container-premium w-full pb-9 sm:pb-20 pt-[4.75rem] sm:pt-32">
           <HeroSlideText slide={current} primaryCta={primaryCta} isFirstLoad={useHeroDuration} />
         </div>
       </div>
