@@ -11,6 +11,7 @@ import {
 import { Loader2 } from "lucide-react";
 import { useFeedbackModal } from "@/hooks/useFeedbackModal";
 import { ProductVariantEditor } from "@/components/admin/catalogue/ProductVariantEditor";
+import { ProductImagesField } from "@/components/admin/catalogue/ProductImagesField";
 import { variantsToFormRows, type VariantFormRow } from "@/lib/product-variant-form";
 
 export interface CategoryOption {
@@ -298,17 +299,10 @@ export function ProductForm({ initial, initialVariants = [], categories, brands,
       <section className="bg-white border border-brand-100 p-6 space-y-4">
         <h2 className="font-display text-lg">Médias & contenu</h2>
 
-        <div>
-          <label className="block text-xs uppercase tracking-widest text-brand-500 mb-2">
-            URLs images (une par ligne)
-          </label>
-          <textarea
-            className="input-field min-h-[80px] font-mono text-xs"
-            value={form.imagesText}
-            onChange={(e) => set("imagesText", e.target.value)}
-            placeholder="https://images.unsplash.com/..."
-          />
-        </div>
+        <ProductImagesField
+          value={form.imagesText}
+          onChange={(text) => set("imagesText", text)}
+        />
 
         <div>
           <label className="block text-xs uppercase tracking-widest text-brand-500 mb-2">

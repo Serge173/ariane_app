@@ -64,7 +64,7 @@ export default function PanierPage() {
             <div key={lineKey} className="flex gap-6 p-6 border border-brand-100">
               {item.image && (
                 <div className="relative w-24 h-32 flex-shrink-0 bg-brand-100">
-                  <ProductImage src={item.image} fallback={IMAGES.productFallback} alt={item.name} fill className="object-cover" />
+                  <ProductImage src={item.image} fallback={IMAGES.productFallback} alt={item.name} fill />
                 </div>
               )}
               <div className="flex-1">

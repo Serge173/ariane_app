@@ -108,7 +108,6 @@ export default async function BlogPostPage({ params }: Props) {
               fallback={IMAGES.blogCover}
               alt={post.title}
               fill
-              className="object-cover"
               priority
               sizes="(max-width: 896px) 100vw, 896px"
             />

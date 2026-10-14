@@ -4,6 +4,7 @@ import Image from "next/image";
 import { X } from "lucide-react";
 import type { HeroSlideSettings } from "@/lib/homepage-settings";
 import { isRemoteImageAllowed } from "@/lib/next-image-src";
+import { imageFillClass } from "@/lib/image-display";
 
 export function HeroSlidePreviewModal({
   slide,
@@ -122,13 +123,13 @@ export function HeroSlidePreviewModal({
         <div className="hero-slide-preview-image-wrap">
           <p className="text-[10px] uppercase tracking-widest text-brand-500 mb-2">Image</p>
           {imageUrl ? (
-            <div className="relative w-full aspect-[16/9] bg-brand-100 border border-brand-200 overflow-hidden">
+            <div className="relative w-full aspect-[16/9] bg-black border border-brand-200 overflow-hidden">
               {isRemoteImageAllowed(imageUrl) ? (
                 <Image
                   src={imageUrl}
                   alt={slide.imageAlt || slide.title || "Slide hero"}
                   fill
-                  className="object-cover"
+                  className={imageFillClass("contain", "bg-black")}
                   sizes="(max-width: 640px) 100vw, 560px"
                   unoptimized
                 />
@@ -137,7 +138,7 @@ export function HeroSlidePreviewModal({
                 <img
                   src={imageUrl}
                   alt={slide.imageAlt || slide.title || "Slide hero"}
-                  className="absolute inset-0 h-full w-full object-cover"
+                  className={imageFillClass("contain", "bg-black")}
                 />
               )}
             </div>

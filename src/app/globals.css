@@ -131,7 +131,7 @@
   }
 
   .product-frame__image {
-    @apply object-cover transition-transform;
+    @apply transition-transform;
     transition-duration: 900ms;
     transition-timing-function: var(--ease-couture);
     transform-origin: center;

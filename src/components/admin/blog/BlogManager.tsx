@@ -42,7 +42,6 @@ function BlogCard({
           fallback={IMAGES.blogCover}
           alt={post.title}
           fill
-          className="object-cover"
         />
       </div>
 

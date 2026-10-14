@@ -53,7 +53,6 @@ export function AdminProductsTable({ products, type }: AdminProductsTableProps) 
                       fallback={isLuxe ? luxeImage(product.slug) : coachingImage(product.slug)}
                       alt={product.name}
                       fill
-                      className="object-cover"
                       sizes="40px"
                     />
                   ) : null}

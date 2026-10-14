@@ -172,13 +172,13 @@ export function BlogCoverImageField({
       )}
 
       {value && (
-        <div className="relative aspect-[16/9] max-w-md bg-brand-100 border border-brand-100 overflow-hidden">
+        <div className="relative aspect-[16/9] max-w-md bg-brand-50 border border-brand-100 overflow-hidden">
           <ProductImage
             src={value}
             fallback={IMAGES.blogCover}
             alt="Aperçu couverture"
             fill
-            className="object-cover"
+            fit="contain"
           />
           <button
             type="button"

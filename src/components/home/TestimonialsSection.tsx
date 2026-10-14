@@ -32,7 +32,8 @@ function BeforeAfterFrame({
           fallback={IMAGES.productFallback}
           alt={imageAlt}
           fill
-          className="object-cover object-top"
+          fit="cover"
+          className="object-top"
           sizes="(max-width: 640px) 28vw, 140px"
         />
         <span

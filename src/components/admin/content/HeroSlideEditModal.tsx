@@ -1,9 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { Loader2, Upload, X } from "lucide-react";
 import { Field } from "@/components/admin/content/FormFields";
 import type { HeroSlideSettings } from "@/lib/homepage-settings";
+import { imageFillClass } from "@/lib/image-display";
+import { isRemoteImageAllowed } from "@/lib/next-image-src";
 
 export function HeroSlideEditModal({
   listPosition,
@@ -154,7 +157,7 @@ export function HeroSlideEditModal({
             Téléverser une image
             <input
               type="file"
-              accept="image/*"
+              accept="image/jpeg,image/png,image/webp,image/gif"
               className="sr-only"
               disabled={saving || uploading}
               onChange={(e) => {
@@ -164,6 +167,28 @@ export function HeroSlideEditModal({
               }}
             />
           </label>
+
+          {draft.image?.trim() ? (
+            <div className="relative mt-3 w-full aspect-[16/9] bg-black border border-brand-200 overflow-hidden">
+              {isRemoteImageAllowed(draft.image.trim()) ? (
+                <Image
+                  src={draft.image.trim()}
+                  alt={draft.imageAlt || "Aperçu slide"}
+                  fill
+                  className={imageFillClass("contain", "bg-black")}
+                  sizes="560px"
+                  unoptimized
+                />
+              ) : (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={draft.image.trim()}
+                  alt={draft.imageAlt || "Aperçu slide"}
+                  className={imageFillClass("contain", "bg-black")}
+                />
+              )}
+            </div>
+          ) : null}
         </div>
 
         <div className="hero-slide-preview-actions">

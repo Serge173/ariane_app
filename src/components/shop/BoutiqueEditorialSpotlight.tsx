@@ -38,7 +38,6 @@ export function BoutiqueEditorialSpotlight({
                 fallback={luxeImage(product.slug, 1000)}
                 alt={product.name}
                 fill
-                className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 58vw"
               />
             </div>

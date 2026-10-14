@@ -15,6 +15,7 @@ import {
 } from "@/lib/motion";
 import type { HeroSlideSettings } from "@/lib/homepage-settings";
 import { isRemoteImageAllowed } from "@/lib/next-image-src";
+import { imageFillClass, isUserManagedImageUrl, resolveImageFit } from "@/lib/image-display";
 import { FlashInfoTicker } from "@/components/home/FlashInfoTicker";
 
 const AUTOPLAY_MS = 7000;
@@ -180,13 +181,18 @@ export function HeroSlider({ slides, primaryCta, scarcityLabel }: HeroSliderProp
                   ? IMAGES.hero
                   : slide.image?.trim() || IMAGES.hero;
                 const alt = slide.imageAlt;
+                const heroFit = resolveImageFit(src, "auto");
+                const imgClass = imageFillClass(
+                  heroFit,
+                  heroFit === "contain" || isUserManagedImageUrl(src) ? "bg-black" : undefined
+                );
                 if (!isRemoteImageAllowed(src)) {
                   return (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={src}
                       alt={alt}
-                      className="absolute inset-0 h-full w-full object-cover object-center"
+                      className={imgClass}
                       onError={() => markImageFailed(slide.id)}
                     />
                   );
@@ -197,7 +203,7 @@ export function HeroSlider({ slides, primaryCta, scarcityLabel }: HeroSliderProp
                     alt={alt}
                     fill
                     priority={index === 0}
-                    className="object-cover object-center"
+                    className={imgClass}
                     sizes="100vw"
                     onError={() => markImageFailed(slide.id)}
                   />

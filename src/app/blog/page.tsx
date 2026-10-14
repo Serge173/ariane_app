@@ -48,7 +48,7 @@ export default async function BlogPage() {
                       fallback={IMAGES.blogCover}
                       alt={post.title}
                       fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-700"
+                      className="group-hover:scale-105 transition-transform duration-700"
                     />
                   </div>
                 )}

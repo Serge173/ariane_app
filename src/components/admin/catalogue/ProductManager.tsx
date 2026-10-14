@@ -224,7 +224,6 @@ export function ProductManager({
                           }
                           alt={p.name}
                           fill
-                          className="object-cover"
                           sizes="40px"
                         />
                       </div>

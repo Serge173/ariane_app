@@ -15,13 +15,14 @@ export function ProductGallery({ images, fallback, alt }: ProductGalleryProps) {
 
   return (
     <div className="space-y-4">
-      <div className="relative aspect-[4/5] bg-brand-100 overflow-hidden">
+      <div className="relative aspect-[4/5] bg-brand-50 overflow-hidden">
         <ProductImage
           src={gallery[active]}
           fallback={fallback}
           alt={alt}
           fill
-          className="object-cover transition-opacity duration-300"
+          fit="contain"
+          className="transition-opacity duration-300"
           priority
           sizes="(max-width: 1024px) 100vw, 50vw"
         />
@@ -42,7 +43,7 @@ export function ProductGallery({ images, fallback, alt }: ProductGalleryProps) {
                 fallback={fallback}
                 alt=""
                 fill
-                className="object-cover"
+                fit="contain"
                 sizes="64px"
               />
             </button>
