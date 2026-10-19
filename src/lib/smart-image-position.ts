@@ -16,12 +16,12 @@ export function computeSmartObjectPosition(
   const frameRatio = frameWidth / frameHeight;
   const relative = imgRatio / frameRatio;
 
-  // Portrait / très vertical dans un hero paysage (mobile, photo personne)
+  // Portrait dans un cadre paysage (desktop cover de secours)
   if (relative < 0.82) {
-    return "50% 22%";
+    return "50% 18%";
   }
   if (relative < 0.95) {
-    return "50% 32%";
+    return "50% 28%";
   }
 
   // Panorama plus large que l'écran
