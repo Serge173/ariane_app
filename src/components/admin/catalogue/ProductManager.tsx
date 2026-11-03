@@ -16,7 +16,10 @@ import {
   categoryOptionLabel,
   flattenCategoryTree,
   formatCategoryLabel,
+  isAggregateCatalogBrand,
+  isAggregateCatalogCategory,
 } from "@/lib/categories";
+import { FilterSelect } from "@/components/ui/FilterSelect";
 
 interface ProductRow {
   id: string;
@@ -35,6 +38,7 @@ interface ProductRow {
 interface CategoryOption {
   id: string;
   name: string;
+  slug?: string;
   parentId?: string | null;
   sortOrder?: number;
 }
@@ -126,7 +130,13 @@ export function ProductManager({
     }, "Supprimer le produit");
   };
 
-  const categoryOptions = flattenCategoryTree(buildCategoryTree(initialCategories));
+  const catalogCategories = initialCategories.filter(
+    (c) => !isAggregateCatalogCategory({ slug: c.slug, name: c.name })
+  );
+  const categoryOptions = flattenCategoryTree(buildCategoryTree(catalogCategories));
+  const brandOptions = initialBrands.filter(
+    (b) => !isAggregateCatalogBrand({ name: b.name })
+  );
 
   return (
     <>
@@ -159,32 +169,54 @@ export function ProductManager({
               onKeyDown={(e) => e.key === "Enter" && applyFilters()}
             />
           </div>
-          <select className="input-field" value={type} onChange={(e) => setType(e.target.value)}>
-            <option value="all">Tous types</option>
+          <FilterSelect
+            className="input-field"
+            value={type}
+            allValue="all"
+            allLabel="Tous types"
+            onValueChange={setType}
+          >
             <option value="LUXE">Articles luxe</option>
             <option value="SERVICE">Coaching</option>
-          </select>
-          <select className="input-field" value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
-            <option value="">Toutes catégories</option>
+          </FilterSelect>
+          <FilterSelect
+            className="input-field"
+            value={categoryId}
+            allValue=""
+            allLabel="Toutes catégories"
+            onValueChange={setCategoryId}
+          >
             {categoryOptions.map(({ node, depth }) => (
               <option key={node.id} value={node.id}>
                 {categoryOptionLabel(node.name ?? "", depth)}
               </option>
             ))}
-          </select>
-          <select className="input-field" value={brandId} onChange={(e) => setBrandId(e.target.value)}>
-            <option value="">Toutes marques</option>
-            {initialBrands.map((b) => (
-              <option key={b.id} value={b.id}>{b.name}</option>
+          </FilterSelect>
+          <FilterSelect
+            className="input-field"
+            value={brandId}
+            allValue=""
+            allLabel="Toutes marques"
+            onValueChange={setBrandId}
+          >
+            {brandOptions.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.name}
+              </option>
             ))}
-          </select>
+          </FilterSelect>
         </div>
         <div className="flex flex-wrap gap-3">
-          <select className="input-field w-auto" value={active} onChange={(e) => setActive(e.target.value)}>
-            <option value="all">Tous statuts</option>
+          <FilterSelect
+            className="input-field w-auto"
+            value={active}
+            allValue="all"
+            allLabel="Tous statuts"
+            onValueChange={setActive}
+          >
             <option value="true">Actifs</option>
             <option value="false">Inactifs</option>
-          </select>
+          </FilterSelect>
           <button type="button" onClick={applyFilters} className="btn-primary text-xs">
             Appliquer
           </button>

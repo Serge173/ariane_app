@@ -6,6 +6,7 @@ import { buildProductSearchWhere } from "@/lib/catalogue";
 import {
   buildPublicCategoryTree,
   filterCategoriesByScope,
+  filterPublicCategoriesForCatalog,
   flattenPublicCategoryFilters,
   type PublicCategory,
 } from "@/lib/categories";
@@ -54,9 +55,8 @@ async function getOffersData(params: { q?: string; category?: string }) {
       }),
     ]);
 
-    const visibleCategories = filterCategoriesByScope(
-      allCategories as PublicCategory[],
-      "SERVICE"
+    const visibleCategories = filterPublicCategoriesForCatalog(
+      filterCategoriesByScope(allCategories as PublicCategory[], "SERVICE")
     );
     const categoryRoots = buildPublicCategoryTree(visibleCategories);
     const categoryFilters = flattenPublicCategoryFilters(categoryRoots);
@@ -100,6 +100,7 @@ export default async function OffresPage({ searchParams }: PageProps) {
             categories={categoryFilters}
             basePath="/offres"
             showBrandFilter={false}
+            searchPlaceholder="Rechercher une formule, un mot-clé..."
           />
         </Suspense>
 

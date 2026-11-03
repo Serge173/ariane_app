@@ -4,7 +4,10 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Search } from "lucide-react";
-import type { PublicCategoryTreeNode } from "@/lib/categories";
+import {
+  isAggregateCatalogCategory,
+  type PublicCategoryTreeNode,
+} from "@/lib/categories";
 import { SHOPPING_LINE_OPTIONS, shoppingHref } from "@/lib/shopping";
 import { cn } from "@/lib/utils";
 
@@ -22,13 +25,25 @@ export function BoutiqueSubNav({ roots }: BoutiqueSubNavProps) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [q, setQ] = useState(activeQ ?? "");
 
-  const flatLinks: { slug: string | null; name: string }[] = [
-    { slug: null, name: "Tout voir" },
-    ...roots.flatMap((root) => [
-      { slug: root.slug, name: root.name },
-      ...root.children.map((c) => ({ slug: c.slug, name: c.name })),
-    ]),
-  ];
+  const flatLinks: { slug: string | null; name: string }[] = [];
+  const seenSlugs = new Set<string>();
+  const pushLink = (slug: string | null, name: string) => {
+    const key = slug ?? "__all__";
+    if (seenSlugs.has(key)) return;
+    seenSlugs.add(key);
+    flatLinks.push({ slug, name });
+  };
+
+  const isCatalogAll = !activeCategory && !activeQ && !activeBrand;
+  if (!isCatalogAll) {
+    pushLink(null, "Tout voir");
+  }
+  for (const root of roots) {
+    if (!isAggregateCatalogCategory(root)) pushLink(root.slug, root.name);
+    for (const child of root.children) {
+      if (!isAggregateCatalogCategory(child)) pushLink(child.slug, child.name);
+    }
+  }
 
   const hrefFor = (slug: string | null) => {
     const params = new URLSearchParams(searchParams.toString());

@@ -7,6 +7,7 @@ import {
   buildCategoryTree,
   flattenCategoryTree,
   categoryOptionLabel,
+  isAggregateCatalogCategory,
 } from "@/lib/categories";
 import { Loader2 } from "lucide-react";
 import { useFeedbackModal } from "@/hooks/useFeedbackModal";
@@ -127,7 +128,12 @@ export function ProductForm({ initial, initialVariants = [], categories, brands,
   };
 
   const filteredCategories = useMemo(
-    () => categories.filter((c) => c.scope === form.productType),
+    () =>
+      categories.filter(
+        (c) =>
+          c.scope === form.productType &&
+          !isAggregateCatalogCategory({ slug: c.slug, name: c.name ?? "" })
+      ),
     [categories, form.productType]
   );
 

@@ -263,6 +263,20 @@
     transition-timing-function: var(--ease-couture);
   }
 
+  .catalog-search-field .catalog-search-input {
+    border-color: transparent;
+    border-width: 0;
+    box-shadow: none;
+    outline: none;
+  }
+
+  .catalog-search-field .catalog-search-input:focus,
+  .catalog-search-field .catalog-search-input:focus-visible {
+    border-color: transparent;
+    box-shadow: none;
+    outline: none;
+  }
+
   .label-field {
     @apply font-sans block text-xs uppercase tracking-wide text-brand-600 mb-2 font-medium;
   }
@@ -1122,15 +1136,31 @@ html[data-offres] .offres-page *::after {
 }
 
 html:has(.offres-page) .offres-page .input-field,
-html:has(.offres-page) .offres-page input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="submit"]):not([type="button"]),
+html:has(.offres-page)
+  .offres-page
+  input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="submit"]):not([type="button"]):not(
+    .catalog-search-input
+  ),
 html:has(.offres-page) .offres-page select,
 html:has(.offres-page) .offres-page textarea,
 html[data-offres] .offres-page .input-field,
-html[data-offres] .offres-page input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="submit"]):not([type="button"]),
+html[data-offres]
+  .offres-page
+  input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="submit"]):not([type="button"]):not(
+    .catalog-search-input
+  ),
 html[data-offres] .offres-page select,
 html[data-offres] .offres-page textarea {
   border-color: #000000 !important;
   border-width: 2px;
+}
+
+html:has(.offres-page) .offres-page .catalog-search-field .catalog-search-input,
+html[data-offres] .offres-page .catalog-search-field .catalog-search-input {
+  border-color: transparent !important;
+  border-width: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
 
 html:has(.offres-page) .offres-page .btn-secondary,

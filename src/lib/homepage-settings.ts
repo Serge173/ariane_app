@@ -55,6 +55,8 @@ export interface JourneyStepSettings {
   number: string;
   title: string;
   description: string;
+  image: string;
+  imageAlt: string;
 }
 
 export interface TestimonialSettings {
@@ -134,16 +136,48 @@ export const DEFAULT_HOMEPAGE_SETTINGS: HomepageSettings = {
     intro:
       "Un parcours fluide et premium, pensé pour vous accompagner à chaque étape de votre évolution image.",
     steps: [
-      { number: "01", title: "Découvrir", description: "Explorez nos accompagnements et notre univers premium" },
-      { number: "02", title: "S'orienter", description: "Répondez au questionnaire pour trouver votre formule idéale" },
-      { number: "03", title: "Réserver", description: "Choisissez votre créneau et finalisez votre réservation" },
-      { number: "04", title: "Payer", description: "Réglez en toute sécurité via Mobile Money ou carte bancaire" },
-      { number: "05", title: "Coaching", description: "Vivez votre séance et recevez vos livrables personnalisés" },
+      {
+        number: "01",
+        title: "Découvrir",
+        description: "Explorez nos accompagnements et notre univers premium",
+        image: IMAGES.hero.replace(/w=\d+/, "w=800"),
+        imageAlt: "Découverte de l'univers conseil en image",
+      },
+      {
+        number: "02",
+        title: "S'orienter",
+        description: "Répondez au questionnaire pour trouver votre formule idéale",
+        image: IMAGES.coaching.gold.replace(/w=\d+/, "w=800"),
+        imageAlt: "Questionnaire d'orientation",
+      },
+      {
+        number: "03",
+        title: "Réserver",
+        description: "Choisissez votre créneau et finalisez votre réservation",
+        image: IMAGES.coaching.platinum.replace(/w=\d+/, "w=800"),
+        imageAlt: "Prise de rendez-vous",
+      },
+      {
+        number: "04",
+        title: "Payer",
+        description: "Réglez en toute sécurité via Mobile Money ou carte bancaire",
+        image: luxeImage("sac-bandouliere-iconique", 800),
+        imageAlt: "Paiement sécurisé",
+      },
+      {
+        number: "05",
+        title: "Coaching",
+        description: "Vivez votre séance et recevez vos livrables personnalisés",
+        image: IMAGES.coaching.standard.replace(/w=\d+/, "w=800"),
+        imageAlt: "Séance de coaching image",
+      },
       {
         number: "06",
         title: "Suivre",
         description:
           "Accédez à votre espace client pour votre coaching, vos commandes boutique et vos documents",
+        image: IMAGES.about.replace(/w=\d+/, "w=800"),
+        imageAlt: "Espace client et suivi",
       },
     ],
   },
@@ -280,6 +314,8 @@ function parseSteps(raw: unknown): JourneyStepSettings[] {
         number: str(s.number, fallback.number),
         title: str(s.title, fallback.title),
         description: str(s.description, fallback.description),
+        image: str(s.image, fallback.image),
+        imageAlt: str(s.imageAlt, fallback.imageAlt || fallback.title),
       };
     })
     .filter((s): s is JourneyStepSettings => s !== null);

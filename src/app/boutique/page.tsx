@@ -6,7 +6,9 @@ import { luxeImage } from "@/lib/images";
 import { buildProductSearchWhere } from "@/lib/catalogue";
 import {
   buildPublicCategoryTree,
+  filterCatalogBrandOptions,
   filterCategoriesByScope,
+  filterPublicCategoriesForCatalog,
   flattenPublicCategoryFilters,
   formatCategoryLabel,
   type PublicCategory,
@@ -84,9 +86,8 @@ async function getCatalogData(params: { q?: string; category?: string; brand?: s
       }),
     ]);
 
-    const visibleCategories = filterCategoriesByScope(
-      allCategories as PublicCategory[],
-      "LUXE"
+    const visibleCategories = filterPublicCategoriesForCatalog(
+      filterCategoriesByScope(allCategories as PublicCategory[], "LUXE")
     );
     const categoryRoots = buildPublicCategoryTree(visibleCategories);
     const categoryFilters = flattenPublicCategoryFilters(categoryRoots);
@@ -124,7 +125,7 @@ async function getCatalogData(params: { q?: string; category?: string; brand?: s
         }) satisfies BoutiqueProduct[],
         categoryRoots,
         categoryFilters,
-        brands,
+        brands: filterCatalogBrandOptions(brands),
       };
     }
   } catch {}

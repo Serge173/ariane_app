@@ -234,18 +234,120 @@ export function getVisiblePublicCategories(
   return all.filter((c) => visible.has(c.id));
 }
 
+/** Valeur URL / filtre « tout le catalogue » (distincte des catégories en base). */
+export const CATALOG_FILTER_ALL = "all" as const;
+
+const AGGREGATE_CATEGORY_NAMES = new Set([
+  "toutes categories",
+  "toutes catégories",
+  "tout voir",
+  "tous",
+  "all categories",
+  "all",
+]);
+
+const AGGREGATE_CATEGORY_SLUGS = new Set([
+  "all",
+  "toutes",
+  "toutes-categories",
+  "toutes-categorie",
+  "tout-voir",
+  "tous",
+]);
+
+const AGGREGATE_BRAND_NAMES = new Set([
+  "toutes marques",
+  "toutes marque",
+  "tout voir",
+  "tous",
+  "all brands",
+  "all",
+]);
+
+const AGGREGATE_BRAND_SLUGS = new Set([
+  "all",
+  "toutes",
+  "toutes-marques",
+  "tout-voir",
+  "tous",
+]);
+
+function normalizeCatalogLabel(value: string): string {
+  return value
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/\p{M}/gu, "")
+    .replace(/\s+/g, " ");
+}
+
+/** Catégories en base qui doublonnent l’option « tout afficher » des filtres UI. */
+export function isAggregateCatalogCategory(input: {
+  slug?: string | null;
+  name: string;
+}): boolean {
+  const slug = (input.slug ?? "").trim().toLowerCase();
+  const name = normalizeCatalogLabel(input.name);
+  if (slug && AGGREGATE_CATEGORY_SLUGS.has(slug)) return true;
+  return AGGREGATE_CATEGORY_NAMES.has(name);
+}
+
+export function isAggregateCatalogBrand(input: {
+  slug?: string | null;
+  name: string;
+}): boolean {
+  const slug = (input.slug ?? "").trim().toLowerCase();
+  const name = normalizeCatalogLabel(input.name);
+  if (slug && AGGREGATE_BRAND_SLUGS.has(slug)) return true;
+  return AGGREGATE_BRAND_NAMES.has(name);
+}
+
+export function dedupeCatalogOptionsBySlug<T extends { slug: string }>(items: T[]): T[] {
+  const seen = new Set<string>();
+  return items.filter((item) => {
+    const key = item.slug.trim().toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+export function filterCatalogCategoryOptions<T extends { slug: string; name: string }>(
+  items: T[]
+): T[] {
+  return dedupeCatalogOptionsBySlug(items.filter((item) => !isAggregateCatalogCategory(item)));
+}
+
+export function filterCatalogBrandOptions<T extends { slug: string; name: string }>(
+  items: T[]
+): T[] {
+  return dedupeCatalogOptionsBySlug(items.filter((item) => !isAggregateCatalogBrand(item)));
+}
+
+export function filterPublicCategoriesForCatalog(categories: PublicCategory[]): PublicCategory[] {
+  const filtered = categories.filter((c) => !isAggregateCatalogCategory(c));
+  const seen = new Set<string>();
+  return filtered.filter((c) => {
+    const key = c.slug.trim().toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
 export function buildPublicCategoryTree(
   categories: PublicCategory[]
 ): PublicCategoryTreeNode[] {
-  return buildCategoryTree(categories) as PublicCategoryTreeNode[];
+  return buildCategoryTree(filterPublicCategoriesForCatalog(categories)) as PublicCategoryTreeNode[];
 }
 
 export function flattenPublicCategoryFilters(
   roots: PublicCategoryTreeNode[]
 ): { slug: string; name: string; depth: number }[] {
-  return flattenCategoryTree(roots).map(({ node, depth }) => ({
+  const flat = flattenCategoryTree(roots).map(({ node, depth }) => ({
     slug: node.slug,
     name: node.name,
     depth,
   }));
+  return filterCatalogCategoryOptions(flat);
 }

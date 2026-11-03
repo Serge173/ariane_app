@@ -7,6 +7,7 @@ import { IMAGES } from "@/lib/images";
 import { ProductImage } from "@/components/ui/ProductImage";
 import { Plus, Search, Pencil, Trash2, Loader2, ExternalLink, Power } from "lucide-react";
 import { useFeedbackModal } from "@/hooks/useFeedbackModal";
+import { FilterSelect } from "@/components/ui/FilterSelect";
 
 interface BlogRow {
   id: string;
@@ -187,11 +188,16 @@ export function BlogManager() {
             onKeyDown={(e) => e.key === "Enter" && fetchPosts()}
           />
         </div>
-        <select className="input-field w-auto" value={status} onChange={(e) => setStatus(e.target.value)}>
-          <option value="all">Tous</option>
+        <FilterSelect
+          className="input-field w-auto"
+          value={status}
+          allValue="all"
+          allLabel="Tous"
+          onValueChange={setStatus}
+        >
           <option value="published">Actifs</option>
           <option value="draft">Suspendus</option>
-        </select>
+        </FilterSelect>
         <button type="button" onClick={fetchPosts} className="btn-primary text-xs">
           Filtrer
         </button>

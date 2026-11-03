@@ -7,6 +7,7 @@ import { formatPublicPrice, hasPublicPrice } from "@/lib/shop/public-price";
 import { useCartStore } from "@/lib/store/cart";
 import { luxeImage } from "@/lib/images";
 import { ProductImage } from "@/components/ui/ProductImage";
+import { filterCatalogCategoryOptions } from "@/lib/categories";
 
 export interface BoutiqueProduct {
   id: string;
@@ -37,6 +38,7 @@ export function BoutiqueCatalog({
   variant = "wix",
 }: BoutiqueCatalogProps) {
   const [activeCategory, setActiveCategory] = useState<string>("all");
+  const categoryFilters = filterCatalogCategoryOptions(categories);
 
   const filtered =
     hideCategoryFilter || activeCategory === "all"
@@ -45,19 +47,18 @@ export function BoutiqueCatalog({
 
   return (
     <>
-      {categories.length > 0 && !hideCategoryFilter && (
+      {categoryFilters.length > 0 && !hideCategoryFilter && (
         <div className="flex flex-wrap gap-3 justify-center mb-12">
-          <button
-            onClick={() => setActiveCategory("all")}
-            className={`px-5 py-2.5 text-xs uppercase tracking-widest border transition-colors ${
-              activeCategory === "all"
-                ? "bg-brand-950 text-white border-brand-950"
-                : "border-brand-200 text-brand-600 hover:border-brand-950"
-            }`}
-          >
-            Tout voir
-          </button>
-          {categories.map((cat) => (
+          {activeCategory !== "all" && (
+            <button
+              type="button"
+              onClick={() => setActiveCategory("all")}
+              className="px-5 py-2.5 text-xs uppercase tracking-widest border transition-colors border-brand-200 text-brand-600 hover:border-brand-950"
+            >
+              Tout voir
+            </button>
+          )}
+          {categoryFilters.map((cat) => (
             <button
               key={cat.slug}
               onClick={() => setActiveCategory(cat.slug)}

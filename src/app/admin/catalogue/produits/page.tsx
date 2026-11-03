@@ -9,7 +9,7 @@ async function getMeta() {
       prisma.category.findMany({
         where: { isActive: true },
         orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
-        select: { id: true, name: true, parentId: true, sortOrder: true, scope: true },
+        select: { id: true, name: true, slug: true, parentId: true, sortOrder: true, scope: true },
       }),
       prisma.brand.findMany({
         where: { isActive: true },

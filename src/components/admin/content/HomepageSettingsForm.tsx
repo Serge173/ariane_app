@@ -13,6 +13,7 @@ import {
 } from "@/components/admin/content/ContentEditorLayout";
 import { Field } from "@/components/admin/content/FormFields";
 import { HeroSlidesEditor } from "@/components/admin/content/HeroSlidesEditor";
+import { JourneyStepImageField } from "@/components/admin/content/JourneyStepImageField";
 
 export function HomepageSettingsForm({
   initial,
@@ -182,7 +183,7 @@ export function HomepageSettingsForm({
           <ContentEditorSection
             index={2}
             title="Parcours client"
-            description="Étapes expliquant comment se déroule l'accompagnement."
+            description="Cartes numérotées avec image de fond et texte — section « Votre parcours » sur l'accueil."
           >
             <ContentEditorFields>
               <Field label="Surtitre" value={form.journey.overline} onChange={(v) => setForm((f) => ({ ...f, journey: { ...f.journey, overline: v } }))} disabled={!canEdit} />
@@ -191,8 +192,15 @@ export function HomepageSettingsForm({
             </ContentEditorFields>
             {form.journey.steps.map((step, index) => (
               <ContentEditorBlock key={step.number} index={index + 1} title={`Étape ${step.number}`}>
-                <Field label="Titre" value={step.title} onChange={(v) => updateStep(index, { title: v })} disabled={!canEdit} />
-                <Field label="Description" value={step.description} onChange={(v) => updateStep(index, { description: v })} disabled={!canEdit} multiline />
+                <JourneyStepImageField
+                  imageUrl={step.image}
+                  imageAlt={step.imageAlt}
+                  onImageUrlChange={(v) => updateStep(index, { image: v })}
+                  onImageAltChange={(v) => updateStep(index, { imageAlt: v })}
+                  disabled={!canEdit}
+                />
+                <Field label="Titre (dans le cadre)" value={step.title} onChange={(v) => updateStep(index, { title: v })} disabled={!canEdit} />
+                <Field label="Description (dans le cadre)" value={step.description} onChange={(v) => updateStep(index, { description: v })} disabled={!canEdit} multiline />
               </ContentEditorBlock>
             ))}
           </ContentEditorSection>
