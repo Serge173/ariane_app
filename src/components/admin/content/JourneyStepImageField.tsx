@@ -72,7 +72,7 @@ export function JourneyStepImageField({
         value={imageUrl}
         onChange={onImageUrlChange}
         disabled={disabled}
-        hint="Ou collez un lien Unsplash / Blob après upload."
+        hint="Après upload ou modification, enregistrez la page d'accueil (bouton en bas de l'écran admin)."
       />
       <Field label="Texte alternatif image" value={imageAlt} onChange={onImageAltChange} disabled={disabled} />
       {imageUrl.trim() ? (

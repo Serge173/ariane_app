@@ -55,6 +55,7 @@ export const adminNav: AdminNavItem[] = [
       { name: "À propos", href: "/admin/contenu/a-propos" },
       { name: "Prestations", href: "/admin/contenu/prestations" },
       { name: "Orientation", href: "/admin/contenu/orientation" },
+      { name: "Parcours découverte", href: "/admin/contenu/parcours-decouverte" },
       { name: "Blog", href: "/admin/contenu/blog" },
       { name: "FAQ", href: "/admin/contenu/faq" },
       { name: "Contact", href: "/admin/contenu/contact" },

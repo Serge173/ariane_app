@@ -183,7 +183,7 @@ export function HomepageSettingsForm({
           <ContentEditorSection
             index={2}
             title="Parcours client"
-            description="Cartes numérotées avec image de fond et texte — section « Votre parcours » sur l'accueil."
+            description="Cartes numérotées avec image de fond et texte — section « Votre parcours » sur l'accueil. Téléversez les images puis cliquez « Enregistrer la page d'accueil » en bas."
           >
             <ContentEditorFields>
               <Field label="Surtitre" value={form.journey.overline} onChange={(v) => setForm((f) => ({ ...f, journey: { ...f.journey, overline: v } }))} disabled={!canEdit} />
@@ -210,7 +210,11 @@ export function HomepageSettingsForm({
               <Field label="Surtitre" value={form.offersSection.overline} onChange={(v) => setForm((f) => ({ ...f, offersSection: { ...f.offersSection, overline: v } }))} disabled={!canEdit} />
               <Field label="Titre" value={form.offersSection.title} onChange={(v) => setForm((f) => ({ ...f, offersSection: { ...f.offersSection, title: v } }))} disabled={!canEdit} />
               <Field label="Texte" value={form.offersSection.intro} onChange={(v) => setForm((f) => ({ ...f, offersSection: { ...f.offersSection, intro: v } }))} disabled={!canEdit} multiline />
-              <ContentEditorNote>Les cartes forfaits viennent du catalogue Accompagnements (Admin → Offre).</ContentEditorNote>
+              <ContentEditorNote>
+                Les cartes forfaits viennent des produits coaching : menu latéral « Prestations & Produits » →
+                Accompagnements coaching, ou « Catalogue boutique » → Tous les produits (type SERVICE). Plusieurs images
+                par fiche : section Médias, puis Enregistrer.
+              </ContentEditorNote>
             </ContentEditorFields>
           </ContentEditorSection>
 
