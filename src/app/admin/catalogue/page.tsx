@@ -2,6 +2,8 @@ import Link from "next/link";
 import prisma from "@/lib/prisma";
 import { CatalogueSubNav } from "@/components/admin/catalogue/CatalogueSubNav";
 import { Package, Tags, Award, Plus, ArrowRight } from "lucide-react";
+import { AdminPageHeader } from "@/components/admin/ui/AdminPageHeader";
+import { PageHeaderLink } from "@/components/admin/ui/PageHeader";
 
 export default async function CatalogueHubPage() {
   let stats = {
@@ -51,21 +53,19 @@ export default async function CatalogueHubPage() {
 
   return (
     <div>
-      <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="heading-section mb-2">Catalogue e-commerce</h1>
-          <p className="text-brand-600">
-            Gérez produits, catégories et marques — votre boutique complète
-          </p>
-        </div>
-        <Link
-          href="/admin/catalogue/produits/nouveau"
-          className="btn-primary inline-flex items-center gap-2 text-xs"
-        >
-          <Plus className="w-4 h-4" />
-          Ajouter un produit
-        </Link>
-      </div>
+      <AdminPageHeader
+        section="Offre"
+        title="Catalogue e-commerce"
+        description="Produits, catégories et marques — votre boutique complète"
+        action={
+          <PageHeaderLink href="/admin/catalogue/produits/nouveau">
+            <span className="inline-flex items-center gap-2">
+              <Plus className="w-4 h-4" />
+              Ajouter un produit
+            </span>
+          </PageHeaderLink>
+        }
+      />
 
       <CatalogueSubNav active="hub" />
 

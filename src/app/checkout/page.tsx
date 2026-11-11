@@ -15,6 +15,7 @@ import {
 import { MapPin, Truck, ShoppingBag } from "lucide-react";
 import { useFeedbackModal } from "@/hooks/useFeedbackModal";
 import { BOOKING_COPY } from "@/lib/booking-copy";
+import { PublicPageShell } from "@/components/layout/PublicPageShell";
 
 function CheckoutForm() {
   const router = useRouter();
@@ -132,9 +133,8 @@ function CheckoutForm() {
   return (
     <>
       {FeedbackModal}
-      <div className="min-h-screen pt-24 pb-20">
-      <div className="container-premium max-w-3xl">
-        <p className="text-overline mb-2 flex items-center gap-2">
+      <PublicPageShell width="default">
+        <p className="text-overline text-accent mb-2 flex items-center gap-2">
           <ShoppingBag className="w-3.5 h-3.5" strokeWidth={1.5} />
           Boutique
         </p>
@@ -143,12 +143,12 @@ function CheckoutForm() {
           Étape {step} sur 2 — {copy.stepLabel(step)}
         </p>
 
-        <div className="h-1 bg-brand-100 mb-12">
-          <div className="h-full bg-brand-950 transition-all" style={{ width: `${(step / 2) * 100}%` }} />
+        <div className="h-1 rounded-full bg-brand-300/40 mb-10 overflow-hidden">
+          <div className="h-full bg-accent transition-all" style={{ width: `${(step / 2) * 100}%` }} />
         </div>
 
         {step === 1 && (
-          <div className="space-y-6">
+          <div className="public-form-card space-y-6">
             <div className="grid sm:grid-cols-2 gap-6">
               <div>
                 <label className="label-field">Prénom *</label>
@@ -201,7 +201,7 @@ function CheckoutForm() {
 
             <button
               onClick={() => setStep(2)}
-              className="btn-primary"
+              className="btn-primary rounded-full"
               disabled={!form.firstName || !form.email || !form.phone || !form.address}
             >
               {copy.continueLabel}
@@ -210,8 +210,8 @@ function CheckoutForm() {
         )}
 
         {step === 2 && (
-          <div className="space-y-6">
-            <div className="p-6 bg-brand-50 border border-brand-100">
+          <div className="public-form-card space-y-6">
+            <div className="p-6 rounded-xl border border-brand-300/50 bg-surface-cream">
               <h3 className="font-display text-lg mb-4">{copy.recapTitle}</h3>
               {items.map((item) => (
                 <div key={item.productId} className="flex justify-between text-sm mb-2">
@@ -240,11 +240,11 @@ function CheckoutForm() {
             </div>
 
             <div className="flex gap-4">
-              <button type="button" onClick={() => setStep(1)} className="btn-secondary">Retour</button>
+              <button type="button" onClick={() => setStep(1)} className="btn-secondary rounded-full">Retour</button>
               <button
                 type="button"
                 onClick={handleSubmit}
-                className="btn-primary flex-1"
+                className="btn-primary rounded-full flex-1"
                 disabled={loading || !form.paymentMethod || methodsLoading}
               >
                 {loading ? "Traitement..." : getPaymentButtonLabel(form.paymentMethod, paymentMethods, "boutique")}
@@ -252,15 +252,14 @@ function CheckoutForm() {
             </div>
           </div>
         )}
-      </div>
-    </div>
+      </PublicPageShell>
     </>
   );
 }
 
 export default function CheckoutPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen pt-24 flex items-center justify-center">Chargement...</div>}>
+    <Suspense fallback={<PublicPageShell width="narrow"><p className="text-brand-500 text-sm text-center">Chargement…</p></PublicPageShell>}>
       <CheckoutForm />
     </Suspense>
   );

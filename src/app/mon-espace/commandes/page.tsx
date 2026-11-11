@@ -5,6 +5,7 @@ import Link from "next/link";
 import { formatPrice, formatDate, ORDER_STATUS_LABELS, PAYMENT_METHOD_LABELS } from "@/lib/utils";
 import { OrderPaymentBadge } from "@/components/orders/OrderPaymentBadge";
 import { CLIENT_SPACE_COPY } from "@/lib/client-space-copy";
+import { ClientPageIntro } from "@/components/layout/ClientPageIntro";
 
 export default async function ClientCommandesPage() {
   const session = await getServerSession(authOptions);
@@ -21,17 +22,14 @@ export default async function ClientCommandesPage() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="heading-section mb-2">Mes commandes</h1>
-        <p className="text-brand-600">{CLIENT_SPACE_COPY.commandesSubtitle}</p>
-      </div>
+      <ClientPageIntro align="left" title="Mes commandes" description={CLIENT_SPACE_COPY.commandesSubtitle} />
 
       <p className="mb-8 text-sm text-brand-500 leading-relaxed max-w-3xl">
         Retrouvez ici le détail de chaque commande passée : référence, statut, mode de paiement et adresse de livraison le cas échéant.
       </p>
 
       {orders.length === 0 ? (
-        <div className="bg-white border border-brand-100 text-center py-16">
+        <div className="public-card text-center py-16 px-6">
           <p className="text-brand-500 mb-6">{CLIENT_SPACE_COPY.commandesEmpty}</p>
           <Link href="/offres" className="btn-primary text-xs">Découvrir nos prestations</Link>
           <Link href="/boutique" className="btn-secondary text-xs mt-3 inline-block">Voir la boutique</Link>
@@ -52,7 +50,7 @@ export default async function ClientCommandesPage() {
             const config = payment ? configByCode[payment.method] : null;
 
             return (
-            <div key={order.id} className="bg-white border border-brand-100 p-6">
+            <div key={order.id} className="public-card p-6">
               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
                 <div>
                   <div className="flex items-center gap-2 mb-1">

@@ -112,6 +112,7 @@ export const publicNav = [
   { name: "Orientation", href: "/orientation" },
   { name: "À propos", href: "/a-propos" },
   { name: "Blog", href: "/blog" },
+  { name: "Contact", href: "/contact" },
   { name: "Shopping", href: "/boutique?line=luxe", highlight: true },
 ];
 

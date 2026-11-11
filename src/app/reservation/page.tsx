@@ -20,6 +20,7 @@ import {
   DEFAULT_DISCOVERY_PARCOURS_SETTINGS,
   type DiscoveryParcoursSettings,
 } from "@/lib/discovery-parcours-settings";
+import { PublicPageShell } from "@/components/layout/PublicPageShell";
 
 const TIME_SLOTS = [
   "09:00", "10:00", "11:00", "12:00",
@@ -251,33 +252,32 @@ function ReservationForm() {
   return (
     <>
       {FeedbackModal}
-      <div className="min-h-screen pt-24 pb-20">
-        <div className="container-premium max-w-3xl">
-          <p className="text-overline mb-2">
+      <PublicPageShell width="default">
+          <p className="text-overline text-accent mb-2">
             {isDiscoveryRdv ? "Demande de rendez-vous" : "Accompagnement"}
           </p>
           {!isDiscoveryRdv ? (
-            <h1 className="heading-section mb-4">{copy.pageTitle}</h1>
-          ) : null}
-          <p className="text-brand-600 mb-12">
+            <h1 className="heading-section mb-3">{copy.pageTitle}</h1>
+          ) : (
+            <h1 className="heading-section mb-3">Parcours de découverte</h1>
+          )}
+          <p className="public-page-desc mb-8">
             Étape {step} sur {totalSteps} — {copy.stepLabel(step, totalSteps)}
           </p>
 
-          {!isDiscoveryRdv ? (
-            <div className="h-1 bg-brand-100 mb-12">
-              <div
-                className="h-full bg-brand-950 transition-all"
-                style={{ width: `${(step / totalSteps) * 100}%` }}
-              />
-            </div>
-          ) : null}
+          <div className="h-1 rounded-full bg-brand-300/40 mb-8 sm:mb-10 overflow-hidden">
+            <div
+              className="h-full bg-accent transition-all"
+              style={{ width: `${(step / totalSteps) * 100}%` }}
+            />
+          </div>
 
           {step === 1 && isDiscoveryRdv && !discoverySettingsReady && (
             <p className="text-sm text-brand-500">Chargement du formulaire…</p>
           )}
 
           {step === 1 && isDiscoveryRdv && discoverySettingsReady && (
-            <div className="space-y-6">
+            <div className="public-form-card space-y-6">
               <DiscoveryParcoursForm
                 settings={discoverySettings}
                 contact={{
@@ -295,7 +295,7 @@ function ReservationForm() {
               <button
                 type="button"
                 onClick={() => setStep(discoveryDateStep)}
-                className="btn-primary w-full sm:w-auto"
+                className="btn-primary rounded-full w-full sm:w-auto"
                 disabled={!discoveryContactValid}
               >
                 {copy.continueLabel}
@@ -304,8 +304,8 @@ function ReservationForm() {
           )}
 
           {step === 1 && !isDiscoveryRdv && (
-            <div className="space-y-6">
-              <div className="p-4 bg-brand-50 border border-brand-100 text-sm text-brand-600 leading-relaxed">
+            <div className="public-form-card space-y-6">
+              <div className="p-4 rounded-xl border border-brand-300/50 bg-surface-cream text-sm text-brand-600 leading-relaxed">
                 Renseignez vos coordonnées et précisez le mode d&apos;accompagnement souhaité.
               </div>
 
@@ -345,7 +345,7 @@ function ReservationForm() {
               </div>
               <button
                 onClick={() => setStep(2)}
-                className="btn-primary"
+                className="btn-primary rounded-full"
                 disabled={!form.firstName || !form.lastName || !form.email || !form.phone}
               >
                 {copy.continueLabel}
@@ -354,7 +354,7 @@ function ReservationForm() {
           )}
 
           {step === discoveryDateStep && (
-            <div className="space-y-6">
+            <div className="public-form-card space-y-6">
               <div>
                 <label className="label-field flex items-center gap-2">
                   <Calendar className="w-4 h-4" /> Date souhaitée *
@@ -371,8 +371,10 @@ function ReservationForm() {
                       key={time}
                       type="button"
                       onClick={() => updateForm("time", time)}
-                      className={`py-3 text-sm border transition-all ${
-                        form.time === time ? "border-brand-950 bg-brand-50" : "border-brand-200 hover:border-brand-400"
+                      className={`py-3 text-sm border rounded-lg transition-all ${
+                        form.time === time
+                          ? "border-accent bg-accent/5 text-brand-950"
+                          : "border-brand-300/60 hover:border-accent/50"
                       }`}
                     >
                       {time.replace(":", "h")}
@@ -382,7 +384,7 @@ function ReservationForm() {
               </div>
 
               {isDiscoveryRdv && (
-                <div className="p-5 bg-brand-50 border border-brand-100 text-sm text-brand-600 space-y-2">
+                <div className="p-5 rounded-xl border border-brand-300/50 bg-surface-cream text-sm text-brand-600 space-y-2">
                   <p className="font-medium text-brand-950">Récapitulatif</p>
                   <p>{form.firstName} {form.lastName} — {form.email}</p>
                   <p>{form.date} à {form.time?.replace(":", "h")} — {modeLabel}</p>
@@ -394,14 +396,14 @@ function ReservationForm() {
               )}
 
               <div className="flex gap-4">
-                <button type="button" onClick={() => setStep(1)} className="btn-secondary">
+                <button type="button" onClick={() => setStep(1)} className="btn-secondary rounded-full">
                   Retour
                 </button>
                 {isDiscoveryRdv ? (
                   <button
                     type="button"
                     onClick={handleDiscoverySubmit}
-                    className="btn-primary flex-1"
+                    className="btn-primary rounded-full flex-1"
                     disabled={loading || !form.date || !form.time}
                   >
                     {loading ? "Envoi..." : copy.submitDiscovery}
@@ -410,7 +412,7 @@ function ReservationForm() {
                   <button
                     type="button"
                     onClick={() => setStep(3)}
-                    className="btn-primary"
+                    className="btn-primary rounded-full"
                     disabled={!form.date || !form.time}
                   >
                     {copy.continueLabel}
@@ -421,8 +423,8 @@ function ReservationForm() {
           )}
 
           {!isDiscoveryRdv && step === 3 && (
-            <div className="space-y-6">
-              <div className="p-6 bg-brand-50 border border-brand-100 mb-6">
+            <div className="public-form-card space-y-6">
+              <div className="p-6 rounded-xl border border-brand-300/50 bg-surface-cream mb-2">
                 <h3 className="font-display text-lg mb-4">{copy.recapTitle}</h3>
                 {hasCartItems ? (
                   items.map((item) => (
@@ -460,11 +462,11 @@ function ReservationForm() {
               </div>
 
               <div className="flex gap-4">
-                <button type="button" onClick={() => setStep(2)} className="btn-secondary">Retour</button>
+                <button type="button" onClick={() => setStep(2)} className="btn-secondary rounded-full">Retour</button>
                 <button
                   type="button"
                   onClick={handlePurchaseSubmit}
-                  className="btn-primary flex-1"
+                  className="btn-primary rounded-full flex-1"
                   disabled={loading || !form.paymentMethod || methodsLoading}
                 >
                   {loading ? "Traitement..." : getPaymentButtonLabel(form.paymentMethod, paymentMethods, "appointment")}
@@ -472,15 +474,14 @@ function ReservationForm() {
               </div>
             </div>
           )}
-        </div>
-      </div>
+      </PublicPageShell>
     </>
   );
 }
 
 export default function ReservationPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen pt-24 flex items-center justify-center">Chargement...</div>}>
+    <Suspense fallback={<PublicPageShell width="narrow"><p className="text-brand-500 text-sm text-center">Chargement…</p></PublicPageShell>}>
       <ReservationForm />
     </Suspense>
   );

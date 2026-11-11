@@ -166,17 +166,11 @@ export function CategoryManager({ initial }: { initial: Category[] }) {
     <>
       {FeedbackModal}
       <div>
-      <div className="flex flex-wrap justify-between items-start gap-4 mb-6">
-        <div>
-          <h1 className="heading-section mb-1">Catégories</h1>
-          <p className="text-brand-600 text-sm">
-            Organisez séparément la boutique luxe et les accompagnements
-          </p>
-        </div>
+      <div className="flex flex-wrap justify-end gap-4 mb-6">
         <button
           type="button"
           onClick={() => startCreate()}
-          className="btn-primary inline-flex items-center gap-2 text-xs"
+          className="admin-btn-primary inline-flex items-center gap-2 text-xs"
         >
           <Plus className="w-4 h-4" />
           Catégorie principale

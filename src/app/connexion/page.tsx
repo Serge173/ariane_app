@@ -66,19 +66,20 @@ export default function ConnexionPage() {
   };
 
   return (
-    <div className="client-space-auth min-h-screen py-12 flex items-center bg-white">
+    <div className="client-space-auth public-page public-page--cream min-h-screen py-12 sm:py-16 flex items-center">
       <div className="container-premium max-w-md w-full">
-        <div className="text-center mb-10">
-          <p className="text-overline mb-3">Espace client</p>
+        <div className="text-center mb-8 sm:mb-10">
+          <p className="text-overline text-accent mb-3">Espace client</p>
           <h1 className="heading-section mb-2">
             {isRegister ? "Créer mon compte" : "Connexion client"}
           </h1>
-          <p className="text-sm text-brand-600">
+          <p className="public-page-desc">
             {isRegister ? CLIENT_SPACE_COPY.connexionRegister : CLIENT_SPACE_COPY.connexionLogin}
           </p>
+          <span className="public-page-accent-rule mx-auto" aria-hidden />
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="public-form-card space-y-6">
           {isRegister && (
             <>
               <div className="grid grid-cols-2 gap-4">
@@ -110,7 +111,7 @@ export default function ConnexionPage() {
 
           {error && <p className="text-sm text-red-600 bg-red-50 p-3">{error}</p>}
 
-          <button type="submit" className="btn-primary w-full" disabled={loading}>
+          <button type="submit" className="btn-primary rounded-full w-full" disabled={loading}>
             {loading ? "Chargement..." : isRegister ? "Créer mon compte client" : "Accéder à mon espace"}
           </button>
         </form>

@@ -21,6 +21,9 @@ function resolveBuildAppUrl(): string {
 }
 
 const nextConfig: NextConfig = {
+  experimental: {
+    optimizePackageImports: ["framer-motion", "lucide-react"],
+  },
   env: {
     NEXT_PUBLIC_APP_URL: resolveBuildAppUrl(),
   },
@@ -37,6 +40,7 @@ const nextConfig: NextConfig = {
     return [{ source: "/favicon.ico", destination: "/favicon.svg" }];
   },
   images: {
+    qualities: [60, 75, 90, 92, 100],
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "*.public.blob.vercel-storage.com" },

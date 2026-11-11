@@ -66,9 +66,9 @@ export function BoutiqueSubNav({ roots }: BoutiqueSubNavProps) {
     slug === null ? !activeCategory && !activeQ && !activeBrand : activeCategory === slug;
 
   return (
-    <div className="sticky top-16 lg:top-[4.25rem] z-30 bg-white/95 backdrop-blur-sm border-b border-white mt-6">
-      <div className="max-w-[1600px] mx-auto px-4 lg:px-8">
-        <div className="flex items-center gap-4 py-2 border-b border-brand-200/50">
+    <div className="sticky top-14 sm:top-16 lg:top-[4.25rem] z-30 bg-surface-cream/95 backdrop-blur-md border-b border-brand-300/50 -mx-4 px-4 sm:mx-0 sm:px-0 mt-4 sm:mt-6">
+      <div className="max-w-[1600px] mx-auto lg:px-2">
+        <div className="flex items-center gap-4 py-2 border-b border-brand-300/40">
           {SHOPPING_LINE_OPTIONS.map(({ name, line }) => (
             <Link
               key={line}
@@ -76,7 +76,7 @@ export function BoutiqueSubNav({ roots }: BoutiqueSubNavProps) {
               className={cn(
                 "font-sans text-[10px] uppercase tracking-[0.2em] whitespace-nowrap transition-colors pb-0.5 border-b-2",
                 activeLine === line
-                  ? "text-brand-950 border-brand-950"
+                  ? "text-accent border-accent"
                   : "text-brand-500 border-transparent hover:text-brand-950"
               )}
             >
@@ -95,7 +95,7 @@ export function BoutiqueSubNav({ roots }: BoutiqueSubNavProps) {
                 href={hrefFor(link.slug)}
                 className={`font-sans text-[11px] uppercase tracking-widest whitespace-nowrap shrink-0 transition-colors pb-0.5 border-b-2 ${
                   isActive(link.slug)
-                    ? "text-brand-950 border-brand-950"
+                    ? "text-accent border-accent"
                     : "text-brand-500 border-transparent hover:text-brand-950"
                 }`}
               >
@@ -122,7 +122,7 @@ export function BoutiqueSubNav({ roots }: BoutiqueSubNavProps) {
               onChange={(e) => setQ(e.target.value)}
               placeholder="Rechercher..."
               autoFocus
-              className="w-full max-w-md font-sans text-sm border-b border-brand-300 py-2 bg-transparent focus:outline-none focus:border-brand-950"
+              className="w-full max-w-md font-sans text-sm border border-brand-300/70 rounded-lg px-3 py-2 bg-white focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/15"
             />
           </form>
         )}

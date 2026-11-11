@@ -4,6 +4,7 @@ import { formatDate, APPOINTMENT_STATUS_LABELS } from "@/lib/utils";
 import { ProfileAvatar } from "@/components/ui/ProfileAvatar";
 import { RdvRequestsAdminList } from "@/components/admin/rendez-vous/RdvRequestsAdminList";
 import { getDiscoveryParcoursSettings } from "@/lib/discovery-parcours-settings";
+import { AdminPageHeader } from "@/components/admin/ui/AdminPageHeader";
 
 export default async function AdminRendezVousPage() {
   let appointments: Awaited<ReturnType<typeof getAppointments>> = [];
@@ -24,13 +25,11 @@ export default async function AdminRendezVousPage() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="heading-section mb-2">Rendez-vous</h1>
-        <p className="text-brand-600">
-          {pendingCount} demande{pendingCount !== 1 ? "s" : ""} de RDV en attente · {upcoming.length}{" "}
-          rendez-vous confirmé{upcoming.length !== 1 ? "s" : ""} à venir
-        </p>
-      </div>
+      <AdminPageHeader
+        section="Commerce"
+        title="Rendez-vous"
+        description={`${pendingCount} demande${pendingCount !== 1 ? "s" : ""} de RDV en attente · ${upcoming.length} rendez-vous confirmé${upcoming.length !== 1 ? "s" : ""} à venir`}
+      />
 
       {rdvRequests.length > 0 && (
         <section className="mb-10">

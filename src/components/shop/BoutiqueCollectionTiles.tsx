@@ -20,12 +20,12 @@ export function BoutiqueCollectionTiles({ roots, collections }: BoutiqueCollecti
   if (roots.length === 0) return null;
 
   return (
-    <section className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      <div className="text-center max-w-2xl mx-auto mb-12 lg:mb-16">
-        <h2 className="font-display text-3xl sm:text-4xl font-light italic text-brand-950 mb-4">
-          {collections.title}
-        </h2>
+    <section className="py-12 lg:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <div className="text-center max-w-2xl mx-auto mb-10 lg:mb-14">
+        <p className="text-overline text-accent mb-3">Collections</p>
+        <h2 className="font-display text-3xl sm:text-4xl font-light text-brand-950 mb-4">{collections.title}</h2>
         <p className="font-sans text-sm text-brand-600 leading-relaxed">{collections.intro}</p>
+        <span className="public-page-accent-rule mx-auto mt-5" aria-hidden />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
@@ -33,7 +33,7 @@ export function BoutiqueCollectionTiles({ roots, collections }: BoutiqueCollecti
           <Link
             key={root.slug}
             href={`/boutique?category=${root.slug}`}
-            className={`group relative overflow-hidden bg-brand-200 ${
+            className={`group relative overflow-hidden rounded-2xl bg-brand-300/30 border border-brand-300/40 shadow-[0_8px_32px_-20px_rgba(40,36,31,0.18)] ${
               index === 0 ? "sm:col-span-2 sm:row-span-1 lg:col-span-2 lg:row-span-2" : ""
             } ${index === 0 ? "aspect-[16/10] lg:aspect-auto lg:min-h-[520px]" : "aspect-[4/5]"}`}
           >

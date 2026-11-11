@@ -65,7 +65,7 @@ export function Footer({ siteSettings }: FooterProps) {
           </div>
 
           <div className="lg:flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-0 sm:gap-8 lg:gap-6 xl:gap-8 min-w-0">
-            <FooterAccordionSection title="Navigation">
+            <FooterAccordionSection title="Navigation" defaultOpen>
             <ul className="space-y-2.5">
               {footer.navigation.map((link) => (
                 <li key={link.href}>
@@ -80,7 +80,7 @@ export function Footer({ siteSettings }: FooterProps) {
             </ul>
             </FooterAccordionSection>
 
-            <FooterAccordionSection title="Informations">
+            <FooterAccordionSection title="Informations" defaultOpen>
             <ul className="space-y-2.5">
               {footer.legal.map((link) => (
                 <li key={link.href}>

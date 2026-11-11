@@ -80,6 +80,23 @@ function parseLinks(raw: unknown, fallback: SiteNavLink[]): SiteNavLink[] {
   return links.length > 0 ? links.slice(0, 12) : fallback;
 }
 
+function navHrefKey(href: string): string {
+  return href.split("?")[0] || href;
+}
+
+/** Complète la liste avec les liens publics par défaut absents (menu / footer). */
+function mergeNavWithDefaults(links: SiteNavLink[], defaults: SiteNavLink[]): SiteNavLink[] {
+  const seen = new Set(links.map((l) => navHrefKey(l.href)));
+  const merged = [...links];
+  for (const link of defaults) {
+    const key = navHrefKey(link.href);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    merged.push(link);
+  }
+  return merged.slice(0, 12);
+}
+
 function migrateNavLinks(links: SiteNavLink[]): SiteNavLink[] {
   return links.map((link) => {
     if (link.name === "Boutique" && link.highlight) return { ...SHOPPING_NAV_LINK };
@@ -119,6 +136,7 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
     { name: "Orientation", href: "/orientation" },
     { name: "À propos", href: "/a-propos" },
     { name: "Blog", href: "/blog" },
+    { name: "Contact", href: "/contact" },
     { ...SHOPPING_NAV_LINK },
   ],
   footer: {
@@ -225,7 +243,12 @@ export async function getSiteSettings(): Promise<SiteSettings> {
           str((brandRaw as { subtitle?: string }).subtitle, DEFAULT_SITE_SETTINGS.brand.subtitle)
         ),
       },
-      nav: migrateNavLinks(parseLinks(raw.nav, DEFAULT_SITE_SETTINGS.nav)),
+      nav: migrateNavLinks(
+        mergeNavWithDefaults(
+          parseLinks(raw.nav, DEFAULT_SITE_SETTINGS.nav),
+          DEFAULT_SITE_SETTINGS.nav
+        )
+      ),
       footer: {
         title: migrateFooterTitle(
           str((footerRaw as { title?: string }).title, DEFAULT_SITE_SETTINGS.footer.title)
@@ -241,12 +264,18 @@ export async function getSiteSettings(): Promise<SiteSettings> {
           str((footerRaw as { ctaHref?: string }).ctaHref, DEFAULT_SITE_SETTINGS.footer.ctaHref)
         ),
         navigation: migrateNavLinks(
-          parseLinks(
-            (footerRaw as { navigation?: unknown }).navigation,
+          mergeNavWithDefaults(
+            parseLinks(
+              (footerRaw as { navigation?: unknown }).navigation,
+              DEFAULT_SITE_SETTINGS.footer.navigation
+            ),
             DEFAULT_SITE_SETTINGS.footer.navigation
           )
         ),
-        legal: parseLinks((footerRaw as { legal?: unknown }).legal, DEFAULT_SITE_SETTINGS.footer.legal),
+        legal: mergeNavWithDefaults(
+          parseLinks((footerRaw as { legal?: unknown }).legal, DEFAULT_SITE_SETTINGS.footer.legal),
+          DEFAULT_SITE_SETTINGS.footer.legal
+        ),
         contact: {
           line1: str((contactRaw as { line1?: string }).line1, DEFAULT_SITE_SETTINGS.footer.contact.line1),
           line2: str((contactRaw as { line2?: string }).line2, DEFAULT_SITE_SETTINGS.footer.contact.line2),

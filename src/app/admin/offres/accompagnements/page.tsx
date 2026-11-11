@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { AdminProductsTable } from "@/components/admin/AdminProductsTable";
 import { AdminOffresSubNav } from "@/components/admin/AdminOffresSubNav";
+import { AdminPageHeader } from "@/components/admin/ui/AdminPageHeader";
 import Link from "next/link";
 
 export default async function AdminAccompagnementsPage() {
@@ -15,13 +16,11 @@ export default async function AdminAccompagnementsPage() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="heading-section mb-2">Accompagnements coaching</h1>
-        <p className="text-brand-600">
-          {products.length} formule{products.length !== 1 ? "s" : ""} — Standard, Gold, Platinum, Sur-mesure
-        </p>
-      </div>
-
+      <AdminPageHeader
+        section="Offre"
+        title="Prestations"
+        description={`${products.length} formule${products.length !== 1 ? "s" : ""} — accompagnements coaching`}
+      />
       <AdminOffresSubNav active="coaching" />
 
       <div className="mb-6 p-4 bg-brand-50 border border-brand-100 flex flex-wrap items-center justify-between gap-3">

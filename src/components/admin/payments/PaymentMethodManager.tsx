@@ -257,17 +257,11 @@ export function PaymentMethodManager({ initial }: { initial: PaymentMethodRow[] 
     <>
       {FeedbackModal}
       <div>
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-        <div>
-          <h1 className="heading-section mb-1">Modes de paiement</h1>
-          <p className="text-brand-600 text-sm">
-            Cliquez sur un cadre pour voir et modifier ses informations. Logo, API, canal CinetPay et consignes.
-          </p>
-        </div>
+      <div className="flex flex-wrap items-center justify-end gap-4 mb-6">
         <button
           type="button"
           onClick={openCreateForm}
-          className="btn-primary inline-flex items-center gap-2 text-xs"
+          className="admin-btn-primary inline-flex items-center gap-2 text-xs"
         >
           <Plus className="w-4 h-4" />
           Ajouter un mode

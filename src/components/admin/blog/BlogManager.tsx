@@ -167,11 +167,8 @@ export function BlogManager() {
       {FeedbackModal}
       <div className="w-full">
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-        <div>
-          <h1 className="heading-section mb-1">Articles du blog</h1>
-          <p className="text-brand-600 text-sm">{posts.length} article(s)</p>
-        </div>
-        <Link href="/admin/blog/nouveau" className="btn-primary inline-flex items-center gap-2 text-xs">
+        <p className="admin-page-desc !mt-0">{posts.length} article(s)</p>
+        <Link href="/admin/blog/nouveau" className="admin-btn-primary inline-flex items-center gap-2 text-xs">
           <Plus className="w-4 h-4" />
           Nouvel article
         </Link>

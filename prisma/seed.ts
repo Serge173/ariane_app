@@ -78,7 +78,7 @@ async function main() {
       slug: "standard",
       shortDescription: "L'essentiel pour aligner votre image avec votre personnalité",
       description:
-        "Un accompagnement complet pour découvrir votre style et harmoniser votre garde-robe. Idéal pour une première approche du conseil en image.\n\n• Analyse colorimétrique\n• Audit de garde-robe\n• Conseils personnalisés\n• Guide de style digital",
+        "Un accompagnement complet pour découvrir votre style et harmoniser votre garde-robe. Idéal pour une première approche du conseil en image.",
       price: 60000,
       features: [
         "Analyse colorimétrique",
@@ -95,7 +95,7 @@ async function main() {
       slug: "gold",
       shortDescription: "Une transformation en profondeur de votre image personnelle",
       description:
-        "Un parcours approfondi pour une transformation visible et durable de votre image.\n\n• Tout Standard +\n• Personal shopping guidé\n• Book de style personnalisé\n• Suivi post-coaching (1 mois)",
+        "Un parcours approfondi pour une transformation visible et durable de votre image, avec un suivi adapté à votre rythme.",
       price: 150000,
       features: [
         "Tout Standard inclus",
@@ -110,16 +110,17 @@ async function main() {
     {
       name: "Platinum",
       slug: "platinum",
-      shortDescription: "L'excellence en conseil en image, sur mesure et premium",
+      shortDescription:
+        "L'excellence en conseil en image, le chemin vers la réalisation de ses ambitions",
       description:
-        "L'accompagnement le plus complet pour une refonte totale de votre image professionnelle et personnelle.\n\n• Tout Gold +\n• Accompagnement multi-séances\n• Garde-robe capsule complète\n• Suivi premium 3 mois\n• Accès prioritaire",
+        "Connaître ses couleurs valorisantes, identifier sa morphologie, et apprendre à gérer ses complexes. Suivi adapté à votre objectif.",
       price: 350000,
       features: [
-        "Tout Gold inclus",
-        "Accompagnement multi-séances",
-        "Garde-robe capsule complète",
-        "Suivi premium 3 mois",
-        "Accès prioritaire",
+        "Atelier de transition de mindset",
+        "Analyse colorimétrique",
+        "Analyse morphologique",
+        "Gestion des complexes",
+        "Diagnostic style",
       ],
       duration: "8+ heures",
       sortOrder: 3,
@@ -130,7 +131,7 @@ async function main() {
       slug: "sur-mesure",
       shortDescription: "Un diagnostic personnalisé pour un accompagnement unique",
       description:
-        "Pour les personnalités, dirigeants et projets d'image exceptionnels. Un diagnostic approfondi permet de définir un parcours entièrement personnalisé.\n\n• Diagnostic complet\n• Parcours sur mesure\n• Conciergerie shopping luxe\n• Accompagnement illimité selon besoin",
+        "Pour les personnalités, dirigeants et projets d'image exceptionnels. Un diagnostic approfondi permet de définir un parcours entièrement personnalisé.",
       price: 500000,
       features: [
         "Diagnostic complet",

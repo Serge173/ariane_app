@@ -101,18 +101,14 @@ export function BrandManager({ initial }: { initial: Brand[] }) {
     <>
       {FeedbackModal}
       <div>
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="heading-section mb-1">Marques</h1>
-          <p className="text-brand-600 text-sm">Gérez les maisons et labels de votre boutique</p>
-        </div>
+      <div className="flex justify-end items-center mb-6">
         <button
           type="button"
           onClick={() => {
             reset();
             setShowNew(true);
           }}
-          className="btn-primary inline-flex items-center gap-2 text-xs"
+          className="admin-btn-primary inline-flex items-center gap-2 text-xs"
         >
           <Plus className="w-4 h-4" />
           Nouvelle marque

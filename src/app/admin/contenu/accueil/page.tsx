@@ -3,7 +3,7 @@ import { authOptions } from "@/lib/auth";
 import { canManageTeam } from "@/lib/user-roles";
 import { ContentSubNav } from "@/components/admin/content/ContentSubNav";
 import { HomepageSettingsForm } from "@/components/admin/content/HomepageSettingsForm";
-import { PageHeader } from "@/components/admin/ui/PageHeader";
+import { AdminPageHeader } from "@/components/admin/ui/AdminPageHeader";
 import { getHomepageSettings } from "@/lib/homepage-settings";
 
 export default async function AdminHomepageContentPage() {
@@ -13,7 +13,8 @@ export default async function AdminHomepageContentPage() {
 
   return (
     <div>
-      <PageHeader
+      <AdminPageHeader
+        section="Contenu"
         title="Page d'accueil"
         description="Sections numérotées : modifiez le hero, le parcours, les témoignages et le contact. Enregistrez en bas de page."
       />

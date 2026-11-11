@@ -38,6 +38,7 @@ const config: Config = {
         },
         surface: {
           DEFAULT: "#FFFFFF",
+          cream: "#F9F7F2",
           dark: "#1A1A18",
         },
       },

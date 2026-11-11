@@ -3,7 +3,9 @@
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Check, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { PublicConfirmationLayout } from "@/components/layout/PublicConfirmationLayout";
+import { PublicPageShell } from "@/components/layout/PublicPageShell";
 
 function ConfirmationContent() {
   const searchParams = useSearchParams();
@@ -11,65 +13,68 @@ function ConfirmationContent() {
   const isDiscoveryRdv = searchParams.get("type") === "rdv";
 
   return (
-    <div className="min-h-screen pt-24 pb-20">
-      <div className="container-premium max-w-2xl text-center">
-        <div className="w-20 h-20 bg-brand-950 text-white rounded-full flex items-center justify-center mx-auto mb-8">
-          <Check className="w-10 h-10" />
-        </div>
-
-        <h1 className="heading-section mb-4">
-          {isDiscoveryRdv ? "Demande de RDV envoyée" : "Réservation confirmée"}
-        </h1>
-        <p className="text-brand-600 mb-2">
-          {isDiscoveryRdv
-            ? "Merci pour votre confiance. Ariane DAGO reviendra vers vous pour confirmer votre créneau."
-            : "Merci pour votre confiance. Votre accompagnement est en cours de confirmation."}
-        </p>
-        {orderNumber && (
-          <p className="text-sm text-brand-500 mb-8">
-            Référence : <strong>{orderNumber}</strong>
-          </p>
-        )}
-
-        <div className="p-6 bg-brand-50 border border-brand-100 text-left mb-10 max-w-md mx-auto">
-          <h3 className="font-medium mb-4">Prochaines étapes</h3>
-          <ol className="space-y-3 text-sm text-brand-600">
+    <PublicConfirmationLayout
+      title={isDiscoveryRdv ? "Demande de RDV envoyée" : "Réservation confirmée"}
+      description={
+        isDiscoveryRdv
+          ? "Merci pour votre confiance. Ariane DAGO reviendra vers vous pour confirmer votre créneau."
+          : "Merci pour votre confiance. Votre accompagnement est en cours de confirmation."
+      }
+      reference={orderNumber}
+      steps={
+        <>
+          <h3 className="font-medium text-brand-950 mb-4">Prochaines étapes</h3>
+          <ol className="space-y-3 text-sm text-brand-600 list-decimal list-inside">
             {isDiscoveryRdv ? (
               <>
-                <li>1. Confirmation de votre créneau par email ou WhatsApp</li>
-                <li>2. Échange personnalisé avec Ariane DAGO</li>
-                <li>3. Orientation vers l&apos;accompagnement adapté à vos objectifs</li>
+                <li>Confirmation de votre créneau par email ou WhatsApp</li>
+                <li>Échange personnalisé avec Ariane DAGO</li>
+                <li>Orientation vers l&apos;accompagnement adapté à vos objectifs</li>
               </>
             ) : (
               <>
-                <li>1. Vous recevrez un email de confirmation</li>
-                <li>2. Complétez le questionnaire pré-coaching</li>
-                <li>3. Retrouvez votre accompagnement dans votre espace client</li>
+                <li>Vous recevrez un email de confirmation</li>
+                <li>Complétez le questionnaire pré-coaching</li>
+                <li>Retrouvez votre accompagnement dans votre espace client</li>
               </>
             )}
           </ol>
-        </div>
-
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        </>
+      }
+      actions={
+        <>
           {!isDiscoveryRdv && (
-            <Link href="/mon-espace" className="btn-primary inline-flex items-center gap-2">
+            <Link href="/mon-espace" className="btn-primary rounded-full inline-flex items-center justify-center gap-2">
               Accéder à mon espace
               <ArrowRight className="w-4 h-4" />
             </Link>
           )}
-          <Link href="/" className={isDiscoveryRdv ? "btn-primary inline-flex items-center gap-2" : "btn-secondary"}>
+          <Link
+            href="/"
+            className={
+              isDiscoveryRdv
+                ? "btn-primary rounded-full inline-flex items-center justify-center gap-2"
+                : "btn-secondary rounded-full inline-flex items-center justify-center"
+            }
+          >
             Retour à l&apos;accueil
             {isDiscoveryRdv && <ArrowRight className="w-4 h-4" />}
           </Link>
-        </div>
-      </div>
-    </div>
+        </>
+      }
+    />
   );
 }
 
 export default function ConfirmationPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen pt-24 flex items-center justify-center">Chargement...</div>}>
+    <Suspense
+      fallback={
+        <PublicPageShell width="narrow">
+          <p className="text-brand-500 text-sm text-center">Chargement…</p>
+        </PublicPageShell>
+      }
+    >
       <ConfirmationContent />
     </Suspense>
   );

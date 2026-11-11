@@ -53,7 +53,7 @@ export function BoutiqueCatalog({
             <button
               type="button"
               onClick={() => setActiveCategory("all")}
-              className="px-5 py-2.5 text-xs uppercase tracking-widest border transition-colors border-brand-200 text-brand-600 hover:border-brand-950"
+              className="px-5 py-2.5 text-xs uppercase tracking-widest border rounded-full transition-colors border-brand-300/60 text-brand-600 hover:border-accent/60 bg-white"
             >
               Tout voir
             </button>
@@ -62,10 +62,10 @@ export function BoutiqueCatalog({
             <button
               key={cat.slug}
               onClick={() => setActiveCategory(cat.slug)}
-              className={`px-5 py-2.5 text-xs uppercase tracking-widest border transition-colors ${
+              className={`px-5 py-2.5 text-xs uppercase tracking-widest border rounded-full transition-colors ${
                 activeCategory === cat.slug
-                  ? "bg-brand-950 text-white border-brand-950"
-                  : "border-brand-200 text-brand-600 hover:border-brand-950"
+                  ? "bg-accent text-white border-accent"
+                  : "border-brand-300/60 text-brand-600 hover:border-accent/60 bg-white"
               }`}
             >
               {cat.name}
@@ -89,7 +89,7 @@ export function BoutiqueCatalog({
       </div>
 
       {filtered.length === 0 && (
-        <p className="text-center text-brand-500 py-16">Aucun article dans cette catégorie.</p>
+        <p className="text-center text-brand-500 public-card py-14 px-6">Aucun article dans cette catégorie.</p>
       )}
     </>
   );
@@ -133,7 +133,10 @@ function BoutiqueProductCard({
   if (variant === "wix") {
     return (
       <article className="group text-center">
-        <Link href={href} className="block relative aspect-[3/4] product-frame mb-4">
+        <Link
+          href={href}
+          className="block relative aspect-[3/4] product-frame mb-4 rounded-2xl overflow-hidden border border-brand-300/45 bg-white shadow-[0_8px_28px_-18px_rgba(40,36,31,0.2)]"
+        >
           <ProductImage
             src={product.images[0]}
             fallback={luxeImage(product.slug)}

@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { CatalogueSubNav } from "@/components/admin/catalogue/CatalogueSubNav";
 import { ProductForm } from "@/components/admin/catalogue/ProductForm";
+import { AdminPageHeader } from "@/components/admin/ui/AdminPageHeader";
 
 async function getFormData() {
   try {
@@ -27,8 +28,8 @@ export default async function NewProductPage() {
 
   return (
     <div>
+      <AdminPageHeader section="Offre" title="Nouveau produit" description="Création d'une fiche catalogue" />
       <CatalogueSubNav active="products" />
-      <h1 className="heading-section mb-8">Nouveau produit</h1>
       <ProductForm mode="create" categories={categories} brands={brands} />
     </div>
   );

@@ -10,17 +10,13 @@ export interface AdminNavGroup {
   id: string;
   label: string;
   items: AdminNavLink[];
-  /** Masquer le titre de section (ex. tableau de bord seul en tête) */
-  hideLabel?: boolean;
-  /** Groupe calme en bas (Stats, Guide, Paramètres) */
-  calm?: boolean;
 }
 
+/** Menu latéral aligné sur la maquette console admin */
 export const adminNavGroups: AdminNavGroup[] = [
   {
-    id: "today",
-    label: "Aujourd'hui",
-    hideLabel: true,
+    id: "administration",
+    label: "Administration",
     items: [{ name: "Tableau de bord", href: "/admin", exact: true }],
   },
   {
@@ -67,7 +63,6 @@ export const adminNavGroups: AdminNavGroup[] = [
   {
     id: "system",
     label: "Système",
-    calm: true,
     items: [
       { name: "Statistiques", href: "/admin/statistiques" },
       { name: "Guide", href: "/admin/guide", exact: true },
@@ -82,8 +77,14 @@ const COMMERCE_PATHS = ["/admin/commandes", "/admin/clients", "/admin/rendez-vou
 
 export function isAdminLinkActive(pathname: string, href: string, exact?: boolean): boolean {
   if (exact) return pathname === href;
-  if (href === "/admin/contenu/accueil") return pathname.startsWith("/admin/contenu");
   if (href === "/admin/blog/articles") return pathname.startsWith("/admin/blog");
+  if (href === "/admin/contenu/accueil") {
+    const excluded = ["/admin/contenu/site", "/admin/contenu/faq", "/admin/contenu/legal"];
+    if (excluded.some((p) => pathname.startsWith(p))) return false;
+    return pathname.startsWith("/admin/contenu");
+  }
+  if (href === "/admin/offres/accompagnements") return pathname.startsWith("/admin/offres");
+  if (href.startsWith("/admin/contenu/")) return pathname === href || pathname.startsWith(`${href}/`);
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
@@ -92,7 +93,7 @@ export function filterAdminNavForRole(role?: string): AdminNavGroup[] {
 
   if (r === "ACCOUNTING") {
     return adminNavGroups
-      .filter((g) => g.id === "today" || g.id === "commerce" || g.id === "system")
+      .filter((g) => g.id === "administration" || g.id === "commerce" || g.id === "system")
       .map((g) => {
         if (g.id !== "commerce") return g;
         return {
@@ -107,13 +108,13 @@ export function filterAdminNavForRole(role?: string): AdminNavGroup[] {
 
   if (r === "MANAGER_SHOP") {
     return adminNavGroups.filter((g) =>
-      ["today", "offre", "contenu", "relation", "system"].includes(g.id)
+      ["administration", "offre", "contenu", "relation", "system"].includes(g.id)
     );
   }
 
   if (r === "MANAGER_ORDERS") {
     return adminNavGroups.filter((g) =>
-      ["today", "commerce", "relation", "system"].includes(g.id)
+      ["administration", "commerce", "relation", "system"].includes(g.id)
     );
   }
 
@@ -140,7 +141,7 @@ const BREADCRUMB_LABELS: Record<string, string> = {
 export function getAdminBreadcrumb(pathname: string): { group: string; page: string } {
   const segments = pathname.split("/").filter(Boolean);
   if (segments.length <= 1 || pathname === "/admin") {
-    return { group: "", page: "Tableau de bord" };
+    return { group: "Administration", page: "Tableau de bord" };
   }
 
   const section = segments[1] ?? "admin";
@@ -148,14 +149,14 @@ export function getAdminBreadcrumb(pathname: string): { group: string; page: str
     COMMERCE_PATHS.some((p) => pathname.startsWith(p))
       ? "Commerce"
       : OFFRE_PATHS.some((p) => pathname.startsWith(p))
-      ? "Offre"
-      : CONTENT_PATHS.some((p) => pathname.startsWith(p))
-      ? "Contenu"
-      : section === "messages" || section === "newsletter" || section === "avis"
-      ? "Relation"
-      : ["statistiques", "guide", "parametres"].includes(section)
-      ? "Système"
-      : "Admin";
+        ? "Offre"
+        : CONTENT_PATHS.some((p) => pathname.startsWith(p))
+          ? "Contenu"
+          : section === "messages" || section === "newsletter" || section === "avis"
+            ? "Relation"
+            : ["statistiques", "guide", "parametres"].includes(section)
+              ? "Système"
+              : "Administration";
 
   const page =
     segments.length > 2 && section === "commandes" && segments[2] !== "nouveau"

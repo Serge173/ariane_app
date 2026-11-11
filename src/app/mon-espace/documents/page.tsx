@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { FileText } from "lucide-react";
+import { ClientPageIntro } from "@/components/layout/ClientPageIntro";
 
 export default async function ClientDocumentsPage() {
   const session = await getServerSession(authOptions);
@@ -12,13 +13,14 @@ export default async function ClientDocumentsPage() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="heading-section mb-2">Mes documents</h1>
-        <p className="text-brand-600">Livrables de coaching et documents liés à votre parcours image</p>
-      </div>
+      <ClientPageIntro
+        align="left"
+        title="Mes documents"
+        description="Livrables de coaching et documents liés à votre parcours image"
+      />
 
       {documents.length === 0 ? (
-        <div className="bg-white border border-brand-100 text-center py-16">
+        <div className="public-card text-center py-16 px-6">
           <FileText className="w-10 h-10 text-brand-300 mx-auto mb-4" strokeWidth={1.5} />
           <p className="text-brand-500 mb-2">Aucun document disponible</p>
           <p className="text-sm text-brand-400">Vos livrables apparaîtront ici après votre coaching</p>
@@ -31,7 +33,7 @@ export default async function ClientDocumentsPage() {
               href={doc.fileUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-white border border-brand-100 p-6 hover:border-brand-300 hover:shadow-sm transition-all group"
+              className="public-card p-6 hover:border-accent/40 hover:shadow-md transition-all group"
             >
               <FileText className="w-8 h-8 text-accent mb-4 group-hover:scale-110 transition-transform" strokeWidth={1.5} />
               <p className="font-medium text-sm mb-1">{doc.title}</p>

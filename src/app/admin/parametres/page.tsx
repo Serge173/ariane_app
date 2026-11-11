@@ -10,6 +10,7 @@ import {
   maskSecret,
 } from "@/lib/platform-settings";
 import { AdminSettingsPanel } from "@/components/admin/settings/AdminSettingsPanel";
+import { AdminPageHeader } from "@/components/admin/ui/AdminPageHeader";
 
 export default async function AdminParametresPage() {
   const session = await getServerSession(authOptions);
@@ -65,12 +66,11 @@ export default async function AdminParametresPage() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="heading-section mb-2">Paramètres</h1>
-        <p className="text-brand-600">
-          Gérez votre compte, l&apos;équipe et la configuration de la plateforme
-        </p>
-      </div>
+      <AdminPageHeader
+        section="Système"
+        title="Paramètres"
+        description="Compte, équipe et configuration de la plateforme"
+      />
 
       <AdminSettingsPanel
         currentUser={serializedUser}

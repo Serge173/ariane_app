@@ -9,6 +9,7 @@ import { formatCategoryLabel } from "@/lib/categories";
 import { ProductGallery } from "@/components/shop/ProductGallery";
 import { ProductPurchasePanel } from "@/components/shop/ProductPurchasePanel";
 import { normalizeStoredPrice } from "@/lib/shop/public-price";
+import { PublicPageShell } from "@/components/layout/PublicPageShell";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -175,9 +176,8 @@ export default async function BoutiqueProductPage({ params }: Props) {
       };
 
   return (
-    <div className="min-h-screen pt-24 pb-20">
-      <div className="container-premium">
-        <nav className="flex items-center gap-2 text-xs text-brand-400 mb-8 uppercase tracking-widest flex-wrap">
+    <PublicPageShell width="wide">
+        <nav className="flex items-center gap-2 text-xs text-brand-500 mb-6 sm:mb-8 uppercase tracking-widest flex-wrap">
           <Link href="/boutique" className="hover:text-brand-950 transition-colors">Ma Boutique</Link>
           {product.parentCategorySlug && product.parentCategoryName && (
             <>
@@ -219,11 +219,11 @@ export default async function BoutiqueProductPage({ params }: Props) {
             alt={product.name}
           />
 
-          <div className="flex flex-col justify-center">
+          <div className="flex flex-col justify-center public-card p-6 sm:p-8 lg:border-0 lg:shadow-none lg:p-0 lg:bg-transparent">
             {product.brand && (
-              <p className="text-overline mb-3">{product.brand}</p>
+              <p className="text-overline text-accent mb-3">{product.brand}</p>
             )}
-            <p className="text-xs uppercase tracking-widest text-brand-400 mb-2">{product.categoryName}</p>
+            <p className="text-xs uppercase tracking-widest text-brand-500 mb-2">{product.categoryName}</p>
             <h1 className="heading-section mb-4">{product.name}</h1>
             <p className="product-description-lg mb-6">{product.shortDescription}</p>
 
@@ -248,7 +248,7 @@ export default async function BoutiqueProductPage({ params }: Props) {
               ))}
             </ul>
 
-            <div className="flex flex-col sm:flex-row gap-6 pt-6 border-t border-brand-100 text-xs text-brand-500">
+            <div className="flex flex-col sm:flex-row gap-6 pt-6 border-t border-brand-300/50 text-xs text-brand-500">
               <span className="flex items-center gap-2">
                 <Truck className="w-4 h-4" strokeWidth={1.5} />
                 Livraison soignée Abidjan
@@ -261,14 +261,14 @@ export default async function BoutiqueProductPage({ params }: Props) {
           </div>
         </div>
 
-        <div className="mt-20 max-w-3xl space-y-12">
-          <div>
-            <h2 className="font-sans text-2xl font-semibold tracking-tight mb-6">Description</h2>
+        <div className="mt-12 sm:mt-16 max-w-3xl space-y-6">
+          <div className="public-card p-6 sm:p-8">
+            <h2 className="font-display text-xl mb-4">Description</h2>
             <div className="product-description-lg whitespace-pre-line">{product.description}</div>
           </div>
 
           {(product.material || product.composition || product.careInstructions || product.origin) && (
-            <div className="grid sm:grid-cols-2 gap-6 pt-8 border-t border-brand-100">
+            <div className="public-card p-6 sm:p-8 grid sm:grid-cols-2 gap-6">
               {product.material && (
                 <div>
                   <h3 className="text-overline text-brand-500 mb-2">Matière</h3>
@@ -296,7 +296,6 @@ export default async function BoutiqueProductPage({ params }: Props) {
             </div>
           )}
         </div>
-      </div>
-    </div>
+    </PublicPageShell>
   );
 }

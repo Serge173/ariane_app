@@ -5,6 +5,7 @@ import { canManageTeam } from "@/lib/user-roles";
 import { CatalogueSubNav } from "@/components/admin/catalogue/CatalogueSubNav";
 import { BoutiquePageSettingsForm } from "@/components/admin/catalogue/BoutiquePageSettingsForm";
 import { getBoutiquePageSettings } from "@/lib/boutique-settings";
+import { AdminPageHeader } from "@/components/admin/ui/AdminPageHeader";
 
 export default async function AdminBoutiquePageSettingsPage() {
   const session = await getServerSession(authOptions);
@@ -23,12 +24,11 @@ export default async function AdminBoutiquePageSettingsPage() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="heading-section mb-2">Page boutique</h1>
-        <p className="text-brand-600">
-          Contenu éditorial de la section mise en avant sur la boutique publique
-        </p>
-      </div>
+      <AdminPageHeader
+        section="Offre"
+        title="Page boutique"
+        description="Contenu éditorial de la section mise en avant sur la boutique publique"
+      />
 
       <CatalogueSubNav active="boutique" />
 

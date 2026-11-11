@@ -8,7 +8,7 @@ import {
   PAYMENT_METHOD_LABELS,
   formatDate,
 } from "@/lib/utils";
-import { PageHeader } from "@/components/admin/ui/PageHeader";
+import { AdminPageHeader } from "@/components/admin/ui/AdminPageHeader";
 import { StatusDot } from "@/components/admin/ui/StatusDot";
 import { orderStatusTone, paymentStatusTone, fulfillmentStatusTone } from "@/lib/admin-status";
 import { OrderFulfillmentPanel } from "@/components/admin/orders/OrderFulfillmentPanel";
@@ -55,7 +55,8 @@ export default async function AdminOrderDetailPage({ params }: PageProps) {
 
   return (
     <div>
-      <PageHeader
+      <AdminPageHeader
+        section="Commerce"
         title={order.orderNumber}
         description={`Créée le ${formatDate(order.createdAt)} — ${clientName}`}
         action={

@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import { PageHeader } from "@/components/admin/ui/PageHeader";
+import { AdminPageHeader } from "@/components/admin/ui/AdminPageHeader";
 import { NewsletterAdminPanel } from "@/components/admin/newsletter/NewsletterAdminPanel";
 
 export default async function AdminNewsletterPage() {
@@ -14,7 +14,8 @@ export default async function AdminNewsletterPage() {
 
   return (
     <div>
-      <PageHeader
+      <AdminPageHeader
+        section="Relation"
         title="Newsletter"
         description="Abonnés, modèle d'email, envoi auto (blog + webhook réseaux) et notifications"
       />

@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { BlogSubNav } from "@/components/admin/blog/BlogSubNav";
 import { BlogForm } from "@/components/admin/blog/BlogForm";
 import { parsePublicationLinks } from "@/lib/blog-publication-links";
+import { AdminPageHeader } from "@/components/admin/ui/AdminPageHeader";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -33,8 +34,8 @@ export default async function AdminEditBlogPage({ params }: Props) {
 
   return (
     <div>
+      <AdminPageHeader section="Contenu" title={`Modifier — ${post.title}`} description="Mettre à jour le contenu et la publication" />
       <BlogSubNav active="articles" />
-      <h1 className="heading-section mb-8">Modifier — {post.title}</h1>
       <BlogForm mode="edit" initial={initial} />
     </div>
   );

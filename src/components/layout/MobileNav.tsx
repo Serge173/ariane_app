@@ -42,7 +42,7 @@ export function MobileNav({ open, onClose, navLinks }: MobileNavProps) {
       />
 
       <aside
-        className="absolute top-14 sm:top-16 left-0 z-10 h-[50vh] w-[50vw] max-w-[50vw] bg-white border border-brand-100 shadow-[16px_0_48px_-8px_rgba(40,36,31,0.22)] mobile-nav-panel overflow-y-auto overscroll-contain rounded-tr-2xl rounded-br-2xl"
+        className="absolute top-14 sm:top-16 left-0 z-10 max-h-[calc(100dvh-3.5rem)] w-[min(100%,20rem)] sm:w-80 bg-surface-cream border border-brand-300/50 shadow-[16px_0_48px_-8px_rgba(40,36,31,0.22)] mobile-nav-panel overflow-y-auto overscroll-contain rounded-tr-2xl rounded-br-2xl"
         aria-label="Navigation principale"
       >
         <div className="flex flex-col px-4 sm:px-5 pt-4 pb-6 min-h-full">
@@ -51,7 +51,7 @@ export function MobileNav({ open, onClose, navLinks }: MobileNavProps) {
               {mainLinks.map((item, index) => (
                 <li
                   key={item.href}
-                  className="mobile-nav-item border-b border-brand-200/70 last:border-b-0"
+                  className="mobile-nav-item border-b border-brand-300/45 last:border-b-0"
                   style={{ animationDelay: `${index * 55}ms` }}
                 >
                   <Link
@@ -78,6 +78,28 @@ export function MobileNav({ open, onClose, navLinks }: MobileNavProps) {
                 <PersonalShoppingAccordion key={shoppingReset} item={shoppingLink} onNavigate={onClose} />
               </div>
             )}
+
+            <ul className="mt-4 pt-4 border-t border-brand-200/70">
+              {[
+                { name: "Contact", href: "/contact" },
+                { name: "FAQ", href: "/faq" },
+                { name: "Prendre rendez-vous", href: "/reservation" },
+              ].map((item, index) => (
+                <li
+                  key={item.href}
+                  className="mobile-nav-item border-b border-brand-300/45 last:border-b-0"
+                  style={{ animationDelay: `${(mainLinks.length + 1 + index) * 55}ms` }}
+                >
+                  <Link
+                    href={item.href}
+                    onClick={onClose}
+                    className="group flex items-center justify-between gap-2 py-2.5 sm:py-3"
+                  >
+                    <span className="font-sans text-sm text-brand-800">{item.name}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </nav>
         </div>
       </aside>

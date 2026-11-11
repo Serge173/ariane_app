@@ -15,9 +15,15 @@ interface AddToCartButtonProps {
   };
   productType: CartProductType;
   variant?: "primary" | "secondary";
+  className?: string;
 }
 
-export function AddToCartButton({ product, productType, variant = "primary" }: AddToCartButtonProps) {
+export function AddToCartButton({
+  product,
+  productType,
+  variant = "primary",
+  className,
+}: AddToCartButtonProps) {
   const addItem = useCartStore((s) => s.addItem);
   const [error, setError] = useState("");
 
@@ -42,7 +48,11 @@ export function AddToCartButton({ product, productType, variant = "primary" }: A
 
   return (
     <div>
-      <button type="button" onClick={handleAdd} className={`${btnClass} inline-flex items-center gap-2`}>
+      <button
+        type="button"
+        onClick={handleAdd}
+        className={`${btnClass} inline-flex items-center gap-2 ${className ?? ""}`}
+      >
         <Icon className="w-4 h-4" />
         {label}
       </button>

@@ -3,6 +3,8 @@ import prisma from "@/lib/prisma";
 import { formatPrice } from "@/lib/utils";
 import { PaymentSubNav } from "@/components/admin/payments/PaymentSubNav";
 import { CreditCard, Settings, Receipt, Plus } from "lucide-react";
+import { AdminPageHeader } from "@/components/admin/ui/AdminPageHeader";
+import { PageHeaderLink } from "@/components/admin/ui/PageHeader";
 
 export default async function AdminPaiementsHubPage() {
   let stats = { methods: 0, activeMethods: 0, transactions: 0, totalSuccess: 0 };
@@ -24,18 +26,19 @@ export default async function AdminPaiementsHubPage() {
 
   return (
     <div>
-      <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="heading-section mb-2">Paiements</h1>
-          <p className="text-brand-600">
-            Total encaissé : <strong>{formatPrice(stats.totalSuccess)}</strong>
-          </p>
-        </div>
-        <Link href="/admin/paiements/modes" className="btn-primary inline-flex items-center gap-2 text-xs">
-          <Plus className="w-4 h-4" />
-          Gérer les modes
-        </Link>
-      </div>
+      <AdminPageHeader
+        section="Commerce"
+        title="Paiements"
+        description={`Total encaissé : ${formatPrice(stats.totalSuccess)}`}
+        action={
+          <PageHeaderLink href="/admin/paiements/modes">
+            <span className="inline-flex items-center gap-2">
+              <Plus className="w-4 h-4" />
+              Gérer les modes
+            </span>
+          </PageHeaderLink>
+        }
+      />
 
       <PaymentSubNav active="hub" />
 

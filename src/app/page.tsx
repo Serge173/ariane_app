@@ -4,6 +4,7 @@ import { OffersGrid } from "@/components/home/OffersGrid";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 import { CTASection } from "@/components/home/CTASection";
 import { OffersSection } from "@/components/home/HomeSections";
+import { PersonalShoppingBanner } from "@/components/home/PersonalShoppingBanner";
 import {
   DEFAULT_HOMEPAGE_SETTINGS,
   getActiveHeroSlides,
@@ -34,6 +35,8 @@ export default async function HomePage() {
       <OffersSection intro={homepage.offersSection}>
         <OffersGrid />
       </OffersSection>
+
+      <PersonalShoppingBanner settings={homepage.personalShopping} />
 
       <TestimonialsSection testimonials={homepage.testimonials} />
 

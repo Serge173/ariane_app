@@ -8,14 +8,17 @@ interface FooterAccordionSectionProps {
   title: string;
   children: React.ReactNode;
   className?: string;
+  /** Sur mobile, section ouverte par défaut (ex. liens principaux). */
+  defaultOpen?: boolean;
 }
 
 export function FooterAccordionSection({
   title,
   children,
   className,
+  defaultOpen = false,
 }: FooterAccordionSectionProps) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
 
   return (
     <div className={cn("min-w-0", className)}>

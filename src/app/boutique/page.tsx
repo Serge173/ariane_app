@@ -29,6 +29,7 @@ import { productDisplayPrice } from "@/lib/shop/variants";
 import { normalizeStoredPrice } from "@/lib/shop/public-price";
 import { BRAND_FULL_NAME } from "@/lib/brand";
 import { isShoppingLine, type ShoppingLine } from "@/lib/shopping";
+import { PublicPageIntro } from "@/components/layout/PublicPageShell";
 
 export const dynamic = "force-dynamic";
 
@@ -192,7 +193,7 @@ export default async function BoutiquePage({ searchParams }: PageProps) {
     : boutiqueSettings.catalogue.title;
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-surface-cream">
       {!hasFilter ? (
         <>
           <BoutiquePromoBar text={boutiqueSettings.promoText} />
@@ -205,40 +206,49 @@ export default async function BoutiquePage({ searchParams }: PageProps) {
           />
         </>
       ) : (
-        <div className="pt-24 lg:pt-28 pb-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-          {(params.category || params.q || params.brand) && (
-            <Link
-              href={line ? `/boutique?line=${line}` : "/boutique"}
-              className="font-sans text-xs uppercase tracking-[0.2em] text-brand-600 hover:text-brand-950 transition-colors"
-            >
-              ← Retour au shopping
-            </Link>
-          )}
-          <Suspense fallback={<div className="h-12 mt-6" />}>
-            <BoutiqueSubNav roots={categoryRoots} />
-          </Suspense>
+        <div className="public-page public-page--cream pt-[4.75rem] sm:pt-24 pb-4">
+          <div className="container-premium max-w-7xl">
+            {(params.category || params.q || params.brand) && (
+              <Link
+                href={line ? `/boutique?line=${line}` : "/boutique"}
+                className="font-sans text-xs uppercase tracking-[0.2em] text-brand-600 hover:text-accent transition-colors inline-flex mb-4"
+              >
+                ← Retour au shopping
+              </Link>
+            )}
+            <Suspense fallback={<div className="h-12" />}>
+              <BoutiqueSubNav roots={categoryRoots} />
+            </Suspense>
+            <PublicPageIntro
+              overline="La boutique"
+              title={sectionTitle}
+              align="left"
+              showAccentRule
+              className="mb-6 sm:mb-8"
+            />
+          </div>
         </div>
       )}
 
-      <div id="catalogue" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
-        <div className="text-center mb-12 lg:mb-16">
-          <h2 className="font-display text-3xl sm:text-4xl font-light italic text-brand-950 mb-3">
-            {sectionTitle}
-          </h2>
+      <section id="catalogue" className="pb-12 lg:pb-20">
+        <div className="container-premium max-w-7xl">
           {!hasFilter && (
-            <p className="font-sans text-sm text-brand-600">
-              {boutiqueSettings.catalogue.subtitle}
-            </p>
+            <PublicPageIntro
+              overline="La boutique"
+              title={sectionTitle}
+              description={boutiqueSettings.catalogue.subtitle}
+              className="mb-10 sm:mb-14"
+            />
           )}
-        </div>
 
-        <BoutiqueCatalog
-          products={products}
-          categories={categoryFilters}
-          hideCategoryFilter
-          variant="wix"
-        />
-      </div>
+          <BoutiqueCatalog
+            products={products}
+            categories={categoryFilters}
+            hideCategoryFilter
+            variant="wix"
+          />
+        </div>
+      </section>
 
       {!hasFilter && <BoutiqueStory story={boutiqueSettings.story} />}
     </div>

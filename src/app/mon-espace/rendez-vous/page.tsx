@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { formatDate, APPOINTMENT_STATUS_LABELS } from "@/lib/utils";
 import { Calendar } from "lucide-react";
+import { ClientPageIntro } from "@/components/layout/ClientPageIntro";
 
 export default async function ClientRendezVousPage() {
   const session = await getServerSession(authOptions);
@@ -18,13 +19,14 @@ export default async function ClientRendezVousPage() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="heading-section mb-2">Mes rendez-vous</h1>
-        <p className="text-brand-600">Vos séances de coaching planifiées et passées</p>
-      </div>
+      <ClientPageIntro
+        align="left"
+        title="Mes rendez-vous"
+        description="Vos séances de coaching planifiées et passées"
+      />
 
       {appointments.length === 0 ? (
-        <div className="bg-white border border-brand-100 text-center py-16">
+        <div className="public-card text-center py-16 px-6">
           <Calendar className="w-10 h-10 text-brand-300 mx-auto mb-4" strokeWidth={1.5} />
           <p className="text-brand-500 mb-6">Aucun rendez-vous planifié</p>
           <Link href="/reservation" className="btn-primary text-xs">Réserver une séance</Link>
@@ -74,16 +76,16 @@ function AppointmentCard({
   highlight?: boolean;
 }) {
   return (
-    <div className={`p-6 border ${highlight ? "bg-brand-950 text-white border-brand-950" : "bg-white border-brand-100"}`}>
+    <div className={highlight ? "client-apt-card--highlight" : "public-card p-6"}>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <p className={`font-medium ${highlight ? "text-white" : "text-brand-950"}`}>
             {apt.order?.items[0]?.product?.name || "Séance de coaching"}
           </p>
-          <p className={`text-sm mt-1 ${highlight ? "text-brand-300" : "text-brand-600"}`}>
+          <p className={`text-sm mt-1 ${highlight ? "text-white/80" : "text-brand-600"}`}>
             {formatDate(apt.date)} — {apt.startTime.replace(":", "h")} à {apt.endTime.replace(":", "h")}
           </p>
-          <p className={`text-xs mt-1 ${highlight ? "text-brand-400" : "text-brand-400"}`}>
+          <p className={`text-xs mt-1 ${highlight ? "text-white/70" : "text-brand-400"}`}>
             {apt.mode === "IN_PERSON" ? "Présentiel · Abidjan" : apt.mode === "DIGITAL" ? "100% Digital" : "Hybride"}
             {apt.location && ` · ${apt.location}`}
           </p>

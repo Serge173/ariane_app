@@ -1,6 +1,7 @@
 import Link from "next/link";
 import prisma from "@/lib/prisma";
 import { AdminOffresSubNav } from "@/components/admin/AdminOffresSubNav";
+import { AdminPageHeader } from "@/components/admin/ui/AdminPageHeader";
 
 async function getProductCounts() {
   try {
@@ -19,12 +20,11 @@ export default async function AdminOffresHubPage() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="heading-section mb-2">Prestations & Produits</h1>
-        <p className="text-brand-600">
-          Gérez vos accompagnements coaching et vos articles de luxe séparément
-        </p>
-      </div>
+      <AdminPageHeader
+        section="Offre"
+        title="Prestations & produits"
+        description="Accompagnements coaching et articles de luxe"
+      />
 
       <AdminOffresSubNav active="hub" />
 

@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
 import { useFeedbackModal } from "@/hooks/useFeedbackModal";
+import { ClientPageIntro } from "@/components/layout/ClientPageIntro";
 
 const questions = [
   { id: "pc1", question: "Décrivez votre style actuel en quelques mots", type: "text" },
@@ -44,10 +44,15 @@ export default function QuestionnairePage() {
 
   if (submitted) {
     return (
-      <div className="text-center py-12">
-        <h2 className="font-display text-2xl mb-4">Questionnaire envoyé</h2>
-        <p className="text-brand-600 mb-8">Merci ! Vos réponses nous aideront à personnaliser votre accompagnement.</p>
-        <Link href="/mon-espace" className="btn-primary">Retour au tableau de bord</Link>
+      <div className="public-card p-8 sm:p-10 text-center">
+        <p className="text-overline text-accent mb-3">Questionnaire</p>
+        <h2 className="heading-section mb-3">Questionnaire envoyé</h2>
+        <p className="public-page-desc mx-auto max-w-md mb-8">
+          Merci ! Vos réponses nous aideront à personnaliser votre accompagnement.
+        </p>
+        <Link href="/mon-espace" className="btn-primary rounded-full">
+          Retour au tableau de bord
+        </Link>
       </div>
     );
   }
@@ -56,12 +61,13 @@ export default function QuestionnairePage() {
     <>
       {FeedbackModal}
       <div>
-      <div className="mb-8">
-        <h1 className="heading-section mb-2">Préparer mon coaching</h1>
-        <p className="text-brand-600">Quelques questions pour personnaliser votre séance avec Ariane.</p>
-      </div>
+      <ClientPageIntro
+        align="left"
+        title="Préparer mon coaching"
+        description="Quelques questions pour personnaliser votre séance avec Ariane."
+      />
 
-      <form onSubmit={handleSubmit} className="bg-white border border-brand-100 p-8 space-y-8 max-w-2xl">
+      <form onSubmit={handleSubmit} className="public-form-card space-y-8 max-w-2xl">
         {questions.map((q) => (
           <div key={q.id}>
             <label className="label-field">{q.question}</label>
@@ -72,7 +78,7 @@ export default function QuestionnairePage() {
             )}
           </div>
         ))}
-        <button type="submit" className="btn-primary w-full sm:w-auto" disabled={loading}>
+        <button type="submit" className="btn-primary rounded-full w-full sm:w-auto" disabled={loading}>
           {loading ? "Envoi..." : "Envoyer mes réponses"}
         </button>
       </form>

@@ -78,6 +78,23 @@ export interface SectionIntroSettings {
   intro: string;
 }
 
+export interface PersonalShoppingSettings {
+  enabled: boolean;
+  image: string;
+  imageAlt: string;
+  linkHref: string;
+  imageWidth: number;
+  imageHeight: number;
+}
+
+export const DEFAULT_PERSONAL_SHOPPING_BANNER = {
+  image: "/images/personal-shopping.png",
+  imageAlt: "Personal Shopping — Ariane",
+  linkHref: "/boutique?line=luxe",
+  imageWidth: 606,
+  imageHeight: 97,
+} as const;
+
 export interface HomepageSettings {
   hero: {
     primaryCta: { href: string; label: string };
@@ -86,6 +103,7 @@ export interface HomepageSettings {
   };
   journey: SectionIntroSettings & { steps: JourneyStepSettings[] };
   offersSection: SectionIntroSettings;
+  personalShopping: PersonalShoppingSettings;
   boutiquePreview: SectionIntroSettings & {
     linkLabel: string;
     linkHref: string;
@@ -186,6 +204,10 @@ export const DEFAULT_HOMEPAGE_SETTINGS: HomepageSettings = {
     title: "Choisissez votre forfait",
     intro:
       "Quatre niveaux d'accompagnement pensés pour répondre à chaque ambition, de la découverte à la transformation complète.",
+  },
+  personalShopping: {
+    enabled: true,
+    ...DEFAULT_PERSONAL_SHOPPING_BANNER,
   },
   boutiquePreview: {
     overline: "Boutique de luxe",
@@ -369,6 +391,25 @@ function parseTestimonials(raw: unknown): TestimonialSettings[] {
   return ensureMinTestimonials(items);
 }
 
+function num(value: unknown, fallback: number, min = 1, max = 8000): number {
+  if (typeof value !== "number" || !Number.isFinite(value)) return fallback;
+  return Math.min(max, Math.max(min, Math.round(value)));
+}
+
+function parsePersonalShopping(raw: unknown): PersonalShoppingSettings {
+  const fallback = DEFAULT_HOMEPAGE_SETTINGS.personalShopping;
+  if (!raw || typeof raw !== "object") return { ...fallback };
+  const s = raw as Partial<PersonalShoppingSettings>;
+  return {
+    enabled: typeof s.enabled === "boolean" ? s.enabled : fallback.enabled,
+    image: str(s.image, fallback.image),
+    imageAlt: str(s.imageAlt, fallback.imageAlt),
+    linkHref: str(s.linkHref, fallback.linkHref),
+    imageWidth: num(s.imageWidth, fallback.imageWidth, 48, 8000),
+    imageHeight: num(s.imageHeight, fallback.imageHeight, 24, 4000),
+  };
+}
+
 function parseSectionIntro(raw: unknown, fallback: SectionIntroSettings): SectionIntroSettings {
   if (!raw || typeof raw !== "object") return fallback;
   const s = raw as Partial<SectionIntroSettings>;
@@ -417,6 +458,7 @@ export async function getHomepageSettings(): Promise<HomepageSettings> {
         ),
       },
       offersSection: parseSectionIntro(raw.offersSection, DEFAULT_HOMEPAGE_SETTINGS.offersSection),
+      personalShopping: parsePersonalShopping(raw.personalShopping),
       boutiquePreview: {
         ...parseSectionIntro(raw.boutiquePreview, DEFAULT_HOMEPAGE_SETTINGS.boutiquePreview),
         linkLabel: str(
@@ -489,6 +531,9 @@ export async function updateHomepageSettings(
     offersSection: patch.offersSection
       ? { ...current.offersSection, ...patch.offersSection }
       : current.offersSection,
+    personalShopping: patch.personalShopping
+      ? parsePersonalShopping({ ...current.personalShopping, ...patch.personalShopping })
+      : current.personalShopping,
     boutiquePreview: patch.boutiquePreview
       ? {
           ...current.boutiquePreview,

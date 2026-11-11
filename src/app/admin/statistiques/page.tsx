@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import { formatPrice, ORDER_STATUS_LABELS } from "@/lib/utils";
+import { AdminPageHeader } from "@/components/admin/ui/AdminPageHeader";
 
 export default async function AdminStatistiquesPage() {
   let stats = {
@@ -44,10 +45,11 @@ export default async function AdminStatistiquesPage() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="heading-section mb-2">Statistiques</h1>
-        <p className="text-brand-600">Indicateurs de performance et conversion</p>
-      </div>
+      <AdminPageHeader
+        section="Commerce"
+        title="Statistiques"
+        description="Indicateurs de performance et conversion"
+      />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
         {[

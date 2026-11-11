@@ -143,11 +143,8 @@ export function ProductManager({
       {FeedbackModal}
       <div>
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-        <div>
-          <h1 className="heading-section mb-1">Gestion des produits</h1>
-          <p className="text-brand-600 text-sm">{products.length} produit(s)</p>
-        </div>
-        <Link href="/admin/catalogue/produits/nouveau" className="btn-primary inline-flex items-center gap-2 text-xs">
+        <p className="admin-page-desc !mt-0">{products.length} produit(s)</p>
+        <Link href="/admin/catalogue/produits/nouveau" className="admin-btn-primary inline-flex items-center gap-2 text-xs">
           <Plus className="w-4 h-4" />
           Nouveau produit
         </Link>

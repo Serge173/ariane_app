@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma";
 import { AdminProductsTable } from "@/components/admin/AdminProductsTable";
 import { AdminOffresSubNav } from "@/components/admin/AdminOffresSubNav";
 import Link from "next/link";
+import { AdminPageHeader } from "@/components/admin/ui/AdminPageHeader";
 
 export default async function AdminLuxePage() {
   let products: Parameters<typeof AdminProductsTable>[0]["products"] = [];
@@ -20,23 +21,23 @@ export default async function AdminLuxePage() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="heading-section mb-2">Articles de luxe</h1>
-        <p className="text-brand-600">
-          {products.length} article{products.length !== 1 ? "s" : ""} — Sacs, Vêtements, Accessoires, Parfums
-        </p>
-        {Object.keys(byCategory).length > 0 && (
-          <div className="flex flex-wrap gap-2 mt-3">
-            {Object.entries(byCategory).map(([cat, count]) => (
-              <span key={cat} className="text-[10px] uppercase tracking-wider px-3 py-1 bg-brand-100 text-brand-600">
-                {cat} · {count}
-              </span>
-            ))}
-          </div>
-        )}
-      </div>
+      <AdminPageHeader
+        section="Offre"
+        title="Articles de luxe"
+        description={`${products.length} article${products.length !== 1 ? "s" : ""} — Sacs, vêtements, accessoires, parfums`}
+      />
 
       <AdminOffresSubNav active="luxe" />
+
+      {Object.keys(byCategory).length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-6">
+          {Object.entries(byCategory).map(([cat, count]) => (
+            <span key={cat} className="text-[10px] uppercase tracking-wider px-3 py-1 bg-brand-100 text-brand-600">
+              {cat} · {count}
+            </span>
+          ))}
+        </div>
+      )}
 
       <div className="mb-6 p-4 bg-brand-50 border border-brand-100 flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-brand-600">

@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { ProfilePhotoUpload } from "@/components/profile/ProfilePhotoUpload";
+import { ClientPageIntro } from "@/components/layout/ClientPageIntro";
 
 export default async function ClientProfilPage() {
   const session = await getServerSession(authOptions);
@@ -14,16 +15,17 @@ export default async function ClientProfilPage() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="heading-section mb-2">Mon profil</h1>
-        <p className="text-brand-600">Gérez vos informations personnelles et votre photo de profil</p>
-      </div>
+      <ClientPageIntro
+        align="left"
+        title="Mon profil"
+        description="Gérez vos informations personnelles et votre photo de profil"
+      />
 
-      <div className="bg-white border border-brand-100 p-8 mb-8">
+      <div className="public-form-card mb-8">
         <ProfilePhotoUpload avatar={user.avatar} firstName={user.firstName} lastName={user.lastName} />
       </div>
 
-      <div className="bg-white border border-brand-100 p-8">
+      <div className="public-form-card">
         <h2 className="font-display text-lg mb-6">Informations personnelles</h2>
         <dl className="grid sm:grid-cols-2 gap-6">
           {[

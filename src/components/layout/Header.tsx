@@ -60,9 +60,10 @@ export function Header({ siteSettings }: HeaderProps) {
 
   const headerSurface = isOffers
     ? "bg-[#ffffff] border-b border-[#ffffff] shadow-none"
-    : isHome || scrolled || isOpen
-      ? "bg-white/95 backdrop-blur-sm border-b border-white shadow-sm"
-      : "lg:bg-white/95 lg:backdrop-blur-sm lg:border-b lg:border-white lg:shadow-sm bg-transparent border-transparent";
+    : cn(
+        "bg-white/95 backdrop-blur-md border-b border-brand-300/40 shadow-[0_4px_24px_-12px_rgba(40,36,31,0.12)]",
+        isHome && !scrolled && !isOpen && "lg:bg-transparent lg:border-transparent lg:shadow-none"
+      );
 
   return (
     <>
@@ -90,10 +91,10 @@ export function Header({ siteSettings }: HeaderProps) {
 
             <Link
               href="/"
-              className="group absolute left-1/2 top-1/2 z-[1] w-[calc(100%-7.5rem)] max-w-[16rem] -translate-x-1/2 -translate-y-1/2 text-center sm:max-w-[18rem] lg:static lg:z-auto lg:w-auto lg:max-w-none lg:translate-x-0 lg:translate-y-0 lg:text-left lg:shrink-0 lg:min-w-0"
+              className="group absolute left-1/2 top-1/2 z-[1] w-[calc(100%-7.5rem)] max-w-[16rem] -translate-x-1/2 -translate-y-1/2 text-center sm:max-w-[18rem] lg:static lg:z-auto lg:w-auto lg:max-w-[11rem] xl:max-w-[14rem] 2xl:max-w-none lg:translate-x-0 lg:translate-y-0 lg:text-left lg:shrink-0 lg:min-w-0"
               onClick={() => setIsOpen(false)}
             >
-              <span className="font-display text-base sm:text-lg lg:text-2xl font-light tracking-wide text-brand-950 leading-tight">
+              <span className="font-display text-base sm:text-lg lg:text-lg xl:text-xl 2xl:text-2xl font-light tracking-wide text-brand-950 leading-tight line-clamp-2 lg:line-clamp-1">
                 {siteSettings.brand.title}
               </span>
               <span className="block text-[8px] sm:text-[9px] lg:text-[10px] uppercase tracking-ultra text-brand-600 -mt-0.5">
@@ -103,7 +104,7 @@ export function Header({ siteSettings }: HeaderProps) {
 
             <div className="hidden lg:block flex-1 min-w-10 xl:min-w-16" aria-hidden />
 
-            <nav className="hidden lg:flex items-center gap-3 xl:gap-4 shrink-0 mr-5 xl:mr-8">
+            <nav className="hidden lg:flex items-center gap-2 xl:gap-4 shrink min-w-0 max-w-[52vw] xl:max-w-none overflow-x-auto scrollbar-hide mr-3 xl:mr-8 py-0.5">
               {navLinks.map((item) => {
                 const isActive =
                   item.href === "/"

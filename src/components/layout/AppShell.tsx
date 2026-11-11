@@ -1,12 +1,20 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
-import { CartToast } from "@/components/ui/CartToast";
-import { NewsletterPopup } from "@/components/newsletter/NewsletterPopup";
 import type { SiteSettings } from "@/lib/site-settings";
+
+const CartToast = dynamic(
+  () => import("@/components/ui/CartToast").then((m) => m.CartToast),
+  { ssr: false }
+);
+const NewsletterPopup = dynamic(
+  () => import("@/components/newsletter/NewsletterPopup").then((m) => m.NewsletterPopup),
+  { ssr: false }
+);
 
 export function AppShell({
   children,
@@ -46,7 +54,7 @@ export function AppShell({
   return (
     <>
       <Header siteSettings={siteSettings} />
-      <main className="flex-1 bg-white">{children}</main>
+      <main className="flex-1 bg-surface-cream">{children}</main>
       <Footer siteSettings={siteSettings} />
       <WhatsAppButton />
       <CartToast />

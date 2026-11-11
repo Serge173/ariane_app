@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import prisma from "@/lib/prisma";
 import { CatalogueSubNav } from "@/components/admin/catalogue/CatalogueSubNav";
 import { ProductManager } from "@/components/admin/catalogue/ProductManager";
+import { AdminPageHeader } from "@/components/admin/ui/AdminPageHeader";
 
 async function getMeta() {
   try {
@@ -29,6 +30,11 @@ export default async function AdminProductsPage() {
 
     return (
       <div>
+        <AdminPageHeader
+          section="Offre"
+          title="Produits"
+          description="Catalogue boutique : création, filtres, catégories et marques."
+        />
         <CatalogueSubNav active="products" />
         <Suspense fallback={<p className="text-brand-400">Chargement...</p>}>
           <ProductManager initialCategories={categories} initialBrands={brands} />

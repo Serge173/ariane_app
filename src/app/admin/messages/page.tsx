@@ -1,5 +1,6 @@
 import Link from "next/link";
 import prisma from "@/lib/prisma";
+import { AdminPageHeader } from "@/components/admin/ui/AdminPageHeader";
 
 const typeLabels: Record<string, string> = {
   general: "Contact général",
@@ -27,21 +28,21 @@ export default async function AdminMessagesPage() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="heading-section mb-2">Messages</h1>
-        <p className="text-brand-600">
-          {unread} message{unread !== 1 ? "s" : ""} non lu{unread !== 1 ? "s" : ""}
-          {rdvCount > 0 && (
-            <>
-              {" "}
-              · {rdvCount} demande{rdvCount !== 1 ? "s" : ""} de RDV dans{" "}
-              <Link href="/admin/rendez-vous" className="underline underline-offset-2">
-                Rendez-vous
-              </Link>
-            </>
-          )}
+      <AdminPageHeader
+        section="Relation"
+        title="Messages"
+        description={`${unread} message${unread !== 1 ? "s" : ""} non lu${unread !== 1 ? "s" : ""}${
+          rdvCount > 0 ? ` · ${rdvCount} demande${rdvCount !== 1 ? "s" : ""} de RDV` : ""
+        }`}
+      />
+      {rdvCount > 0 && (
+        <p className="admin-page-desc -mt-4 mb-6">
+          Demandes RDV :{" "}
+          <Link href="/admin/rendez-vous" className="text-admin-accent underline underline-offset-2">
+            voir Rendez-vous
+          </Link>
         </p>
-      </div>
+      )}
 
       <div className="space-y-4">
         {contactMessages.map((msg) => (

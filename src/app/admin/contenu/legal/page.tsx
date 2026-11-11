@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { canManageTeam } from "@/lib/user-roles";
+import { AdminPageHeader } from "@/components/admin/ui/AdminPageHeader";
 import { ContentSubNav } from "@/components/admin/content/ContentSubNav";
 import { LegalSettingsForm } from "@/components/admin/content/PublicPagesForms";
 import { getPublicPagesSettings } from "@/lib/public-pages-settings";
@@ -9,8 +10,16 @@ import { cn } from "@/lib/utils";
 
 const legalTabs = [
   { id: "cgv", label: "CGV", href: "/admin/contenu/legal?tab=cgv" },
-  { id: "confidentialite", label: "Confidentialité", href: "/admin/contenu/legal?tab=confidentialite" },
-  { id: "mentionsLegales", label: "Mentions légales", href: "/admin/contenu/legal?tab=mentionsLegales" },
+  {
+    id: "confidentialite",
+    label: "Confidentialit\u00e9",
+    href: "/admin/contenu/legal?tab=confidentialite",
+  },
+  {
+    id: "mentionsLegales",
+    label: "Mentions l\u00e9gales",
+    href: "/admin/contenu/legal?tab=mentionsLegales",
+  },
 ] as const;
 
 interface PageProps {
@@ -25,10 +34,11 @@ export default async function AdminLegalContentPage({ searchParams }: PageProps)
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="heading-section mb-2">Pages légales</h1>
-        <p className="text-brand-600">CGV, confidentialité et mentions légales</p>
-      </div>
+      <AdminPageHeader
+        section="Contenu"
+        title={"Pages l\u00e9gales"}
+        description={"CGV, confidentialit\u00e9 et mentions l\u00e9gales"}
+      />
       <ContentSubNav active="legal" />
       <nav className="flex flex-wrap gap-2 mb-6">
         {legalTabs.map((item) => (

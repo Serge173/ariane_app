@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface AdminKpiProps {
@@ -6,12 +7,18 @@ interface AdminKpiProps {
   value: string | number;
   href?: string;
   highlight?: boolean;
+  icon: LucideIcon;
 }
 
-export function AdminKpi({ label, value, href, highlight }: AdminKpiProps) {
+export function AdminKpi({ label, value, href, highlight, icon: Icon }: AdminKpiProps) {
   const inner = (
     <>
-      <p className="admin-kpi-label">{label}</p>
+      <div className="admin-kpi-head">
+        <p className="admin-kpi-label">{label}</p>
+        <span className="admin-kpi-icon-wrap" aria-hidden>
+          <Icon className="w-5 h-5 text-admin-accent" strokeWidth={1.5} />
+        </span>
+      </div>
       <p className={cn("admin-kpi-value", highlight && "admin-kpi-value--highlight")}>
         {value}
         {highlight ? <span className="admin-kpi-dot" aria-hidden /> : null}
@@ -35,16 +42,24 @@ interface DashboardPanelProps {
   href?: string;
   linkLabel?: string;
   children: React.ReactNode;
+  className?: string;
 }
 
-export function DashboardPanel({ title, href, linkLabel = "Voir tout", children }: DashboardPanelProps) {
+export function DashboardPanel({
+  title,
+  href,
+  linkLabel = "Voir tout",
+  children,
+  className,
+}: DashboardPanelProps) {
   return (
-    <section className="admin-panel">
+    <section className={cn("admin-panel", className)}>
       <div className="admin-panel-head">
         <h2 className="admin-panel-title">{title}</h2>
         {href ? (
           <Link href={href} className="admin-panel-link">
             {linkLabel}
+            <span aria-hidden> →</span>
           </Link>
         ) : null}
       </div>

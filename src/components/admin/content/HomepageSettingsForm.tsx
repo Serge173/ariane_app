@@ -14,6 +14,7 @@ import {
 import { Field } from "@/components/admin/content/FormFields";
 import { HeroSlidesEditor } from "@/components/admin/content/HeroSlidesEditor";
 import { JourneyStepImageField } from "@/components/admin/content/JourneyStepImageField";
+import { PersonalShoppingImageField } from "@/components/admin/content/PersonalShoppingImageField";
 
 export function HomepageSettingsForm({
   initial,
@@ -218,14 +219,73 @@ export function HomepageSettingsForm({
             </ContentEditorFields>
           </ContentEditorSection>
 
-          <ContentEditorSection index={4} title="Aperçu boutique" tone="muted" description="Section retirée de l'accueil public.">
+          <ContentEditorSection
+            index={4}
+            title="Bannière Personal Shopping"
+            description="Bandeau pleine largeur affiché sous les forfaits (accueil et fiches forfait)."
+          >
+            <ContentEditorFields>
+              <label className="flex items-center gap-2 text-sm text-brand-800">
+                <input
+                  type="checkbox"
+                  checked={form.personalShopping.enabled}
+                  onChange={(e) =>
+                    setForm((f) => ({
+                      ...f,
+                      personalShopping: { ...f.personalShopping, enabled: e.target.checked },
+                    }))
+                  }
+                  disabled={!canEdit}
+                  className="rounded border-brand-300"
+                />
+                Afficher la bannière
+              </label>
+              <Field
+                label="Lien de la bannière"
+                value={form.personalShopping.linkHref}
+                onChange={(v) =>
+                  setForm((f) => ({
+                    ...f,
+                    personalShopping: { ...f.personalShopping, linkHref: v },
+                  }))
+                }
+                disabled={!canEdit}
+                hint="Ex. /boutique?line=luxe"
+              />
+              <PersonalShoppingImageField
+                imageUrl={form.personalShopping.image}
+                imageAlt={form.personalShopping.imageAlt}
+                onImageUrlChange={(v) =>
+                  setForm((f) => ({
+                    ...f,
+                    personalShopping: { ...f.personalShopping, image: v },
+                  }))
+                }
+                onImageAltChange={(v) =>
+                  setForm((f) => ({
+                    ...f,
+                    personalShopping: { ...f.personalShopping, imageAlt: v },
+                  }))
+                }
+                onDimensionsChange={(imageWidth, imageHeight) =>
+                  setForm((f) => ({
+                    ...f,
+                    personalShopping: { ...f.personalShopping, imageWidth, imageHeight },
+                  }))
+                }
+                disabled={!canEdit}
+              />
+            </ContentEditorFields>
+          </ContentEditorSection>
+
+          <ContentEditorSection index={5} title="Aperçu boutique" tone="muted" description="Section retirée de l'accueil public.">
             <ContentEditorNote>
               Cette section n&apos;est plus affichée sur la page d&apos;accueil. La boutique est accessible via le menu Shopping. Gérez les produits dans Admin → Catalogue boutique.
             </ContentEditorNote>
           </ContentEditorSection>
 
           <ContentEditorSection
-            index={5}
+            index={6}
             title="Témoignages Avant / Après"
             description="Quatre cadres avec images et textes avant/après."
           >
@@ -246,7 +306,7 @@ export function HomepageSettingsForm({
             ))}
           </ContentEditorSection>
 
-          <ContentEditorSection index={6} title="Bloc contact final" description="Appel à l'action en bas de la page d'accueil.">
+          <ContentEditorSection index={7} title="Bloc contact final" description="Appel à l'action en bas de la page d'accueil.">
             <ContentEditorFields>
               <Field label="Surtitre" value={form.cta.overline} onChange={(v) => setForm((f) => ({ ...f, cta: { ...f.cta, overline: v } }))} disabled={!canEdit} />
               <Field label="Titre" value={form.cta.title} onChange={(v) => setForm((f) => ({ ...f, cta: { ...f.cta, title: v } }))} disabled={!canEdit} />

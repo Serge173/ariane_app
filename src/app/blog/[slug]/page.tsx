@@ -8,6 +8,7 @@ import { renderBlogContent } from "@/lib/blog";
 import { getPublicPagesSettings } from "@/lib/public-pages-settings";
 import { ProductImage } from "@/components/ui/ProductImage";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { PublicPageShell } from "@/components/layout/PublicPageShell";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -60,8 +61,8 @@ export default async function BlogPostPage({ params }: Props) {
   const related = await getRelatedPosts(post.id, post.tags);
 
   return (
-    <article className="min-h-screen pt-24 pb-20">
-      <div className="container-premium max-w-4xl">
+    <PublicPageShell width="default">
+      <article>
         <Link
           href="/blog"
           className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-brand-500 hover:text-brand-950 mb-8 transition-colors"
@@ -76,7 +77,7 @@ export default async function BlogPostPage({ params }: Props) {
               {post.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="text-[10px] uppercase tracking-wider px-3 py-1 bg-brand-100 text-brand-600"
+                  className="text-[10px] uppercase tracking-wider px-3 py-1 rounded-full border border-brand-300/60 bg-white text-brand-600"
                 >
                   {tag}
                 </span>
@@ -137,7 +138,7 @@ export default async function BlogPostPage({ params }: Props) {
                 <Link
                   key={item.id}
                   href={`/blog/${item.slug}`}
-                  className="group card-premium p-5 block"
+                  className="group public-card p-5 block"
                 >
                   <p className="text-xs text-brand-400 mb-2">
                     {item.publishedAt ? formatDate(item.publishedAt) : ""}
@@ -150,7 +151,7 @@ export default async function BlogPostPage({ params }: Props) {
             </div>
           </section>
         )}
-      </div>
-    </article>
+      </article>
+    </PublicPageShell>
   );
 }

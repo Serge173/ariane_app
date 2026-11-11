@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import { PageHeader } from "@/components/admin/ui/PageHeader";
+import { AdminPageHeader } from "@/components/admin/ui/AdminPageHeader";
 import { OrdersTable, type OrderListItem } from "@/components/admin/orders/OrdersTable";
 
 export default async function AdminCommandesPage() {
@@ -24,7 +24,8 @@ export default async function AdminCommandesPage() {
 
   return (
     <div>
-      <PageHeader
+      <AdminPageHeader
+        section="Commerce"
         title="Commandes"
         description={`${orders.length} commande${orders.length !== 1 ? "s" : ""} au total`}
       />

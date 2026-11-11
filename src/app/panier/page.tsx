@@ -8,6 +8,7 @@ import { cartLineKey } from "@/lib/cart-line";
 import { Trash2, ArrowRight, AlertTriangle } from "lucide-react";
 import { ProductImage } from "@/components/ui/ProductImage";
 import { IMAGES } from "@/lib/images";
+import { PublicPageIntro, PublicPageShell } from "@/components/layout/PublicPageShell";
 
 export default function PanierPage() {
   const { items, removeItem, updateQuantity, total, clearCart } = useCartStore();
@@ -16,36 +17,41 @@ export default function PanierPage() {
 
   if (items.length === 0) {
     return (
-      <div className="min-h-screen pt-24 pb-20">
-        <div className="container-premium max-w-2xl text-center">
-          <h1 className="heading-section mb-4">Votre panier</h1>
-          <p className="text-brand-600 mb-8">Votre panier est vide.</p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/boutique" className="btn-primary inline-flex items-center gap-2">
-              Voir la boutique
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-            <Link href="/offres" className="btn-secondary inline-flex items-center gap-2">
-              Voir nos prestations
-            </Link>
-          </div>
+      <PublicPageShell width="narrow">
+        <PublicPageIntro
+          title="Votre panier"
+          description="Votre panier est vide."
+          showAccentRule
+        />
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Link href="/boutique" className="btn-primary inline-flex items-center justify-center gap-2 rounded-full">
+            Voir la boutique
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+          <Link href="/offres" className="btn-secondary inline-flex items-center justify-center gap-2 rounded-full">
+            Voir nos prestations
+          </Link>
         </div>
-      </div>
+      </PublicPageShell>
     );
   }
 
   return (
-    <div className="min-h-screen pt-24 pb-20">
-      <div className="container-premium max-w-3xl">
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
-          <h1 className="heading-section">Votre panier</h1>
-          <span className="text-[10px] uppercase tracking-widest px-3 py-1 bg-brand-100 text-brand-700">
+    <PublicPageShell width="default">
+        <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
+          <PublicPageIntro
+            title="Votre panier"
+            align="left"
+            showAccentRule
+            className="!mb-0 flex-1"
+          />
+          <span className="text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-full border border-brand-300/70 bg-white text-brand-700">
             {cartKindLabel(cartKind)}
           </span>
         </div>
 
         {cartKind === "MIXED" && (
-          <div className="mb-8 p-4 bg-amber-50 border border-amber-200 flex gap-3 text-sm text-amber-900">
+          <div className="mb-8 p-4 public-card flex gap-3 text-sm text-amber-900 bg-amber-50/80 border-amber-200/80">
             <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" />
             <div>
               <p className="font-medium mb-1">Panier incompatible</p>
@@ -61,9 +67,9 @@ export default function PanierPage() {
           {items.map((item) => {
             const lineKey = cartLineKey(item);
             return (
-            <div key={lineKey} className="flex gap-6 p-6 border border-brand-100">
+            <div key={lineKey} className="public-card flex gap-4 sm:gap-6 p-4 sm:p-6">
               {item.image && (
-                <div className="relative w-24 h-32 flex-shrink-0 bg-brand-100">
+                <div className="relative w-20 h-28 sm:w-24 sm:h-32 flex-shrink-0 rounded-lg overflow-hidden bg-brand-300/20">
                   <ProductImage src={item.image} fallback={IMAGES.productFallback} alt={item.name} fill />
                 </div>
               )}
@@ -108,7 +114,7 @@ export default function PanierPage() {
           })}
         </div>
 
-        <div className="border-t border-brand-200 pt-8">
+        <div className="public-card p-6 sm:p-8">
           <div className="flex justify-between items-center mb-4">
             <span className="text-lg">Total</span>
             <span className="text-2xl font-light">{formatPrice(total())}</span>
@@ -129,7 +135,7 @@ export default function PanierPage() {
             {checkoutPath ? (
               <Link
                 href={checkoutPath}
-                className="btn-primary flex-1 text-center inline-flex items-center justify-center gap-2"
+                className="btn-primary rounded-full flex-1 text-center inline-flex items-center justify-center gap-2"
               >
                 {cartKind === "LUXE" ? "Finaliser ma commande" : "Finaliser ma demande de RDV"}
                 <ArrowRight className="w-4 h-4" />
@@ -144,7 +150,6 @@ export default function PanierPage() {
             </button>
           </div>
         </div>
-      </div>
-    </div>
+    </PublicPageShell>
   );
 }

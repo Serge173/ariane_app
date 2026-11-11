@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import { ProfileAvatar } from "@/components/ui/ProfileAvatar";
+import { AdminPageHeader } from "@/components/admin/ui/AdminPageHeader";
 
 const statusLabels: Record<string, string> = {
   PENDING: "En attente",
@@ -13,10 +14,11 @@ export default async function AdminAvisPage() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="heading-section mb-2">Avis clients</h1>
-        <p className="text-brand-600">Modérez les témoignages affichés sur le site</p>
-      </div>
+      <AdminPageHeader
+        section="Relation"
+        title="Avis clients"
+        description="Modérez les témoignages affichés sur le site"
+      />
 
       <div className="space-y-4">
         {reviews.map((review) => (

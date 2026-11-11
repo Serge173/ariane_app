@@ -5,6 +5,7 @@ import Link from "next/link";
 import { formatPrice, formatDate, ORDER_STATUS_LABELS } from "@/lib/utils";
 import { Calendar, ShoppingBag, FileText, ArrowRight, ClipboardList } from "lucide-react";
 import { CLIENT_SPACE_COPY } from "@/lib/client-space-copy";
+import { ClientPageIntro } from "@/components/layout/ClientPageIntro";
 
 export default async function ClientDashboard() {
   const session = await getServerSession(authOptions);
@@ -33,16 +34,16 @@ export default async function ClientDashboard() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="heading-section mb-2">Bonjour, {firstName}</h1>
-        <p className="text-brand-600">{CLIENT_SPACE_COPY.welcomeSubtitle}</p>
-      </div>
+      <ClientPageIntro
+        align="left"
+        title={`Bonjour, ${firstName}`}
+        description={CLIENT_SPACE_COPY.welcomeSubtitle}
+      />
 
-      <p className="mb-8 p-4 bg-brand-50 border border-brand-100 text-sm text-brand-600 leading-relaxed">
+      <p className="mb-8 public-card p-4 sm:p-5 text-sm text-brand-600 leading-relaxed">
         {CLIENT_SPACE_COPY.introBanner}
       </p>
 
-      {/* Quick stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
         {[
           { label: "Commandes", value: orders.length, href: "/mon-espace/commandes", icon: ShoppingBag },
@@ -50,7 +51,7 @@ export default async function ClientDashboard() {
           { label: "Documents", value: documents.length, href: "/mon-espace/documents", icon: FileText },
           { label: "Questionnaires", value: "—", href: "/mon-espace/questionnaire", icon: ClipboardList },
         ].map((stat) => (
-          <Link key={stat.label} href={stat.href} className="bg-white border border-brand-100 p-5 hover:shadow-md transition-shadow group">
+          <Link key={stat.label} href={stat.href} className="client-kpi-link group">
             <stat.icon className="w-5 h-5 text-accent mb-3" strokeWidth={1.5} />
             <p className="text-[10px] uppercase tracking-widest text-brand-400 mb-1">{stat.label}</p>
             <p className="text-2xl font-light">{stat.value}</p>
@@ -59,7 +60,7 @@ export default async function ClientDashboard() {
       </div>
 
       {activeOrder && (
-        <section className="mb-8 p-6 bg-brand-950 text-white">
+        <section className="mb-8 client-highlight-panel">
           <p className="text-[10px] uppercase tracking-ultra text-brand-400 mb-2">
             {activeIsBoutique && !activeIsCoaching ? "Commande en cours" : "Parcours en cours"}
           </p>
@@ -74,12 +75,18 @@ export default async function ClientDashboard() {
               )}
             </div>
             {(activeOrder.status === "PAID" || activeOrder.status === "QUESTIONNAIRE_PENDING") && activeIsCoaching && (
-              <Link href="/mon-espace/questionnaire" className="btn-primary bg-white text-brand-950 hover:bg-brand-100 inline-flex items-center gap-2 text-xs">
+              <Link
+                href="/mon-espace/questionnaire"
+                className="btn-primary rounded-full bg-white text-accent hover:bg-brand-50 inline-flex items-center gap-2 text-xs"
+              >
                 Compléter le questionnaire <ArrowRight className="w-4 h-4" />
               </Link>
             )}
             {activeIsBoutique && !activeIsCoaching && (
-              <Link href="/mon-espace/commandes" className="btn-primary bg-white text-brand-950 hover:bg-brand-100 inline-flex items-center gap-2 text-xs">
+              <Link
+                href="/mon-espace/commandes"
+                className="btn-primary rounded-full bg-white text-accent hover:bg-brand-50 inline-flex items-center gap-2 text-xs"
+              >
                 Suivre ma commande <ArrowRight className="w-4 h-4" />
               </Link>
             )}
@@ -88,7 +95,7 @@ export default async function ClientDashboard() {
       )}
 
       {nextAppointment && !activeOrder && (
-        <section className="mb-8 p-6 bg-brand-50 border border-brand-100">
+        <section className="mb-8 public-card p-6">
           <p className="text-[10px] uppercase tracking-ultra text-brand-400 mb-2">Prochain rendez-vous</p>
           <p className="font-display text-xl">
             {formatDate(nextAppointment.date)} à {nextAppointment.startTime.replace(":", "h")}
@@ -97,7 +104,7 @@ export default async function ClientDashboard() {
       )}
 
       {notifications.length > 0 && (
-        <section className="mb-8 bg-white border border-brand-100 p-6">
+        <section className="mb-8 public-card p-6">
           <h2 className="font-display text-lg mb-4">Actus & réseaux sociaux</h2>
           <ul className="space-y-4">
             {notifications.map((n) => {
@@ -129,7 +136,7 @@ export default async function ClientDashboard() {
       )}
 
       <div className="grid lg:grid-cols-2 gap-8">
-        <section className="bg-white border border-brand-100 p-6">
+        <section className="public-card p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="font-display text-lg">Dernières commandes</h2>
             <Link href="/mon-espace/commandes" className="text-xs text-accent hover:underline">Voir tout</Link>
@@ -158,7 +165,7 @@ export default async function ClientDashboard() {
           )}
         </section>
 
-        <section className="bg-white border border-brand-100 p-6">
+        <section className="public-card p-6">
           <h2 className="font-display text-lg mb-6">Actions rapides</h2>
           <div className="space-y-3">
             {[
@@ -169,7 +176,7 @@ export default async function ClientDashboard() {
               { label: "Compléter mon questionnaire", href: "/mon-espace/questionnaire" },
               { label: "Mettre à jour mon profil", href: "/mon-espace/profil" },
             ].map((action) => (
-              <Link key={action.href} href={action.href} className="flex items-center justify-between p-4 border border-brand-100 hover:border-brand-300 transition-colors group text-sm">
+              <Link key={action.href} href={action.href} className="client-action-link group">
                 {action.label}
                 <ArrowRight className="w-4 h-4 text-brand-300 group-hover:text-brand-950 group-hover:translate-x-1 transition-all" />
               </Link>

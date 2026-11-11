@@ -7,6 +7,7 @@ import { ArrowLeft, Send } from "lucide-react";
 import { useFeedbackModal } from "@/hooks/useFeedbackModal";
 import type { ContactPageSettings } from "@/lib/public-pages-settings";
 import type { SiteSettings } from "@/lib/site-settings";
+import { PublicPageShell } from "@/components/layout/PublicPageShell";
 
 function phoneHref(phone: string): string {
   const digits = phone.replace(/[^\d+]/g, "");
@@ -78,15 +79,17 @@ function ContactFormInner({
   return (
     <>
       {FeedbackModal}
-      <div className="mb-12">
-        <Link href="/" className="btn-ghost inline-flex items-center gap-2 mb-6">
+      <div className="mb-8 sm:mb-10">
+        <Link href="/" className="btn-ghost inline-flex items-center gap-2 mb-6 text-brand-600">
           <ArrowLeft className="w-4 h-4" /> Accueil
         </Link>
+        <p className="text-overline text-accent mb-3">Contact</p>
         <h1 className="heading-section mb-2">{current.title}</h1>
-        <p className="text-brand-600">{current.subtitle}</p>
+        <p className="public-page-desc">{current.subtitle}</p>
+        <span className="public-page-accent-rule" aria-hidden />
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="public-form-card space-y-6">
         <div className="grid sm:grid-cols-2 gap-6">
           <div>
             <label className="label-field">Prénom *</label>
@@ -137,7 +140,7 @@ function ContactFormInner({
         </button>
       </form>
 
-      <div className="mt-16 pt-16 border-t border-brand-200">
+      <div className="mt-10 sm:mt-12 public-card p-6 sm:p-8">
         <h2 className="font-display text-xl mb-6">{contact.coordinatesTitle}</h2>
         <div className="space-y-3 text-sm text-brand-600">
           <p>{coords.line1} — {coords.line2}</p>
@@ -158,12 +161,10 @@ export function ContactPageClient({
   site: SiteSettings;
 }) {
   return (
-    <div className="min-h-screen pt-24 pb-20">
-      <div className="container-premium max-w-2xl">
-        <Suspense fallback={<div>Chargement...</div>}>
-          <ContactFormInner contact={contact} site={site} />
-        </Suspense>
-      </div>
-    </div>
+    <PublicPageShell width="narrow">
+      <Suspense fallback={<p className="text-brand-500 text-sm">Chargement…</p>}>
+        <ContactFormInner contact={contact} site={site} />
+      </Suspense>
+    </PublicPageShell>
   );
 }
