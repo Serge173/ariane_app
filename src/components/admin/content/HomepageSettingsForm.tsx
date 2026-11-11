@@ -224,6 +224,10 @@ export function HomepageSettingsForm({
             title="Bannière Personal Shopping"
             description="Bandeau pleine largeur affiché sous les forfaits (accueil et fiches forfait)."
           >
+            <ContentEditorNote>
+              En production, les images sont stockées sur Vercel Blob. Si un ancien lien Blob renvoie une erreur 404,
+              retéléversez la bannière ici (les images par défaut du site reprennent le relais automatiquement).
+            </ContentEditorNote>
             <ContentEditorFields>
               <label className="flex items-center gap-2 text-sm text-brand-800">
                 <input

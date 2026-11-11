@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma";
 import { IMAGES, luxeImage } from "@/lib/images";
 import type { Prisma } from "@prisma/client";
 import { BRAND_FULL_NAME, migrateBrandInObject, migrateBrandText } from "@/lib/brand";
+import { healHomepageMedia } from "@/lib/heal-homepage-media";
 
 export const HOMEPAGE_SETTINGS_KEY = "homepage_settings";
 export const MIN_TESTIMONIALS = 4;
@@ -429,7 +430,7 @@ export async function getHomepageSettings(): Promise<HomepageSettings> {
       raw.hero && typeof raw.hero === "object" ? raw.hero : {};
     const primaryRaw =
       heroRaw.primaryCta && typeof heroRaw.primaryCta === "object" ? heroRaw.primaryCta : {};
-    return migrateBrandInObject({
+    const parsed = migrateBrandInObject({
       hero: {
         primaryCta: {
           href: str(
@@ -499,6 +500,7 @@ export async function getHomepageSettings(): Promise<HomepageSettings> {
         ),
       },
     });
+    return await healHomepageMedia(parsed);
   } catch {
     return { ...DEFAULT_HOMEPAGE_SETTINGS };
   }

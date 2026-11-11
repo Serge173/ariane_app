@@ -13,6 +13,7 @@ import {
   STAGGER_HERO_TEXT,
 } from "@/lib/motion";
 import type { HeroSlideSettings } from "@/lib/homepage-settings";
+import { DEFAULT_HOMEPAGE_SETTINGS } from "@/lib/homepage-settings";
 import { SmartFullscreenImage } from "@/components/ui/SmartFullscreenImage";
 import { FlashInfoTicker } from "@/components/home/FlashInfoTicker";
 
@@ -155,9 +156,12 @@ export function HeroSlider({ slides, primaryCta, scarcityLabel }: HeroSliderProp
     >
       {slides.map((slide, index) => {
         const isActive = index === active;
+        const slideFallback =
+          DEFAULT_HOMEPAGE_SETTINGS.hero.slides.find((s) => s.id === slide.id)?.image ??
+          IMAGES.hero;
         const src = failedImages.has(slide.id)
-          ? IMAGES.hero
-          : slide.image?.trim() || IMAGES.hero;
+          ? slideFallback
+          : slide.image?.trim() || slideFallback;
 
         return (
           <motion.div
