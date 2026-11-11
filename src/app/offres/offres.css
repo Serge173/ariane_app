@@ -120,3 +120,34 @@ html:has(.offres-page) main {
   background: #faf9f7 !important;
   background-color: #faf9f7 !important;
 }
+
+.offres-page .offres-audience-pill--idle {
+  border-color: #e8e4dc;
+  background: #ffffff;
+}
+
+.offres-page .offres-audience-pill--idle:hover {
+  border-color: #000000;
+}
+
+.offres-page .offres-audience-pill--active {
+  border-color: #000000;
+  background: #000000;
+  color: #ffffff;
+}
+
+.offres-page .offres-audience-pill--active .text-overline,
+.offres-page .offres-audience-pill--active p {
+  color: #ffffff !important;
+}
+
+.offres-page .offres-hub-card {
+  border-color: #e8e4dc;
+  background: #ffffff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.offres-page .offres-hub-card:hover {
+  border-color: #000000;
+  box-shadow: 0 12px 40px -28px rgba(0, 0, 0, 0.35);
+}

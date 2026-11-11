@@ -18,15 +18,15 @@ export interface OfferProduct {
 
 interface OffersCatalogProps {
   products: OfferProduct[];
+  emptyMessage?: string;
 }
 
-export function OffersCatalog({ products }: OffersCatalogProps) {
+export function OffersCatalog({
+  products,
+  emptyMessage = "Aucun accompagnement dans cette catégorie pour le moment.",
+}: OffersCatalogProps) {
   if (products.length === 0) {
-    return (
-      <p className="text-center py-16">
-        Aucun accompagnement dans cette catégorie pour le moment.
-      </p>
-    );
+    return <p className="text-center py-16 max-w-lg mx-auto leading-relaxed">{emptyMessage}</p>;
   }
 
   return (

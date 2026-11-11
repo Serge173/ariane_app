@@ -23,6 +23,23 @@ export function variantInStock(variant: Pick<ShopVariant, "stock" | "trackInvent
   return variant.stock > 0;
 }
 
+export function firstPurchasableVariantId(variants: ShopVariant[]): string | null {
+  const pick = variants.find((v) => v.isActive && variantInStock(v));
+  return pick?.id ?? null;
+}
+
+export function resolveVariantLinePrice(
+  variant: ShopVariant | null,
+  basePrice: number | null | undefined,
+  variants: ShopVariant[]
+): number | null {
+  const fromVariant = variant?.price ?? null;
+  if (fromVariant != null && fromVariant > 0) return fromVariant;
+  const fromBase = basePrice ?? null;
+  if (fromBase != null && fromBase > 0) return fromBase;
+  return productDisplayPrice(basePrice, variants).price;
+}
+
 export function productDisplayPrice(
   basePrice: number | null | undefined,
   variants: ShopVariant[]

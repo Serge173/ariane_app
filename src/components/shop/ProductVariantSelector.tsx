@@ -22,8 +22,18 @@ export function ProductVariantSelector({
   const selectedColor = selected?.color ?? null;
 
   const pickVariant = (size: string | null, color: string | null) => {
-    const match = variants.find((v) => v.size === size && v.color === color);
-    if (match) onSelect(match.id);
+    const exact = variants.find((v) => v.size === size && v.color === color);
+    if (exact) {
+      onSelect(exact.id);
+      return;
+    }
+    const partial =
+      variants.find(
+        (v) =>
+          (size != null && v.size === size && (color == null || v.color === color)) ||
+          (color != null && v.color === color && (size == null || v.size === size))
+      ) ?? null;
+    if (partial) onSelect(partial.id);
   };
 
   if (variants.length === 0) return null;
