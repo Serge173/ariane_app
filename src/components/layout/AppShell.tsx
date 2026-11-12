@@ -34,31 +34,26 @@ export function AppShell({
     return <>{children}</>;
   }
 
-  if (isOffers) {
-    return (
-      <div
-        className="offres-app-shell flex min-h-screen flex-col"
-        style={{ backgroundColor: "#ffffff" }}
-      >
-        <Header siteSettings={siteSettings} />
-        <main className="flex-1" style={{ backgroundColor: "#ffffff" }}>
-          {children}
-        </main>
-        <WhatsAppButton />
-        <CartToast />
-        <NewsletterPopup />
-      </div>
-    );
-  }
-
   return (
-    <>
+    <div
+      className={
+        isOffers
+          ? "offres-app-shell flex min-h-screen min-h-[100dvh] flex-col"
+          : "public-app-shell flex min-h-screen min-h-[100dvh] flex-col"
+      }
+      style={isOffers ? { backgroundColor: "#ffffff" } : undefined}
+    >
       <Header siteSettings={siteSettings} />
-      <main className="flex-1 bg-surface-cream">{children}</main>
+      <main
+        className={`relative z-0 flex-1 ${isOffers ? "offres-surface" : "bg-surface-cream"}`}
+        style={isOffers ? { backgroundColor: "#ffffff" } : undefined}
+      >
+        {children}
+      </main>
       <Footer siteSettings={siteSettings} />
       <WhatsAppButton />
       <CartToast />
       <NewsletterPopup />
-    </>
+    </div>
   );
 }

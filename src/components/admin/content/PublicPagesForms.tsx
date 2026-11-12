@@ -23,6 +23,7 @@ import type {
   OrientationPageSettings,
 } from "@/lib/public-pages-settings";
 import { updatePublicPagesSettings } from "@/lib/public-pages-settings";
+import { OffersAudienceHubCardField } from "@/components/admin/content/OffersAudienceHubCardField";
 import { parseJsonResponse } from "@/lib/fetch-json";
 
 async function savePatch(
@@ -144,7 +145,44 @@ export function OffersSettingsForm({ initial, canEdit }: { initial: OffersPageSe
           <ContentEditorNote>Les cartes forfaits viennent du catalogue Accompagnements.</ContentEditorNote>
           </ContentEditorFields>
         </Section>
-        <Section index={2} title="Bloc entreprises">
+        <Section
+          index={2}
+          title="Cadres Particuliers / Entreprises"
+          description="Page d'accueil /offres : deux grandes cartes cliquables avec image de fond."
+        >
+          <ContentEditorNote>
+            Recommandé : image paysage 1600×1200 px minimum. Chaque cadre mène vers la catégorie correspondante.
+          </ContentEditorNote>
+          <OffersAudienceHubCardField
+            title="Cadre Particuliers"
+            card={form.audienceHub.particuliers}
+            disabled={!canEdit}
+            onChange={(patch) =>
+              setForm({
+                ...form,
+                audienceHub: {
+                  ...form.audienceHub,
+                  particuliers: { ...form.audienceHub.particuliers, ...patch },
+                },
+              })
+            }
+          />
+          <OffersAudienceHubCardField
+            title="Cadre Entreprises"
+            card={form.audienceHub.entreprises}
+            disabled={!canEdit}
+            onChange={(patch) =>
+              setForm({
+                ...form,
+                audienceHub: {
+                  ...form.audienceHub,
+                  entreprises: { ...form.audienceHub.entreprises, ...patch },
+                },
+              })
+            }
+          />
+        </Section>
+        <Section index={3} title="Bloc entreprises">
           <ContentEditorFields>
           <Field label="Titre" value={form.enterpriseTitle} onChange={(v) => setForm({ ...form, enterpriseTitle: v })} disabled={!canEdit} />
           <Field label="Texte" value={form.enterpriseIntro} onChange={(v) => setForm({ ...form, enterpriseIntro: v })} disabled={!canEdit} multiline />

@@ -17,6 +17,8 @@ import {
   resolveOfferDescription,
 } from "@/lib/offer-forfait-content";
 import { pickOfferFeatureIcon } from "@/lib/offer-feature-icons";
+import { OfferForfaitBreadcrumb } from "@/components/offres/OfferForfaitBreadcrumb";
+import type { ServiceAudienceSlug } from "@/lib/categories";
 export interface OfferForfaitProduct {
   id: string;
   slug: string;
@@ -33,9 +35,18 @@ interface OfferForfaitDetailProps {
   slug: string;
   isSurMesure: boolean;
   personalShopping: PersonalShoppingSettings;
+  audienceSlug?: ServiceAudienceSlug | null;
+  audienceLabel?: string | null;
 }
 
-export function OfferForfaitDetail({ product, slug, isSurMesure, personalShopping }: OfferForfaitDetailProps) {
+export function OfferForfaitDetail({
+  product,
+  slug,
+  isSurMesure,
+  personalShopping,
+  audienceSlug = null,
+  audienceLabel = null,
+}: OfferForfaitDetailProps) {
   const scopeLine = getOfferHeroScopeLine(slug);
   const showCrown = slug === "platinum";
   const durationLabel = product.duration?.trim() ? `Durée : ${product.duration}` : null;
@@ -51,6 +62,11 @@ export function OfferForfaitDetail({ product, slug, isSurMesure, personalShoppin
         <div className="container-premium relative">
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 xl:gap-16 items-center">
             <div className="order-2 lg:order-1 min-w-0">
+              <OfferForfaitBreadcrumb
+                audienceSlug={audienceSlug}
+                audienceLabel={audienceLabel}
+                productName={product.name}
+              />
               <span className="offer-forfait-badge inline-flex items-center gap-2 rounded-full border border-brand-200 bg-white px-3 py-1.5 text-[10px] uppercase tracking-[0.18em] font-medium text-brand-800 mb-5">
                 <Diamond className="w-3.5 h-3.5 text-accent shrink-0" strokeWidth={1.5} />
                 Accompagnement

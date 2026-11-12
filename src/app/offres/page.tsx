@@ -13,9 +13,8 @@ import {
 import { CatalogSearch } from "@/components/shop/BoutiqueSearch";
 import { mapDbOfferProducts, OffersCatalog } from "@/components/shop/OffersCatalog";
 import { getPublicPagesSettings } from "@/lib/public-pages-settings";
-import { OffersAudienceNav } from "@/components/offres/OffersAudienceNav";
+import { OffersAudienceBar } from "@/components/offres/OffersAudienceBar";
 import { OffersHubChooser } from "@/components/offres/OffersHubChooser";
-
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
@@ -141,7 +140,7 @@ export default async function OffresPage({ searchParams }: PageProps) {
 
         {audience === null ? (
           <>
-            <OffersHubChooser roots={categoryRoots} />
+            <OffersHubChooser roots={categoryRoots} audienceHub={content.audienceHub} />
             <p className="text-center text-sm max-w-lg mx-auto mt-4 opacity-80">
               Choisissez <strong>Particuliers</strong> ou <strong>Entreprises</strong> pour afficher uniquement le
               contenu qui vous concerne.
@@ -149,9 +148,11 @@ export default async function OffresPage({ searchParams }: PageProps) {
           </>
         ) : (
           <>
-            <div className="mb-10">
-              <OffersAudienceNav roots={categoryRoots} activeSlug={params.category} />
-            </div>
+            <OffersAudienceBar
+              roots={categoryRoots}
+              activeSlug={params.category}
+              searchQuery={params.q}
+            />
 
             {audience === "particuliers" && (
               <div className="text-center mb-10">

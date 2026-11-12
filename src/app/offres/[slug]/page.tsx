@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import { coachingImage } from "@/lib/images";
 import { OfferForfaitDetail } from "@/components/offres/OfferForfaitDetail";
 import { getHomepageSettings } from "@/lib/homepage-settings";
+import { resolveServiceAudienceRoot } from "@/lib/categories";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -13,7 +14,7 @@ async function getProduct(slug: string) {
   try {
     return await prisma.product.findFirst({
       where: { slug, productType: "SERVICE" },
-      include: { category: true },
+      include: { category: { include: { parent: true } } },
     });
   } catch {
     return null;
@@ -140,12 +141,22 @@ export default async function OfferDetailPage({ params }: Props) {
   const isSurMesure = slug === "sur-mesure";
   let personalShopping = (await getHomepageSettings()).personalShopping;
 
+  const audienceSlug = dbProduct?.category ? resolveServiceAudienceRoot(dbProduct.category) : null;
+  const audienceLabel =
+    audienceSlug === "particuliers"
+      ? "Particuliers"
+      : audienceSlug === "entreprises"
+        ? "Entreprises"
+        : dbProduct?.category?.name ?? null;
+
   return (
     <OfferForfaitDetail
       product={product}
       slug={slug}
       isSurMesure={isSurMesure}
       personalShopping={personalShopping}
+      audienceSlug={audienceSlug}
+      audienceLabel={audienceLabel}
     />
   );
 }

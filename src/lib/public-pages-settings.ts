@@ -20,16 +20,36 @@ export interface AboutPageSettings {
   ctaHref: string;
 }
 
+export interface OffersAudienceHubCardSettings {
+  image: string;
+  imageAlt: string;
+  eyebrow: string;
+  title: string;
+  description: string;
+  ctaLabel: string;
+}
+
+export interface OffersAudienceHubSettings {
+  particuliers: OffersAudienceHubCardSettings;
+  entreprises: OffersAudienceHubCardSettings;
+}
+
 export interface OffersPageSettings {
   overline: string;
   title: string;
   intro: string;
+  /** Titre affiché sur le hub /offres (sans filtre catégorie). */
+  hubTitle: string;
+  /** Intro optionnelle sous le titre hub ; vide = masquée. */
+  hubIntro: string;
   helpLinkLabel: string;
   helpLinkHref: string;
   enterpriseTitle: string;
   enterpriseIntro: string;
+  enterpriseHighlights: string[];
   enterpriseCtaLabel: string;
   enterpriseCtaHref: string;
+  audienceHub: OffersAudienceHubSettings;
 }
 
 export interface FaqItemSettings {
@@ -231,13 +251,38 @@ export const DEFAULT_PUBLIC_PAGES_SETTINGS: PublicPagesSettings = {
     title: "Nos formules",
     intro:
       "Quatre niveaux d'accompagnement pensés pour répondre à chaque ambition. Chaque formule inclut un suivi personnalisé dans votre espace client.",
+    hubTitle: "Pour qui cherchez-vous un accompagnement ?",
+    hubIntro: "",
     helpLinkLabel: "Découvrir mon accompagnement adapté",
     helpLinkHref: "/orientation",
     enterpriseTitle: "Entreprises & Sur-mesure",
     enterpriseIntro:
       "Ateliers en entreprise, accompagnements dirigeants et projets d'image sur mesure. Contactez-nous pour une proposition personnalisée.",
+    enterpriseHighlights: [
+      "Ateliers en entreprise",
+      "Accompagnement dirigeants",
+      "Projets d'image sur mesure",
+    ],
     enterpriseCtaLabel: "Demander une proposition",
     enterpriseCtaHref: "/contact?type=entreprise",
+    audienceHub: {
+      particuliers: {
+        image: IMAGES.coaching.gold.replace(/w=\d+/, "w=1400"),
+        imageAlt: "Accompagnement particuliers — conseil en image",
+        eyebrow: "Particuliers",
+        title: "Formules & coaching",
+        description: "Accompagnements personnalisés pour révéler votre style et votre image au quotidien.",
+        ctaLabel: "Explorer",
+      },
+      entreprises: {
+        image: IMAGES.coaching.platinum.replace(/w=\d+/, "w=1400"),
+        imageAlt: "Accompagnement entreprises — image professionnelle",
+        eyebrow: "Entreprises",
+        title: "Entreprises & équipes",
+        description: "Ateliers, accompagnements dirigeants et projets d'image corporate sur mesure.",
+        ctaLabel: "Explorer",
+      },
+    },
   },
   faq: {
     overline: "FAQ",
@@ -362,6 +407,32 @@ export const DEFAULT_PUBLIC_PAGES_SETTINGS: PublicPagesSettings = {
     recommendations: DEFAULT_ORIENTATION_RECOMMENDATIONS,
   },
 };
+
+function parseAudienceHubCard(
+  raw: unknown,
+  fallback: OffersAudienceHubCardSettings
+): OffersAudienceHubCardSettings {
+  if (!raw || typeof raw !== "object") return { ...fallback };
+  const s = raw as Partial<OffersAudienceHubCardSettings>;
+  return {
+    image: str(s.image, fallback.image),
+    imageAlt: str(s.imageAlt, fallback.imageAlt),
+    eyebrow: str(s.eyebrow, fallback.eyebrow),
+    title: str(s.title, fallback.title),
+    description: str(s.description, fallback.description),
+    ctaLabel: str(s.ctaLabel, fallback.ctaLabel),
+  };
+}
+
+function parseAudienceHub(raw: unknown): OffersAudienceHubSettings {
+  const fallback = DEFAULT_PUBLIC_PAGES_SETTINGS.offers.audienceHub;
+  if (!raw || typeof raw !== "object") return structuredClone(fallback);
+  const s = raw as Partial<OffersAudienceHubSettings>;
+  return {
+    particuliers: parseAudienceHubCard(s.particuliers, fallback.particuliers),
+    entreprises: parseAudienceHubCard(s.entreprises, fallback.entreprises),
+  };
+}
 
 function migrateHelpLinkLabel(label: string): string {
   if (label === "Aide au choix") {
@@ -532,14 +603,23 @@ export async function getPublicPagesSettings(): Promise<PublicPagesSettings> {
         overline: str(offersRaw.overline, DEFAULT_PUBLIC_PAGES_SETTINGS.offers.overline),
         title: str(offersRaw.title, DEFAULT_PUBLIC_PAGES_SETTINGS.offers.title),
         intro: str(offersRaw.intro, DEFAULT_PUBLIC_PAGES_SETTINGS.offers.intro),
+        hubTitle: str(offersRaw.hubTitle, DEFAULT_PUBLIC_PAGES_SETTINGS.offers.hubTitle),
+        hubIntro: typeof offersRaw.hubIntro === "string" ? offersRaw.hubIntro.trim() : DEFAULT_PUBLIC_PAGES_SETTINGS.offers.hubIntro,
         helpLinkLabel: migrateHelpLinkLabel(
           str(offersRaw.helpLinkLabel, DEFAULT_PUBLIC_PAGES_SETTINGS.offers.helpLinkLabel)
         ),
         helpLinkHref: str(offersRaw.helpLinkHref, DEFAULT_PUBLIC_PAGES_SETTINGS.offers.helpLinkHref),
         enterpriseTitle: str(offersRaw.enterpriseTitle, DEFAULT_PUBLIC_PAGES_SETTINGS.offers.enterpriseTitle),
         enterpriseIntro: str(offersRaw.enterpriseIntro, DEFAULT_PUBLIC_PAGES_SETTINGS.offers.enterpriseIntro),
+        enterpriseHighlights: parseStringArray(
+          offersRaw.enterpriseHighlights,
+          DEFAULT_PUBLIC_PAGES_SETTINGS.offers.enterpriseHighlights
+        ),
         enterpriseCtaLabel: str(offersRaw.enterpriseCtaLabel, DEFAULT_PUBLIC_PAGES_SETTINGS.offers.enterpriseCtaLabel),
         enterpriseCtaHref: str(offersRaw.enterpriseCtaHref, DEFAULT_PUBLIC_PAGES_SETTINGS.offers.enterpriseCtaHref),
+        audienceHub: parseAudienceHub(
+          offersRaw.audienceHub && typeof offersRaw.audienceHub === "object" ? offersRaw.audienceHub : undefined
+        ),
       },
       faq: {
         overline: str(faqRaw.overline, DEFAULT_PUBLIC_PAGES_SETTINGS.faq.overline),
@@ -609,7 +689,19 @@ export async function updatePublicPagesSettings(
   const current = await getPublicPagesSettings();
   const merged: PublicPagesSettings = {
     about: patch.about ? { ...current.about, ...patch.about } : current.about,
-    offers: patch.offers ? { ...current.offers, ...patch.offers } : current.offers,
+    offers: patch.offers
+      ? {
+          ...current.offers,
+          ...patch.offers,
+          enterpriseHighlights:
+            patch.offers.enterpriseHighlights !== undefined
+              ? parseStringArray(patch.offers.enterpriseHighlights, current.offers.enterpriseHighlights)
+              : current.offers.enterpriseHighlights,
+          audienceHub: patch.offers.audienceHub
+            ? parseAudienceHub({ ...current.offers.audienceHub, ...patch.offers.audienceHub })
+            : current.offers.audienceHub,
+        }
+      : current.offers,
     faq: patch.faq
       ? {
           overline: patch.faq.overline !== undefined ? str(patch.faq.overline, current.faq.overline) : current.faq.overline,

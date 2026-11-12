@@ -351,3 +351,21 @@ export function flattenPublicCategoryFilters(
   }));
   return filterCatalogCategoryOptions(flat);
 }
+
+export type ServiceAudienceSlug = "particuliers" | "entreprises";
+
+/** Racine audience (particuliers | entreprises) pour une catégorie SERVICE. */
+export function resolveServiceAudienceRoot(category: {
+  slug: string;
+  parent?: { slug: string } | null;
+} | null | undefined): ServiceAudienceSlug | null {
+  if (!category) return null;
+  if (category.slug === "particuliers" || category.slug === "entreprises") {
+    return category.slug;
+  }
+  const parentSlug = category.parent?.slug;
+  if (parentSlug === "particuliers" || parentSlug === "entreprises") {
+    return parentSlug;
+  }
+  return null;
+}

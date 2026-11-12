@@ -13,9 +13,19 @@ html:has(.offres-page) main {
   background-color: #ffffff !important;
 }
 
+.offres-app-shell > footer {
+  position: relative;
+  z-index: 30;
+  flex-shrink: 0;
+}
+
+.offres-surface,
+.offres-page.offres-surface {
+  background-color: #ffffff;
+}
+
 .offres-page {
   position: relative;
-  min-height: 100vh;
   width: 100%;
   background: #ffffff !important;
   background-color: #ffffff !important;
@@ -141,13 +151,100 @@ html:has(.offres-page) main {
   color: #ffffff !important;
 }
 
-.offres-page .offres-hub-card {
-  border-color: #e8e4dc;
-  background: #ffffff;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+.offres-page .offres-audience-tab--active {
+  color: #ffffff !important;
 }
 
-.offres-page .offres-hub-card:hover {
-  border-color: #000000;
-  box-shadow: 0 12px 40px -28px rgba(0, 0, 0, 0.35);
+.offres-page .offres-audience-bar__back {
+  color: #4a433b !important;
+}
+
+.offres-page .offres-orientation-callout {
+  box-shadow: 0 12px 40px -28px rgba(0, 0, 0, 0.12);
+}
+
+.offres-page .offres-hub-tile {
+  background: #1a1414;
+  box-shadow: 0 16px 48px -32px rgba(0, 0, 0, 0.45);
+  transition: box-shadow 0.35s ease, border-color 0.25s ease;
+}
+
+.offres-page .offres-hub-tile:hover {
+  border-color: rgba(0, 0, 0, 0.35);
+  box-shadow: 0 24px 56px -28px rgba(0, 0, 0, 0.55);
+}
+
+.offres-page .offres-hub-tile__scrim {
+  background: linear-gradient(
+    180deg,
+    rgba(26, 20, 20, 0.12) 0%,
+    rgba(26, 20, 20, 0.35) 42%,
+    rgba(26, 20, 20, 0.82) 100%
+  );
+}
+
+.offres-page .offres-hub-tile__image {
+  object-position: center;
+}
+
+.offres-page .offres-hub-tile__audience {
+  color: #ffffff;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45);
+}
+
+/* Texte blanc sur les cartes hub (sinon .offres-page h2/p forcent le noir) */
+html:has(.offres-page) .offres-page .offres-hub-tile h2.offres-hub-tile__audience,
+html[data-offres] .offres-page .offres-hub-tile h2.offres-hub-tile__audience {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+html:has(.offres-page) .offres-page .offres-hub-tile .offres-hub-tile__heading,
+html[data-offres] .offres-page .offres-hub-tile .offres-hub-tile__heading {
+  color: #ffffff !important;
+  font-weight: 300 !important;
+}
+
+html:has(.offres-page) .offres-page .offres-hub-tile .offres-hub-tile__desc,
+html[data-offres] .offres-page .offres-hub-tile .offres-hub-tile__desc {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+html:has(.offres-page) .offres-page .offres-hub-tile .offres-hub-tile__cta,
+html[data-offres] .offres-page .offres-hub-tile .offres-hub-tile__cta {
+  color: #ffffff !important;
+}
+
+@media (max-width: 639px) {
+  .offres-page .offres-hub-grid {
+    gap: 0.65rem;
+  }
+
+  .offres-page .offres-hub-tile {
+    border-radius: 0.875rem;
+    min-height: 11.5rem;
+  }
+
+  .offres-page .offres-hub-tile__scrim {
+    background: linear-gradient(
+      180deg,
+      rgba(26, 20, 20, 0.08) 0%,
+      rgba(26, 20, 20, 0.55) 55%,
+      rgba(26, 20, 20, 0.9) 100%
+    );
+  }
+
+  .offres-page .offres-hub-tile__audience {
+    font-size: clamp(1.05rem, 4.5vw, 1.35rem);
+    line-height: 1.15;
+  }
+}
+
+@media (min-width: 1024px) {
+  .offres-page .offres-hub-tile {
+    max-height: 17.5rem;
+    aspect-ratio: 4 / 3;
+  }
 }

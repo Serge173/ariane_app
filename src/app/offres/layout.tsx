@@ -4,7 +4,7 @@ import "./offres.css";
 export default function OffresLayout({ children }: { children: React.ReactNode }) {
   return (
     <OffresShell>
-      <div className="offres-page">{children}</div>
+      <div className="offres-page offres-surface">{children}</div>
     </OffresShell>
   );
 }

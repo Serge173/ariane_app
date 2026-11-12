@@ -30,22 +30,5 @@ export function OffresShell({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  return (
-    <>
-      <div
-        aria-hidden
-        className="offres-white-backdrop"
-        style={{
-          position: "fixed",
-          inset: 0,
-          zIndex: 0,
-          backgroundColor: "#ffffff",
-          pointerEvents: "none",
-        }}
-      />
-      <div className="relative" style={{ zIndex: 1 }}>
-        {children}
-      </div>
-    </>
-  );
+  return <div className="offres-page-inner relative">{children}</div>;
 }
