@@ -384,10 +384,6 @@ export const DEFAULT_PUBLIC_PAGES_SETTINGS: PublicPagesSettings = {
           body: `${BRAND_FULL_NAME}\nDAGO Stéphanie Ariane\nAbidjan, Cocody — Côte d'Ivoire\ncontact@conseil-image-ariane.com`,
         },
         {
-          title: "Hébergement",
-          body: "Vercel Inc. — 440 N Barranca Ave #4133, Covina, CA 91723, USA",
-        },
-        {
           title: "Propriété intellectuelle",
           body: "L'ensemble du contenu de ce site est protégé par le droit d'auteur. Toute reproduction est interdite sans autorisation.",
         },
@@ -496,6 +492,17 @@ function parseLegalPage(raw: unknown, fallback: LegalPageContentSettings): Legal
     intro: str(p.intro, fallback.intro),
     sections: parseLegalSections(p.sections, fallback.sections),
     disclaimer: str(p.disclaimer, fallback.disclaimer),
+  };
+}
+
+function stripMentionsLegalesHostingSection(page: LegalPageContentSettings): LegalPageContentSettings {
+  return {
+    ...page,
+    sections: page.sections.filter(
+      (section) =>
+        section.title.trim().toLowerCase() !== "hébergement" &&
+        !section.body.includes("Vercel Inc.")
+    ),
   };
 }
 
@@ -650,7 +657,9 @@ export async function getPublicPagesSettings(): Promise<PublicPagesSettings> {
       legal: {
         cgv: parseLegalPage(legalRaw.cgv, DEFAULT_PUBLIC_PAGES_SETTINGS.legal.cgv),
         confidentialite: parseLegalPage(legalRaw.confidentialite, DEFAULT_PUBLIC_PAGES_SETTINGS.legal.confidentialite),
-        mentionsLegales: parseLegalPage(legalRaw.mentionsLegales, DEFAULT_PUBLIC_PAGES_SETTINGS.legal.mentionsLegales),
+        mentionsLegales: stripMentionsLegalesHostingSection(
+          parseLegalPage(legalRaw.mentionsLegales, DEFAULT_PUBLIC_PAGES_SETTINGS.legal.mentionsLegales)
+        ),
       },
       orientation: {
         overline: str(orientationRaw.overline, DEFAULT_PUBLIC_PAGES_SETTINGS.orientation.overline),
