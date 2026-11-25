@@ -19,7 +19,7 @@ export function BoutiqueEditorialSpotlight({
   return (
     <section className="py-8 lg:py-16">
       <div className="text-center mb-12 lg:mb-16 px-4">
-        <h2 className="font-display text-3xl sm:text-4xl font-light italic text-brand-950">
+        <h2 className="font-display text-3xl sm:text-4xl font-normal italic text-brand-950">
           {title}
         </h2>
       </div>
@@ -52,7 +52,7 @@ export function BoutiqueEditorialSpotlight({
                   {product.brand}
                 </p>
               )}
-              <h3 className="font-display text-2xl lg:text-3xl font-light italic text-brand-950 mb-4">
+              <h3 className="font-display text-2xl lg:text-3xl font-normal italic text-brand-950 mb-4">
                 {product.name}
               </h3>
               <p className="font-sans text-sm text-brand-600 leading-relaxed mb-6">

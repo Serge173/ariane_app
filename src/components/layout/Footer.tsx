@@ -49,7 +49,7 @@ export function Footer({ siteSettings }: FooterProps) {
         <div className="flex flex-col lg:flex-row lg:items-start lg:gap-10 xl:gap-14">
           <div className="pb-6 lg:pb-0 border-b border-brand-800 lg:border-0 lg:w-[30%] lg:max-w-sm lg:flex-shrink-0">
             <Link href="/" className="inline-block mb-3 lg:mb-4">
-              <span className="font-display text-xl sm:text-2xl font-light text-white tracking-wide">
+              <span className="font-display text-xl sm:text-2xl font-normal text-white tracking-wide">
                 {footer.title}
               </span>
               <span className="block text-[10px] uppercase tracking-ultra text-brand-400 -mt-0.5">

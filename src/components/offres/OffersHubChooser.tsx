@@ -54,7 +54,7 @@ export function OffersHubChooser({
               <h2 className="offres-hub-tile__audience font-display text-lg sm:text-3xl lg:text-2xl font-bold leading-tight text-white mb-1 sm:mb-3 lg:mb-2 line-clamp-2">
                 {eyebrow}
               </h2>
-              <p className="offres-hub-tile__heading font-display text-sm sm:text-3xl lg:text-xl font-light leading-snug sm:leading-tight text-white mb-1 sm:mb-3 lg:mb-2 line-clamp-2">
+              <p className="offres-hub-tile__heading font-sans text-sm sm:text-3xl lg:text-xl font-normal leading-snug sm:leading-tight text-white mb-1 sm:mb-3 lg:mb-2 line-clamp-2">
                 {card.title}
               </p>
               {description ? (

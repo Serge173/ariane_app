@@ -1,0 +1,35 @@
+/**
+ * Charte : Atacama VAR 400 (titres) · Hellix 400 (UI) · Hellix 500 (boutons / onglets)
+ * Déposez les fichiers dans public/fonts/ (voir public/fonts/README.md).
+ */
+:root {
+  --font-atacama: "Atacama", "Cormorant Garamond", Georgia, serif;
+  --font-hellix: "Hellix", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+@font-face {
+  font-family: "Atacama";
+  src:
+    url("/fonts/atacama/Atacama-VAR.woff2") format("woff2 supports variations"),
+    url("/fonts/atacama/Atacama-VAR.woff2") format("woff2-variations"),
+    url("/fonts/atacama/Atacama-VAR.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Hellix";
+  src: url("/fonts/hellix/Hellix-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Hellix";
+  src: url("/fonts/hellix/Hellix-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}

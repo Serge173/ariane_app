@@ -33,7 +33,7 @@ export function PersonalShoppingAccordion({
         aria-expanded={open}
         aria-controls="personal-shopping-submenu"
       >
-        <span className="font-display text-base sm:text-lg leading-tight font-light text-brand-950 tracking-tight">
+        <span className="font-display text-base sm:text-lg leading-tight font-normal text-brand-950 tracking-tight">
           {SHOPPING_NAV_LABEL_COMPACT}
         </span>
         <ChevronDown
@@ -62,7 +62,7 @@ export function PersonalShoppingAccordion({
               }}
               className="flex items-center gap-2 py-2 pl-4 sm:pl-5 border-l-2 border-accent/40 hover:border-accent ml-1 transition-colors"
             >
-              <span className="font-display text-sm sm:text-base font-light text-brand-800 tracking-tight">
+              <span className="font-display text-sm sm:text-base font-normal text-brand-800 tracking-tight">
                 {child.name}
               </span>
             </Link>

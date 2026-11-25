@@ -84,7 +84,7 @@ export function OfferForfaitDetail({
               </div>
 
               {product.shortDescription.trim() && (
-                <p className="font-display text-lg sm:text-xl font-light italic text-brand-800 leading-snug mb-8 max-w-xl">
+                <p className="font-sans text-lg sm:text-xl font-normal italic text-brand-800 leading-snug mb-8 max-w-xl">
                   {product.shortDescription.trim()}
                 </p>
               )}

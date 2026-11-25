@@ -13,9 +13,11 @@ export default async function AdminSiteContentPage() {
 
   return (
     <div>
-      <AdminPageHeader section="Contenu" title="Navigation & footer" description="
-          Marque (header), menu Shopping Luxe/Premium, footer Conseil en image et bouton « Prendre rdv ! »
-        " />
+      <AdminPageHeader
+        section="Contenu"
+        title="Navigation & footer"
+        description="Marque, menu, fond de la page connexion client, footer et bouton « Prendre rdv ! »"
+      />
       <ContentSubNav active="site" />
 
       <SiteSettingsForm initial={settings} canEdit={canEdit} />

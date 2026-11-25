@@ -59,7 +59,7 @@ export function MobileNav({ open, onClose, navLinks }: MobileNavProps) {
                     onClick={onClose}
                     className="group flex items-center justify-between gap-2 py-2.5 sm:py-3"
                   >
-                    <span className="font-display text-base sm:text-lg leading-tight font-light text-brand-950 tracking-tight">
+                    <span className="font-display text-base sm:text-lg leading-tight font-normal text-brand-950 tracking-tight">
                       {item.name}
                     </span>
                     <span className="font-sans text-[8px] sm:text-[9px] tracking-[0.25em] text-brand-400 shrink-0">

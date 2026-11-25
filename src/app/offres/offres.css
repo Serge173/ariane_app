@@ -204,7 +204,8 @@ html[data-offres] .offres-page .offres-hub-tile h2.offres-hub-tile__audience {
 html:has(.offres-page) .offres-page .offres-hub-tile .offres-hub-tile__heading,
 html[data-offres] .offres-page .offres-hub-tile .offres-hub-tile__heading {
   color: #ffffff !important;
-  font-weight: 300 !important;
+  font-weight: 400 !important;
+  font-family: var(--font-hellix) !important;
 }
 
 html:has(.offres-page) .offres-page .offres-hub-tile .offres-hub-tile__desc,

@@ -141,7 +141,7 @@ export function NewsletterPopup() {
       {step === "invite" && (
         <>
           <p className="text-overline mb-2 pr-8">Newsletter</p>
-          <h2 className="font-display text-2xl font-light text-brand-950 mb-3 pr-6">
+          <h2 className="font-display text-2xl font-normal text-brand-950 mb-3 pr-6">
             Restez inspiré(e) avec Ariane
           </h2>
           <p className="text-sm text-brand-600 leading-relaxed mb-6">
@@ -176,7 +176,7 @@ export function NewsletterPopup() {
       {step === "email" && (
         <>
           <p className="text-overline mb-2 pr-8">Votre email</p>
-          <h2 className="font-display text-2xl font-light text-brand-950 mb-3 pr-6">
+          <h2 className="font-display text-2xl font-normal text-brand-950 mb-3 pr-6">
             S&apos;abonner à la newsletter
           </h2>
           <div className="mb-6">

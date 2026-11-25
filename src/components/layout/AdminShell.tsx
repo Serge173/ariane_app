@@ -93,7 +93,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       >
         <div className="admin-sidebar-brand px-5 pt-6 pb-5 border-b border-admin-line">
           <Link href="/admin" className="block" onClick={() => setSidebarOpen(false)}>
-            <span className="font-display text-[1.35rem] font-light tracking-wide text-admin-ink leading-none">
+            <span className="font-display text-[1.35rem] font-normal tracking-wide text-admin-ink leading-none">
               {ADMIN_BRAND}
             </span>
             <span className="block font-display text-[11px] italic text-admin-muted mt-2 leading-snug">

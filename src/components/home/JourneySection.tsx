@@ -41,7 +41,7 @@ export function JourneySection({ journey }: JourneySectionProps) {
                   className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/15 pointer-events-none"
                   aria-hidden
                 />
-                <span className="absolute top-2.5 left-2.5 sm:top-3 sm:left-3 font-display text-xl sm:text-2xl lg:text-3xl font-light text-white/90 leading-none drop-shadow-md">
+                <span className="absolute top-2.5 left-2.5 sm:top-3 sm:left-3 font-display text-xl sm:text-2xl lg:text-3xl font-normal text-white/90 leading-none drop-shadow-md">
                   {step.number}
                 </span>
                 <div className="absolute inset-x-0 bottom-0 p-2.5 sm:p-4 lg:p-5 text-white">

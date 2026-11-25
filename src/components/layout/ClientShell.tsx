@@ -42,7 +42,7 @@ export function ClientShell({ children }: { children: React.ReactNode }) {
         <div className="flex flex-col h-full">
           <div className="p-6 border-b border-brand-300/40">
             <Link href="/mon-espace" onClick={closeSidebar}>
-              <span className="font-display text-xl font-light tracking-wide text-brand-950">
+              <span className="font-display text-xl font-normal tracking-wide text-brand-950">
                 {CLIENT_SPACE_COPY.brandTitle}
               </span>
               <span className="block text-[10px] uppercase tracking-ultra text-brand-400 mt-0.5">

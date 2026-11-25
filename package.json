@@ -28,6 +28,7 @@
     "db:migrate": "prisma migrate dev",
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
+    "fonts:install": "node scripts/install-brand-fonts.mjs",
     "postinstall": "prisma generate"
   },
   "dependencies": {

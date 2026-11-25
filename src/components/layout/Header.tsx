@@ -94,7 +94,7 @@ export function Header({ siteSettings }: HeaderProps) {
               className="group absolute left-1/2 top-1/2 z-[1] w-[calc(100%-7.5rem)] max-w-[16rem] -translate-x-1/2 -translate-y-1/2 text-center sm:max-w-[18rem] lg:static lg:z-auto lg:w-auto lg:max-w-[11rem] xl:max-w-[14rem] 2xl:max-w-none lg:translate-x-0 lg:translate-y-0 lg:text-left lg:shrink-0 lg:min-w-0"
               onClick={() => setIsOpen(false)}
             >
-              <span className="font-display text-base sm:text-lg lg:text-lg xl:text-xl 2xl:text-2xl font-light tracking-wide text-brand-950 leading-tight line-clamp-2 lg:line-clamp-1">
+              <span className="font-display text-base sm:text-lg lg:text-lg xl:text-xl 2xl:text-2xl font-normal tracking-wide text-brand-950 leading-tight line-clamp-2 lg:line-clamp-1">
                 {siteSettings.brand.title}
               </span>
               <span className="block text-[8px] sm:text-[9px] lg:text-[10px] uppercase tracking-ultra text-brand-600 -mt-0.5">
@@ -167,7 +167,7 @@ export function Header({ siteSettings }: HeaderProps) {
                   </Link>
                   <Link
                     href="/connexion"
-                    className="hidden lg:inline-flex font-sans text-xs uppercase tracking-wide font-medium text-brand-800 hover:text-brand-950 px-3 py-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+                    className="hidden lg:inline-flex font-sans text-xs uppercase tracking-wide font-normal text-brand-800 hover:text-brand-950 px-3 py-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
                   >
                     Connexion
                   </Link>

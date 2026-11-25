@@ -24,7 +24,7 @@ export function BoutiqueHero({ hero }: { hero: BoutiquePageSettings["hero"] }) {
 
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 lg:pb-16 pt-32">
         <div className="max-w-xl">
-          <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-light italic text-white leading-[1.1] mb-5">
+          <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-normal italic text-white leading-[1.1] mb-5">
             {hero.titleLine1}
             <br />
             {hero.titleLine2}
@@ -49,7 +49,7 @@ export function BoutiqueStory({ story }: { story: BoutiquePageSettings["story"] 
     <section className="pb-16 sm:pb-20 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto text-center">
       <div className="public-card p-8 sm:p-10">
         <p className="text-overline text-accent mb-3">Notre sélection</p>
-        <h2 className="font-display text-2xl sm:text-3xl font-light text-brand-950 mb-5">{story.title}</h2>
+        <h2 className="font-display text-2xl sm:text-3xl font-normal text-brand-950 mb-5">{story.title}</h2>
         <span className="public-page-accent-rule mx-auto mb-6" aria-hidden />
         <p className="font-sans text-sm sm:text-base text-brand-600 leading-relaxed">{story.body}</p>
       </div>

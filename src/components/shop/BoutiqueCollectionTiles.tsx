@@ -23,7 +23,7 @@ export function BoutiqueCollectionTiles({ roots, collections }: BoutiqueCollecti
     <section className="py-12 lg:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div className="text-center max-w-2xl mx-auto mb-10 lg:mb-14">
         <p className="text-overline text-accent mb-3">Collections</p>
-        <h2 className="font-display text-3xl sm:text-4xl font-light text-brand-950 mb-4">{collections.title}</h2>
+        <h2 className="font-display text-3xl sm:text-4xl font-normal text-brand-950 mb-4">{collections.title}</h2>
         <p className="font-sans text-sm text-brand-600 leading-relaxed">{collections.intro}</p>
         <span className="public-page-accent-rule mx-auto mt-5" aria-hidden />
       </div>
@@ -49,7 +49,7 @@ export function BoutiqueCollectionTiles({ roots, collections }: BoutiqueCollecti
               <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-white/80 mb-2">
                 {collections.tileLabel}
               </p>
-              <h3 className="font-display text-2xl lg:text-3xl font-light italic text-white">
+              <h3 className="font-display text-2xl lg:text-3xl font-normal italic text-white">
                 {root.name}
               </h3>
             </div>

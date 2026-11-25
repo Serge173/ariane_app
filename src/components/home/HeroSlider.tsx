@@ -79,7 +79,7 @@ function HeroSlideText({
               transition: { ...base, duration: titleDuration },
             },
           }}
-          className="font-display text-[1.45rem] leading-[1.12] sm:text-5xl lg:text-6xl font-light text-white"
+          className="font-display text-[1.45rem] leading-[1.12] sm:text-5xl lg:text-6xl font-normal text-white"
         >
           {slide.title}
         </motion.h1>

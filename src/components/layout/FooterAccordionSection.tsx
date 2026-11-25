@@ -28,7 +28,7 @@ export function FooterAccordionSection({
         className="flex w-full items-center justify-between gap-3 py-3.5 border-b border-brand-800 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-brand-950 rounded-sm lg:hidden"
         aria-expanded={open}
       >
-        <span className="font-sans text-xs uppercase tracking-wide font-medium text-brand-400">
+        <span className="font-sans text-xs uppercase tracking-wide font-normal text-brand-400">
           {title}
         </span>
         <ChevronDown
@@ -41,7 +41,7 @@ export function FooterAccordionSection({
         />
       </button>
 
-      <p className="hidden lg:block font-sans text-xs uppercase tracking-wide font-medium text-brand-400 mb-4">
+      <p className="hidden lg:block font-sans text-xs uppercase tracking-wide font-normal text-brand-400 mb-4">
         {title}
       </p>
 

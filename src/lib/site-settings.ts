@@ -9,8 +9,21 @@ import {
 } from "@/lib/brand";
 import { SHOPPING_NAV_LINK } from "@/lib/shopping";
 import { APPOINTMENT_REQUEST_PATH } from "@/lib/booking-copy";
+import { IMAGES } from "@/lib/images";
 
 export const SITE_SETTINGS_KEY = "site_settings";
+
+/** Plein écran (~1920px) — images de démo tant qu’aucune image custom n’est uploadée. */
+function connexionBgUrl(base: string): string {
+  return base.replace(/w=\d+/, "w=1920");
+}
+
+export const CONNEXION_DEMO_BACKGROUNDS: SiteConnexionSettings = {
+  backgroundImage: connexionBgUrl(IMAGES.hero),
+  backgroundImageAlt: "Coaching en image — fond de démonstration",
+  adminBackgroundImage: connexionBgUrl(IMAGES.coaching.platinum),
+  adminBackgroundImageAlt: "Administration — fond de démonstration",
+};
 
 export interface SiteNavLink {
   name: string;
@@ -25,11 +38,19 @@ export interface SiteSocialLink {
   href: string;
 }
 
+export interface SiteConnexionSettings {
+  backgroundImage: string;
+  backgroundImageAlt: string;
+  adminBackgroundImage: string;
+  adminBackgroundImageAlt: string;
+}
+
 export interface SiteSettings {
   brand: {
     title: string;
     subtitle: string;
   };
+  connexion: SiteConnexionSettings;
   nav: SiteNavLink[];
   footer: {
     title: string;
@@ -130,6 +151,7 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
     title: BRAND_TITLE,
     subtitle: BRAND_SUBTITLE,
   },
+  connexion: { ...CONNEXION_DEMO_BACKGROUNDS },
   nav: [
     { name: "Accueil", href: "/" },
     { name: "Nos prestations", href: "/offres" },
@@ -230,6 +252,8 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     if (!row?.value || typeof row.value !== "object") return { ...DEFAULT_SITE_SETTINGS };
     const raw = row.value as Partial<SiteSettings>;
     const brandRaw = raw.brand && typeof raw.brand === "object" ? raw.brand : {};
+    const connexionRaw: Partial<SiteConnexionSettings> =
+      raw.connexion && typeof raw.connexion === "object" ? raw.connexion : {};
     const footerRaw: Partial<SiteSettings["footer"]> =
       raw.footer && typeof raw.footer === "object" ? raw.footer : {};
     const contactRaw =
@@ -241,6 +265,21 @@ export async function getSiteSettings(): Promise<SiteSettings> {
         ),
         subtitle: migrateBrandSubtitle(
           str((brandRaw as { subtitle?: string }).subtitle, DEFAULT_SITE_SETTINGS.brand.subtitle)
+        ),
+      },
+      connexion: {
+        backgroundImage: str(connexionRaw.backgroundImage, DEFAULT_SITE_SETTINGS.connexion.backgroundImage),
+        backgroundImageAlt: str(
+          connexionRaw.backgroundImageAlt,
+          DEFAULT_SITE_SETTINGS.connexion.backgroundImageAlt
+        ),
+        adminBackgroundImage: str(
+          connexionRaw.adminBackgroundImage,
+          DEFAULT_SITE_SETTINGS.connexion.adminBackgroundImage
+        ),
+        adminBackgroundImageAlt: str(
+          connexionRaw.adminBackgroundImageAlt,
+          DEFAULT_SITE_SETTINGS.connexion.adminBackgroundImageAlt
         ),
       },
       nav: migrateNavLinks(
@@ -302,6 +341,23 @@ export async function updateSiteSettings(patch: Partial<SiteSettings>): Promise<
           subtitle: str(patch.brand.subtitle, current.brand.subtitle),
         }
       : current.brand,
+    connexion: patch.connexion
+      ? {
+          backgroundImage: str(patch.connexion.backgroundImage, current.connexion.backgroundImage),
+          backgroundImageAlt: str(
+            patch.connexion.backgroundImageAlt,
+            current.connexion.backgroundImageAlt
+          ),
+          adminBackgroundImage: str(
+            patch.connexion.adminBackgroundImage,
+            current.connexion.adminBackgroundImage
+          ),
+          adminBackgroundImageAlt: str(
+            patch.connexion.adminBackgroundImageAlt,
+            current.connexion.adminBackgroundImageAlt
+          ),
+        }
+      : current.connexion,
     nav: patch.nav ? migrateNavLinks(parseLinks(patch.nav, current.nav)) : current.nav,
     footer: {
       title:

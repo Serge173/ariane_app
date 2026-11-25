@@ -12,7 +12,9 @@ import {
   ContentEditorBlock,
   ContentEditorFields,
   ContentEditorForm,
+  ContentEditorNote,
 } from "@/components/admin/content/FormFields";
+import { ConnexionBackgroundImageField } from "@/components/admin/content/ConnexionBackgroundImageField";
 
 function NavLinksEditor({
   label,
@@ -288,6 +290,47 @@ export function SiteSettingsForm({
 
         <Section
           index={3}
+          title="Pages de connexion"
+          description="Fonds plein écran pour l'espace client et l'accès admin. Les formulaires restent sur carte blanche."
+        >
+          <ContentEditorNote>
+            Sans image : fond crème (client) ou fond sombre (admin). Avec image : voile léger pour la lisibilité des
+            titres.
+          </ContentEditorNote>
+          <ContentEditorBlock index={1} title="Espace client — /connexion">
+            <ConnexionBackgroundImageField
+              pagePath="/connexion"
+              previewAlt="Aperçu fond connexion client"
+              imageUrl={form.connexion.backgroundImage}
+              imageAlt={form.connexion.backgroundImageAlt}
+              onImageUrlChange={(url) =>
+                setForm((f) => ({ ...f, connexion: { ...f.connexion, backgroundImage: url } }))
+              }
+              onImageAltChange={(alt) =>
+                setForm((f) => ({ ...f, connexion: { ...f.connexion, backgroundImageAlt: alt } }))
+              }
+              disabled={!canEdit}
+            />
+          </ContentEditorBlock>
+          <ContentEditorBlock index={2} title="Administration — /admin/connexion">
+            <ConnexionBackgroundImageField
+              pagePath="/admin/connexion"
+              previewAlt="Aperçu fond connexion admin"
+              imageUrl={form.connexion.adminBackgroundImage}
+              imageAlt={form.connexion.adminBackgroundImageAlt}
+              onImageUrlChange={(url) =>
+                setForm((f) => ({ ...f, connexion: { ...f.connexion, adminBackgroundImage: url } }))
+              }
+              onImageAltChange={(alt) =>
+                setForm((f) => ({ ...f, connexion: { ...f.connexion, adminBackgroundImageAlt: alt } }))
+              }
+              disabled={!canEdit}
+            />
+          </ContentEditorBlock>
+        </Section>
+
+        <Section
+          index={4}
           title="Pied de page — Conseil en image"
           description="Bloc ARIANE DAGO. Le bouton « Prendre rdv ! » ouvre toujours le formulaire de demande de rendez-vous (sans achat boutique)."
         >
